@@ -1,8 +1,13 @@
+import { client } from "../tina/__generated__/client";
+import EventList from "./event-list";
 
-export default function Home() {
+export default async function Home() {
+  const pages = await client.queries.eventConnection();
+
+
     return (
             <div>
-            test
+            <EventList {...pages} /> 
             </div>
     )
 }
