@@ -24,7 +24,7 @@ export default async function RootLayout({
           <Link href="/posts">Posts</Link>
         </header>
         <main>{children}</main>
-        <EventList {...pages} />
+        { /*<EventList {...pages} />  */}
       </body>
     </html>
   );

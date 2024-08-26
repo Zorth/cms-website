@@ -17,7 +17,7 @@
                 name: "date",
             },
             {
-                type: "string",
+                type: "rich-text",
                 label: "Event Description",
                 name: "body",
                 isBody: true,

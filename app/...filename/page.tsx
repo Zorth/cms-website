@@ -10,11 +10,8 @@ export async function generateStaticParams() {
   return paths || [];
 }
 
-export default async function Page({
-  params,
-}: {
-  params: { filename: string[] };
-}) {
+export default async function Page({ params, }: { params: { filename: string[] }; }) 
+{
   const data = await client.queries.page({
     relativePath: `${params.filename}.mdx`,
   });
