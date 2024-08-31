@@ -1,5 +1,6 @@
 "use client"
-import { useTina } from "tinacms/dist/react";
+import { TinaMarkdown } from "tinacms/dist/rich-text";
+import { tinaField, useTina } from "tinacms/dist/react";
 import { EventQuery } from "../../../tina/__generated__/types";
 
 interface ClientPageProps {
@@ -18,14 +19,14 @@ export default function Event(props : ClientPageProps) {
       data: props.data,
     });
     return (
-      <code>
-        <pre
-          style={{
-            backgroundColor: "lightgray",
-          }}
-        >
+      <div>
+        <h1>{data.event.title}</h1>
+        <p data-tina-field={tinaField(data.event, "body")}>
+            <TinaMarkdown content={data.event.body} />
+        </p>
+        <pre>
           {JSON.stringify(data.event, null, 2)}
         </pre>
-      </code>
+      </div>
     );
   }
