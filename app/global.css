@@ -19,7 +19,7 @@ html, body {
     background-color: var(--darker);
     margin: 0;
     font-style: normal;
-    font-weight: 600;
+    font-weight: 550;
     color: var(--light_light);
     font-size: 100%;
 }
@@ -33,7 +33,7 @@ h1 {
     width: 100%;
     margin: 0;
 
-    font-weight: 800;
+    font-weight: 700;
 }
 
 h2 {
