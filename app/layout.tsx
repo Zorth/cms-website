@@ -16,7 +16,7 @@ export default async function RootLayout({
 
 
   return (
-    <html lang="en" className={Rockwell.className}>
+    <html lang="en" className={ORunde.className}>
       <body
         style={{
           margin: "3rem",
@@ -26,6 +26,13 @@ export default async function RootLayout({
           <Link href="/">Home</Link>
           {" | "}
           <Link href="/posts">Posts</Link>
+          <h1>H1</h1>
+          <h2>H2</h2>
+          <h3>H3</h3>
+          <h4>H4</h4>
+          <b>B</b><br/>
+          <i>I</i><br/>
+          <a>A</a><br/>
         </header>
         <main>{children}</main>
       </body>

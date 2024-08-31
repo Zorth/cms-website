@@ -15,44 +15,77 @@
 
 /* body */
 html, body {
-    font-family: Rockwell, serif;
+    font-family: ORunde, sans-serif;
     background-color: var(--darker);
     margin: 0;
     font-style: normal;
-    font-weight: 200;
+    font-weight: 600;
     color: var(--light_light);
     font-size: 100%;
 }
 
 /* headers */
 h1 {
+    font-family: Rockwell, serif;
     display: block;
     text-align: center;
-    padding: var(--padding) var(--padding);
     text-decoration: none;
     width: 100%;
+    margin: 0;
+
+    font-weight: 800;
 }
 
 h2 {
+    font-family: Rockwell, serif;
     display: block;
     text-align: center;
     text-decoration: none;
     margin: 0;
+    color: var(--light);
+
+    font-weight: 700;
 }
 
 h3 {
+    font-family: Rockwell, serif;
     display: block;
     text-align: center;
     text-decoration: none;
     margin: 0;
+    color: var(--primary_light);
+}
+
+h4 {
+    font-family: Rockwell, serif;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    margin: 0;
+    color: var(--secondary);
+}
+
+i {
+    font-family: Rockwell, serif;
+    font-weight: 600;
 }
 
 b {
     color: var(--primary_light);
-    font-family: Rockwell-B
+    font-weight: 800;
 }
 
-/* JUNK IMPORTS */
-/* ------------ */
+a:link {
+    color: var(--secondary);
+}
+
+a:visited {
+    color: var(--secondary_dark);
+}
+
+a:hover {
+    color: var(--primary_light);
+}
+
 
 
