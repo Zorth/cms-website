@@ -1,0 +1,58 @@
+/* color variables */
+:root {
+    --darkest: #000000;
+    --darker: #1E2124;
+    --dark: #36393E;
+    --light: #F2D3B4;
+    --light_light: #F1E6E0;
+    --primary: #942822;
+    --primary_dark: #551714;
+    --primary_light: #c76b54;
+    --secondary: #97b78e;
+    --secondary_dark: #788868;
+    --padding: 10px;
+}
+
+/* body */
+html, body {
+    font-family: Rockwell, serif;
+    background-color: var(--darker);
+    margin: 0;
+    font-style: normal;
+    font-weight: 200;
+    color: var(--light_light);
+    font-size: 100%;
+}
+
+/* headers */
+h1 {
+    display: block;
+    text-align: center;
+    padding: var(--padding) var(--padding);
+    text-decoration: none;
+    width: 100%;
+}
+
+h2 {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    margin: 0;
+}
+
+h3 {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    margin: 0;
+}
+
+b {
+    color: var(--primary_light);
+    font-family: Rockwell-B
+}
+
+/* JUNK IMPORTS */
+/* ------------ */
+
+

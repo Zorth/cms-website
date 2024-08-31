@@ -1,5 +1,12 @@
+import './global.css';
 import Link from "next/link";
 import React from "react";
+import localFont from 'next/font/local';
+
+// Import local Fonts
+const Rockwell = localFont({src: './fonts/Rockwell.woff2' })
+const ORunde = localFont({src: './fonts/OpenRunde-Bold.woff2' })
+
 
 export default async function RootLayout({
   children,
@@ -9,7 +16,7 @@ export default async function RootLayout({
 
 
   return (
-    <html lang="en">
+    <html lang="en" className={Rockwell.className}>
       <body
         style={{
           margin: "3rem",
