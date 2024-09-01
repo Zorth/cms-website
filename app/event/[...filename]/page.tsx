@@ -18,7 +18,7 @@ export default async function PostPage({
 }) {
 
   const data = await client.queries.event({
-    relativePath: `${params.filename}.md`,
+    relativePath: `${params.filename}.mdx`,
   });
 
   return (

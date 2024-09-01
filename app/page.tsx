@@ -5,6 +5,9 @@ import EventList from "./event-list";
 export default async function Home() {
   const pages = await client.queries.eventConnection();
 
+  const data = await client.queries.page({
+    relativePath: `home.mdx`,
+  });
 
     return (
             <div>
