@@ -24,7 +24,7 @@ html, body {
     font-size: 100%;
 }
 
-/* headers */
+/* headings */
 h1 {
     font-family: Rockwell, serif;
     display: block;
@@ -87,5 +87,20 @@ a:hover {
     color: var(--primary_light);
 }
 
+header {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
 
+header img {
+    width: auto;
+    height: 5rem;
+}
+
+header .TarragonTitle {
+    width: auto;
+    height: 3rem;
+    padding-left: 1rem;
+}
 
