@@ -5,6 +5,7 @@
         label: "Event",
         name: "event",
         path: "content/event",
+        format: "mdx",
         fields: [
             {
                 type: "string",
