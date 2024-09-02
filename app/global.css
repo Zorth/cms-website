@@ -22,6 +22,8 @@ html, body {
     font-weight: 550;
     color: var(--light_light);
     font-size: 100%;
+
+    transition: all 1s ease-in-out;
 }
 
 /* headings */
@@ -88,9 +90,23 @@ a:hover {
 }
 
 header {
+    position:fixed;
+    top: 0;
+
     display: flex;
     justify-content: space-around;
     align-items: center;
+    width: 100%;
+    height: 5rem;
+    background: var(--darker);
+    background: linear-gradient(0deg, rgba(0,0,0,0) 0%, var(--darker) 100%);
+    padding-top:1rem;
+}
+header * {
+    out: red;
+}
+.padder {
+    height: 3rem;
 }
 
 header img {

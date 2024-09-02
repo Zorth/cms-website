@@ -22,11 +22,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={ORunde.className}>
-      <body
-        style={{
-          margin: "3rem",
-        }}
-      >
+      <body >
         <header>
           <Link href="/"><div style={{'display':'flex', 'alignItems':'center'}}>
             <Image
@@ -43,7 +39,9 @@ export default async function RootLayout({
           <Link href="/CD"><Image src={CDLogo} alt="Crossing Dimensions Logo"/></Link>
           <Link href="https://discord.com/invite/TjDUu2Gkag"><h1>Discord</h1></Link>
         </header>
-        <main>{children}</main>
+        <main style={{ margin: "3rem", }} >
+        <div className="padder" />
+        {children}</main>
       </body>
     </html>
   );
