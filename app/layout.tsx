@@ -22,6 +22,9 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={ORunde.className}>
+      <head>
+        <title>Tarragon</title>
+      </head>
       <body >
         <header>
           <Link href="/"><div style={{'display':'flex', 'alignItems':'center'}}>
