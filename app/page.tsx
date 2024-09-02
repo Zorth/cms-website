@@ -1,10 +1,10 @@
 import './homepage.css';
 import Link from "next/link";
 import { client } from "../tina/__generated__/client";
-import { tinaField } from "tinacms/dist/react";
 import EventList from "./event-list";
-import { TinaMarkdown } from "tinacms/dist/rich-text";
 
+import { tinaField } from "tinacms/dist/react";
+import { TinaMarkdown } from "tinacms/dist/rich-text";
 
 export default async function Home() {
     const pages = await client.queries.eventConnection({sort: "date"});
