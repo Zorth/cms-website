@@ -1,0 +1,40 @@
+@import url('./global.css');
+
+.container {
+    display: flex;
+    height: 100%;
+    flex-wrap: wrap;
+    
+    gap: 1rem;
+}
+
+.container > div {
+    min-width: 33%;
+    max-width: 100%;
+    border-radius: 1rem;
+
+    /* debuggin */
+    border: 2px solid red;
+}
+
+.infobox {
+    flex: 4;
+}
+
+.eventbox {
+    background: var(--primary_dark);
+    flex: 3;
+}
+
+.koboldbox {
+    flex: 4;
+}
+
+.dragonbox {
+    flex: 2;
+}
+
+.contactbox {
+    flex: 5;
+}
+

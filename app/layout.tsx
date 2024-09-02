@@ -38,7 +38,7 @@ export default async function RootLayout({
                 className="TarragonTitle"
             />
           </div></Link>
-          <Link href="/#Events"><h1>Events</h1></Link>
+          {/* <Link href="/#Events"><h1>Events</h1></Link> */}
           <Link href="/CD"><Image src={CDLogo} alt="Crossing Dimensions Logo"/></Link>
           <Link href="https://discord.com/invite/TjDUu2Gkag"><h1>Discord</h1></Link>
         </header>
