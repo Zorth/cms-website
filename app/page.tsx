@@ -8,7 +8,6 @@ import { TinaMarkdown } from "tinacms/dist/rich-text";
 
 export default async function Home() {
     const events = await client.queries.eventConnection({sort: "date"});
-    const pages = await client.queries.pageConnection({filter: {enabled: {eq: true}}});
 
     // this should be moved into a client page in order to make editable, what do we want editable?
     // const fetch = await client.queries.page({
