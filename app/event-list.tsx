@@ -1,4 +1,3 @@
-import { EventQuery } from '../tina/__generated__/types';
 import './homepage.css';
 import Link from "next/link";
 

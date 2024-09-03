@@ -7,7 +7,8 @@ import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 
 export default async function Home() {
-    const pages = await client.queries.eventConnection({sort: "date"});
+    const events = await client.queries.eventConnection({sort: "date"});
+    const pages = await client.queries.pageConnection({filter: {enabled: {eq: true}}});
 
     // this should be moved into a client page in order to make editable, what do we want editable?
     // const fetch = await client.queries.page({
@@ -24,7 +25,7 @@ export default async function Home() {
             </div>
             <div className="eventbox">
                 <h1>Upcoming Events:</h1>
-                <EventList {...pages} />
+                <EventList {...events} />
             </div>
             <div className="koboldbox">
                 <h1>Kobold Deals</h1>

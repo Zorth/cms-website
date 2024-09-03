@@ -14,6 +14,11 @@ export default {
             name: "enabled",
             label: "Enabled",
             type: "boolean",
+        },
+        {
+            name: "icon",
+            label: "Icon",
+            type: "image"
         }
     ],
     ui: {

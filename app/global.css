@@ -109,7 +109,7 @@ header * {
     height: 3rem;
 }
 
-header img {
+header img, .header-img {
     width: auto;
     height: 5rem;
 }
