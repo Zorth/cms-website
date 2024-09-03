@@ -42,7 +42,7 @@ export default async function RootLayout({
                     </div></Link>
                     {/* <Link href="/#Events"><h1>Events</h1></Link> */}
                     <HeaderPages  {...pages} />
-                    <Link href="https://discord.com/invite/TjDUu2Gkag"><h1>Discord</h1></Link>
+                    <Link href="https://discord.com/invite/TjDUu2Gkag"><h2>Discord</h2></Link>
                 </header>
                 <main style={{ margin: "3rem", }} >
                     <div className="padder" />
