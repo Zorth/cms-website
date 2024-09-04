@@ -5,6 +5,7 @@ import EventList from "./event-list";
 
 import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
+import { PageConnectionEdges } from '../tina/__generated__/types';
 
 export default async function Home() {
     const yest = new Date();
@@ -51,10 +52,10 @@ function Featurettes(props) {
     }
     return (
         props.data.pageConnection.edges
-            .map((page) => (
-                <Link href={`/${page.node._sys.filename}`} key={page.node.id} className="page-snippet">
+            .map((page: PageConnectionEdges) => (
+                <Link href={`/${page.node?._sys.filename}`} key={page.node?.id} className="page-snippet">
                     <div>
-                        <TinaMarkdown content={page.node.snippet} />
+                        <TinaMarkdown content={page.node?.snippet} />
                     </div>
                 </Link>
             )));
