@@ -20,13 +20,16 @@ export default function Event(props : ClientPageProps) {
     });
     return (
       <div>
-        <h1>{data.event.title}</h1>
-        <p data-tina-field={tinaField(data.event, "body")}>
+        <h1 data-tina-field={tinaField(data.event, "title")}>{data.event.title}</h1>
+        <h3 data-tina-field={tinaField(data.event, "date")}>{new Date(data.event.date).toDateString()}</h3>
+        <div data-tina-field={tinaField(data.event, "body")}>
             <TinaMarkdown content={data.event.body} />
-        </p>
+        </div>
+        {/* codeblock preview raw event data for debugging
         <pre>
           {JSON.stringify(data.event, null, 2)}
         </pre>
+        */}
       </div>
     );
   }
