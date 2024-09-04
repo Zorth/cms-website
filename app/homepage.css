@@ -117,3 +117,8 @@
 
 }
 
+.page-snippet {
+    text-decoration: none;
+    flex: 5;
+}
+
