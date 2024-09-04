@@ -127,11 +127,16 @@
     flex: 5;
 
     background: var(--secondary_dark);
+    color: var(--light_light);
 
     transition: all 0.3s ease-in-out;
     &:hover {
         box-shadow: 1rem 1rem 1rem rgba(0, 0, 0, 0.3), -.1rem -.1rem .4rem var(--secondary);
         z-index: 10;
+    }
+
+    div {
+        color: var(--light_light);
     }
 }
 

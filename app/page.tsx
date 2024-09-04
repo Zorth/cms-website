@@ -53,7 +53,9 @@ function Featurettes(props) {
         props.data.pageConnection.edges
             .map((page) => (
                 <Link href={`/${page.node._sys.filename}`} key={page.node.id} className="page-snippet">
-                    <TinaMarkdown content={page.node.snippet} />
+                    <div>
+                        <TinaMarkdown content={page.node.snippet} />
+                    </div>
                 </Link>
             )));
 }
