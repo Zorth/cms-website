@@ -18,10 +18,13 @@ export default function Event(props : ClientPageProps) {
       variables: props.variables,
       data: props.data,
     });
+
+    const event_date = new Date(data.event.date || "");
+
     return (
       <div>
         <h1 data-tina-field={tinaField(data.event, "title")}>{data.event.title}</h1>
-        <h3 data-tina-field={tinaField(data.event, "date")}>{new Date(data.event.date).toDateString()}</h3>
+        <h3 data-tina-field={tinaField(data.event, "date")}>{event_date.toDateString()}</h3>
         <div data-tina-field={tinaField(data.event, "body")}>
             <TinaMarkdown content={data.event.body} />
         </div>
