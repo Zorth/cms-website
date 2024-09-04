@@ -34,7 +34,7 @@
 
     display: flex;
     flex-flow: column nowrap;
-    justify-content: start;
+    justify-content: flex-start;
 }
 
 .koboldbox {
@@ -91,7 +91,7 @@
     @media only screen and (min-width: 800px) {
         flex: 1;
         flex-direction: column;
-        justify-content: start;
+        justify-content: flex-start;
     }
     
 }
