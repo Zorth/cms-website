@@ -16,6 +16,11 @@ export default {
             type: "boolean",
         },
         {
+            name: "snippet",
+            label: "Snippet",
+            type: "rich-text",
+        },
+        {
             name: "icon",
             label: "Icon",
             type: "image"

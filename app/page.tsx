@@ -10,7 +10,8 @@ export default async function Home() {
     const yest = new Date();
     yest.setDate(yest.getDate() - 1);
 
-    const events = await client.queries.eventConnection({sort: "date", filter: {date: {after: yest.toString()}}});
+    const events = await client.queries.eventConnection({ sort: "date", filter: { date: { after: yest.toString() } } });
+    const pages = await client.queries.pageConnection({ filter: { enabled: { eq: true } } });
 
     // this should be moved into a client page in order to make editable, what do we want editable?
     // const fetch = await client.queries.page({
@@ -32,6 +33,7 @@ export default async function Home() {
             <div className="koboldbox">
                 <h1>Kobold Deals</h1>
             </div>
+            <Featurettes {...pages} />
             <div className="dragonbox">
                 <h1>Dragons</h1>
             </div>
@@ -40,5 +42,19 @@ export default async function Home() {
             </div>
         </div>
     )
+}
+
+
+function Featurettes(props) {
+    if (props.data.pageConnection.edges.length == 0) {
+        return <></>;
+    }
+    return (
+        props.data.pageConnection.edges
+            .map((page) => (
+                <Link href={`/event/${page.node._sys.filename}`} key={page.node.id} className="page-snippet">
+                    <TinaMarkdown content={page.node.snippet} />
+                </Link>
+            )));
 }
 
