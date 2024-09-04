@@ -11,7 +11,7 @@
     }
 }
 
-.container > div {
+.container > * {
     min-width: 33%;
     max-width: 100%;
     border-radius: 1rem;
@@ -74,7 +74,8 @@
     text-decoration: none !important;
 
     &:hover {
-        box-shadow: 1rem 1rem 1rem rgba(0, 0, 0, 0.1), -.1rem -.1rem .4rem var(--primary_light);
+        box-shadow: 1rem 1rem 1rem rgba(0, 0, 0, 0.3), -.1rem -.1rem .4rem var(--primary_light);
+        z-index: 10;
     }
 
     @media only screen and (max-width: 800px) {
@@ -114,11 +115,23 @@
         margin-top: 0;
     }
 
+    h1 {
+        width: auto;
+    }
+
 
 }
 
 .page-snippet {
     text-decoration: none;
     flex: 5;
+
+    background: var(--secondary_dark);
+
+    transition: all 0.3s ease-in-out;
+    &:hover {
+        box-shadow: 1rem 1rem 1rem rgba(0, 0, 0, 0.3), -.1rem -.1rem .4rem var(--secondary);
+        z-index: 10;
+    }
 }
 

@@ -30,10 +30,10 @@ export default async function Home() {
                 <h1>Upcoming Events:</h1>
                 <EventList {...events} />
             </div>
+            <Featurettes {...pages} />
             <div className="koboldbox">
                 <h1>Kobold Deals</h1>
             </div>
-            <Featurettes {...pages} />
             <div className="dragonbox">
                 <h1>Dragons</h1>
             </div>
@@ -52,7 +52,7 @@ function Featurettes(props) {
     return (
         props.data.pageConnection.edges
             .map((page) => (
-                <Link href={`/event/${page.node._sys.filename}`} key={page.node.id} className="page-snippet">
+                <Link href={`/${page.node._sys.filename}`} key={page.node.id} className="page-snippet">
                     <TinaMarkdown content={page.node.snippet} />
                 </Link>
             )));

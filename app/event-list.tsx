@@ -16,12 +16,12 @@ export default function EventList(props) {
 
 function EventSnippet(event) {
     const date = new Date(event.node.date);
-    const DoW = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     return (
         <Link href={`/event/${event.node._sys.filename}`} key={event.node.id} className="event-snippet">
             <div className="event-daybox">
-                <span>{DoW[date.getDay()]}</span>
+                <span>{date.toLocaleString('default', {weekday: 'long'})}</span>
                 <h1>{date.getDate()}</h1>
+                <small>{date.toLocaleString('default', {month: 'long'})}</small>
                 <small>{date.getFullYear()}</small>
             </div>
             <h2>{event.node.title}</h2>
