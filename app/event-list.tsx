@@ -2,6 +2,7 @@ import './homepage.css';
 import Link from "next/link";
 
 export default function EventList(props) {
+
     return (
         <>
             <div className="eventbox-list">
