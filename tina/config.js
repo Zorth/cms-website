@@ -33,7 +33,7 @@ export const config = defineConfig({
     search: {
         tina: {
             indexerToken: 'c336d6a3b8ca5a68a460132ee55e30c5ca75b6f4',
-            stopwordLanguages: ['eng', 'nl'],
+            stopwordLanguages: ['eng', 'nld'],
         },
         indexBatchSize: 100,
         maxSearchIndexFieldLength: 100,
