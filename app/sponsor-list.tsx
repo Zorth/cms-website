@@ -9,7 +9,7 @@ export default function SponsorList(props) {
         <>
             <div className="sponsor-list">
                 {props.data.sponsorConnection.edges
-                    .slice(0,3).map((sponsor) => (SponsorSnippet(sponsor)))
+                    .map((sponsor) => (SponsorSnippet(sponsor)))
                 }
             </div>
         </>

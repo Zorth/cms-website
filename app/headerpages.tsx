@@ -9,7 +9,7 @@ export default function HeaderPages(props) {
                 {props.data.pageConnection.edges
                 .map((page) => (
                     <div key={page.node.id}>
-                        <Link href={`/${page.node._sys.filename}`}>
+                        <Link href={`/sponsor/${page.node._sys.filename}`}>
                             <Image
                             src = {page.node.icon}
                             alt = {page.node.title}
