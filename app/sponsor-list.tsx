@@ -23,7 +23,7 @@ export default function SponsorList(props) {
 
 function SponsorSnippet(sponsor) {
     return (
-        <Link href={`/sponsor/${sponsor.node._sys.filename}`} key={sponsor.node.id} className="sponsor-snippet">
+        <Link href={sponsor.node.link} key={sponsor.node.id} className="sponsor-snippet">
             <Image
                 src={sponsor.node.image}
                 alt={sponsor.node.name}
