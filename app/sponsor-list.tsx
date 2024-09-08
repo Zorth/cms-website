@@ -8,6 +8,10 @@ export default function SponsorList(props) {
     return (
         <>
             <div className="sponsor-list">
+                <Link href={'/404/'} key="Signup" className="sponsor-snippet" style={{background: 'var(--primary_dark)'}}>
+                <h1>Become a Kobold!</h1>
+                <p>Click here to go to become a Tarragon member to get access to membership deals and discounts on events!</p>
+                </Link>
                 {props.data.sponsorConnection.edges
                     .map((sponsor) => (SponsorSnippet(sponsor)))
                 }
