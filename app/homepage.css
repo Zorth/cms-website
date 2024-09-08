@@ -224,6 +224,10 @@
     transition: all 0.3s ease-in-out;
 }
 
+.dragon-image {
+    max-width: 100%;
+    height: auto;
+}
 
 .contactbox {
     flex: 5;

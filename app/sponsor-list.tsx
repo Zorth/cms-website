@@ -24,12 +24,12 @@ export default function SponsorList(props) {
 function SponsorSnippet(sponsor) {
     return (
         <Link href={sponsor.node.link} key={sponsor.node.id} className="sponsor-snippet">
-            <Image
+            { sponsor.node.image ? <Image
                 src={sponsor.node.image}
                 alt={sponsor.node.name}
                 width={500}
                 height={500}
-                className="sponsor-image" />
+                className="sponsor-image" /> : ""}
             <TinaMarkdown content={sponsor.node.snippet} />
         </Link>
     )

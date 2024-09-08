@@ -10,13 +10,13 @@ export default function HeaderPages(props) {
                 .map((page) => (
                     <div key={page.node.id}>
                         <Link href={`/${page.node._sys.filename}`}>
-                            <Image
+                            {page.node.icon? <Image
                             src = {page.node.icon}
                             alt = {page.node.title}
                             width={500}
                             height={500}
                             className="header-image"
-                            />
+                            /> : ""}
                         </Link> 
                     </div>
                 ))}
