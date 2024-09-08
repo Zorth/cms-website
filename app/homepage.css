@@ -114,6 +114,7 @@
 .page-snippet {
     text-decoration: none;
     flex: 3;
+    height: fit-content;
 
     background: var(--secondary_dark);
     color: var(--light_light);
