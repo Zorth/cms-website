@@ -2,6 +2,7 @@ import './homepage.css';
 import Link from "next/link";
 import { client } from "../tina/__generated__/client";
 import EventList from "./event-list";
+import SponsorList from './sponsor-list';
 
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import { PageConnectionEdges } from '../tina/__generated__/types';
@@ -14,6 +15,7 @@ export default async function Home() {
     yest.setDate(yest.getDate() - 1);
 
     const events = await client.queries.eventConnection({ sort: "date", filter: { date: { after: yest.toString() } } });
+    const sponsors = await client.queries.sponsorConnection();
     const pages = await client.queries.pageConnection({ filter: { enabled: { eq: true } } });
 
     // this should be moved into a client page in order to make editable, what do we want editable?
@@ -36,12 +38,22 @@ export default async function Home() {
             <Featurettes {...pages} />
             <div className="koboldbox">
                 <h1>Kobold Deals</h1>
+                <SponsorList {...sponsors} />
             </div>
             <div className="dragonbox">
                 <h1>Dragons</h1>
             </div>
             <div className="contactbox">
                 <h1>Contact</h1>
+                <small>Tarragon v.z.w.<br/>
+                    Sint-Jansstraat 21,<br/>
+                    8500 Kortrijk<br/>
+                    BE 0799.673.542<br/>
+                    RPR<br/>
+                    tarragonvzw@gmail.com<br/>
+                    www.tarragon.be<br/><br/>
+                    Copyright 2024 Tarragon VZW, All rights reserved
+                </small>
             </div>
         </div>
     )

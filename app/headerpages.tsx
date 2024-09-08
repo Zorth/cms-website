@@ -13,8 +13,8 @@ export default function HeaderPages(props) {
                             <Image
                             src = {page.node.icon}
                             alt = {page.node.title}
-                            width= {1}
-                            height= {1}
+                            width={500}
+                            height={500}
                             className="header-image"
                             />
                         </Link> 

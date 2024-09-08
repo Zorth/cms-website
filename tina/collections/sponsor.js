@@ -19,6 +19,11 @@
             },
             {
                 type: "rich-text",
+                label: "Snippet",
+                name: "snippet",
+            },
+            {
+                type: "rich-text",
                 label: "Sponsor Description",
                 name: "body",
                 isBody: true,
@@ -29,9 +34,9 @@
                 name: "image",
             },
         ],
-        // ui: {
-        //     router: ({ document }) => {
-        //         return `/sponsor/${document._sys.filename}`;
-        //     },
-        // },
+        ui: {
+            router: ({ document }) => {
+                return `/sponsor/${document._sys.filename}`;
+            },
+        },
     };
