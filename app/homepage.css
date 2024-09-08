@@ -185,6 +185,46 @@
     flex: 2;
 }
 
+.dragon-list {
+    overflow: hidden;
+    height: 100%;
+}
+
+.dragon-list-container {
+    display: flex;
+    height: 100%;
+}
+
+.dragon-snippet-container {
+    flex: 0 0 100%;
+    min-width: 0;
+    width: 100%;
+    height:100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dragon-snippet {
+    background: var(--dark);
+
+    width: 75%;
+
+    border-radius: 1rem;
+    text-decoration: none;
+    color: var(--light) !important;
+
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: fit-content;
+    transition: all 0.3s ease-in-out;
+}
+
+
 .contactbox {
     flex: 5;
     display: flex;

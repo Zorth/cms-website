@@ -6,6 +6,7 @@ import SponsorList from './sponsor-list';
 
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import { PageConnectionEdges } from '../tina/__generated__/types';
+import DragonList from './dragon-list';
 
 export default async function Home() {
 
@@ -17,6 +18,7 @@ export default async function Home() {
     const events = await client.queries.eventConnection({ sort: "date", filter: { date: { after: yest.toString() } } });
     const sponsors = await client.queries.sponsorConnection();
     const pages = await client.queries.pageConnection({ filter: { enabled: { eq: true } } });
+    const dragons = await client.queries.dragonConnection();
 
     // this should be moved into a client page in order to make editable, what do we want editable?
     // const fetch = await client.queries.page({
@@ -42,6 +44,7 @@ export default async function Home() {
             </div>
             <div className="dragonbox">
                 <h1>Dragons</h1>
+                <DragonList {...dragons} />
             </div>
             <div className="contactbox">
                 <h1>Contact</h1>
