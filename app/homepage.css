@@ -211,7 +211,7 @@
 .dragon-snippet {
     background: var(--dark);
 
-    width: 75%;
+    /* width: 75%; */
 
     border-radius: 1rem;
     text-decoration: none;
