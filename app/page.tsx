@@ -55,7 +55,8 @@ export default async function Home() {
                     RPR<br/>
                     tarragonvzw@gmail.com<br/>
                     www.tarragon.be<br/><br/>
-                    Copyright 2024 Tarragon VZW, All rights reserved
+                    Copyright 2024 Tarragon VZW, All rights reserved<br/><br/>
+                    <Link href="/Tos">Membership ToS</Link>
                 </small>
             </div>
         </div>
