@@ -33,8 +33,8 @@ function DragonSnippet(dragon) {
                 {dragon.node.image ? <Image
                     src={dragon.node.image}
                     alt={dragon.node.name}
-                    width={500}
-                    height={500}
+                    width={1000}
+                    height={1000}
                     className="dragon-image"
                 /> : <Image
                     src={TarragonLogo}
