@@ -1,31 +1,38 @@
 "use client"
-import { useTina } from "tinacms/dist/react";
-import { PostQuery } from "../../../tina/__generated__/types";
+import { TinaMarkdown } from "tinacms/dist/rich-text";
+import { tinaField, useTina } from "tinacms/dist/react";
+import { EventQuery } from "../../../tina/__generated__/types";
 
 interface ClientPageProps {
   query: string;
   variables: {
     relativePath: string;
   };
-  data: PostQuery;
+  data: EventQuery;
 }
 
-export default function Post(props : ClientPageProps) {
+export default function Event(props : ClientPageProps) {
     // data passes though in production mode and data is updated to the sidebar data in edit-mode
     const { data } = useTina({
       query: props.query,
       variables: props.variables,
       data: props.data,
     });
+
+    const event_date = new Date(data.event.date || "");
+
     return (
-      <code>
-        <pre
-          style={{
-            backgroundColor: "lightgray",
-          }}
-        >
-          {JSON.stringify(data.post, null, 2)}
+      <div>
+        <h1 data-tina-field={tinaField(data.event, "title")}>{data.event.title}</h1>
+        <h3 data-tina-field={tinaField(data.event, "date")}>{event_date.toDateString()}</h3>
+        <div data-tina-field={tinaField(data.event, "body")}>
+            <TinaMarkdown content={data.event.body} />
+        </div>
+        {/* codeblock preview raw event data for debugging
+        <pre>
+          {JSON.stringify(data.event, null, 2)}
         </pre>
-      </code>
+        */}
+      </div>
     );
   }

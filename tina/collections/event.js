@@ -5,6 +5,7 @@
         label: "Event",
         name: "event",
         path: "content/event",
+        format: "mdx",
         fields: [
             {
                 type: "string",
@@ -15,6 +16,7 @@
                 type: "datetime",
                 label: "Date",
                 name: "date",
+                required: true,
             },
             {
                 type: "rich-text",

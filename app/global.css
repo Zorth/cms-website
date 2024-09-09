@@ -1,0 +1,144 @@
+/* color variables */
+:root {
+    --darkest: #000000;
+    --darker: #1E2124;
+    --dark: #36393E;
+    --light: #F2D3B4;
+    --light_light: #F1E6E0;
+    --primary: #942822;
+    --primary_dark: #551714;
+    --primary_light: #c76b54;
+    --secondary: #97b78e;
+    --secondary_dark: #788868;
+    --padding: 10px;
+}
+
+/* body */
+html, body {
+    font-family: ORunde, sans-serif;
+    background-color: var(--darker);
+    margin: 0;
+    font-style: normal;
+    font-weight: 550;
+    color: var(--light_light);
+    font-size: 100%;
+
+    transition: all 1s ease-in-out;
+}
+
+/* headings */
+h1 {
+    font-family: Rockwell, serif;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    width: 100%;
+    margin: 0;
+    color: var(--light_light);
+
+    font-weight: 700;
+    @media only screen and (min-width: 800px) {
+        font-size: 2rem;
+    }
+    @media only screen and (max-width: 800px) {
+        font-size: 3rem;
+    }
+}
+
+h2 {
+    font-family: Rockwell, serif;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    margin: 0;
+    color: var(--light);
+
+    font-weight: 700;
+}
+
+h3 {
+    font-family: Rockwell, serif;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    margin: 0;
+    color: var(--primary_light);
+}
+
+h4 {
+    font-family: Rockwell, serif;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    margin: 0;
+    color: var(--secondary);
+}
+
+i {
+    font-family: Rockwell, serif;
+    font-weight: 600;
+}
+
+b {
+    color: var(--primary_light);
+    font-weight: 800;
+}
+
+a:link {
+    color: var(--secondary);
+}
+
+a:visited {
+    color: var(--secondary_dark);
+}
+
+a:hover {
+    color: var(--primary_light);
+}
+
+header {
+    position:fixed;
+    top: 0;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    height: 5rem;
+    background: var(--darker);
+    background: linear-gradient(0deg, rgba(0,0,0,0) 0%, var(--darker) 100%);
+    padding-top:1rem;
+}
+header * {
+}
+.padder {
+    height: 3rem;
+}
+
+header img, .header-img {
+    width: auto;
+    height: 5rem;
+}
+
+header .TarragonTitle {
+    width: auto;
+    height: 3rem;
+    padding-left: 1rem;
+}
+
+@media only screen and (max-width: 800px) {
+    header .TarragonTitle{
+        display: None
+    }
+
+}
+
+.red-hover {
+    &:hover {
+        background: var(--primary) !important;
+        box-shadow: 1rem 1rem 1rem rgba(0, 0, 0, 0.3), -.1rem -.1rem .4rem var(--primary_light);
+        z-index: 10;
+    }
+    transition: all 0.3s ease-in-out;
+}
+
