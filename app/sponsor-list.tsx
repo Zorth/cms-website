@@ -25,7 +25,7 @@ function SponsorSnippet(sponsor) {
     return (
         <Link href={sponsor.node.link} key={sponsor.node.id} className="sponsor-snippet red-hover">
             { sponsor.node.image ? <Image
-                src={sponsor.node.image}
+                src={"/public/" + sponsor.node.image}
                 alt={sponsor.node.name}
                 width={500}
                 height={500}
