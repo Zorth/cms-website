@@ -16,6 +16,7 @@
                 type: "datetime",
                 label: "Date",
                 name: "date",
+                required: true,
             },
             {
                 type: "rich-text",
