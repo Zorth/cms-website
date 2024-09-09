@@ -145,6 +145,7 @@
     flex-wrap: wrap;
     width: 100%;
     height: 100%;
+    justify-content: center;
 
     gap: 1rem;
 }
@@ -226,6 +227,7 @@
 .dragon-image {
     max-width: 100%;
     height: auto;
+    border-radius: 1rem;
 }
 
 .contactbox {
