@@ -168,12 +168,6 @@
     height: fit-content;
     padding: 1rem;
 
-    &:hover {
-        background: var(--primary);
-        box-shadow: 1rem 1rem 1rem rgba(0, 0, 0, 0.3), -.1rem -.1rem .4rem var(--primary_light);
-        z-index: 10;
-    }
-    transition: all 0.3s ease-in-out;
 }
 
 .sponsor-image {
@@ -184,6 +178,7 @@
 .dragonbox {
     flex: 2;
     display: flex;
+    gap: 1rem;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;

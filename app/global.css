@@ -132,3 +132,13 @@ header .TarragonTitle {
     }
 
 }
+
+.red-hover {
+    &:hover {
+        background: var(--primary);
+        box-shadow: 1rem 1rem 1rem rgba(0, 0, 0, 0.3), -.1rem -.1rem .4rem var(--primary_light);
+        z-index: 10;
+    }
+    transition: all 0.3s ease-in-out;
+}
+
