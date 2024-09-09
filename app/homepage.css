@@ -190,6 +190,7 @@
 .dragon-list {
     overflow: hidden;
     height: 100%;
+    width: 100%;
 }
 
 .dragon-list-container {
@@ -211,7 +212,7 @@
 .dragon-snippet {
     background: var(--dark);
 
-    /* width: 75%; */
+    width: 75%;
 
     border-radius: 1rem;
     text-decoration: none;
