@@ -108,6 +108,7 @@ header {
     background: var(--darker);
     background: linear-gradient(0deg, rgba(0,0,0,0) 0%, var(--darker) 100%);
     padding-top:1rem;
+    z-index: 1000;
 }
 header * {
 }
