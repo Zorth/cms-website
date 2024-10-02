@@ -21,7 +21,7 @@
 }
 
 .infobox {
-    flex: 4;
+    flex: 3;
     @media only screen and (max-width: 800px) {
         flex: 1;
     }
@@ -137,7 +137,8 @@
 }
 
 .koboldbox {
-    flex: 4;
+    flex: 3;
+    height: fit-content;
 }
 
 .sponsor-list {
@@ -153,8 +154,8 @@
 .sponsor-snippet {
     background: var(--dark);
     @media only screen and (min-width: 800px) {
-        min-width: 10rem;
         max-width: 15rem;
+        width: 15rem;
     }
     @media only screen and (max-width: 800px) {
         width: 100%;
@@ -162,12 +163,12 @@
 
     border-radius: 1rem;
     text-decoration: none;
-    color: var(--light) !important;
+    color: var(--light_light) !important;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    height: fit-content;
+    flex-basis: 100%;
     padding: 1rem;
 
 }
@@ -179,7 +180,7 @@
 }
 
 .dragonbox {
-    flex: 2;
+    flex: 3;
     display: flex;
     gap: 1rem;
     flex-direction: column;
@@ -189,7 +190,6 @@
 
 .dragon-list {
     overflow: hidden;
-    height: 100%;
     width: 100%;
 }
 

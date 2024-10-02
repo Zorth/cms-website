@@ -48,13 +48,13 @@ export default async function Home() {
             </div>
             <div className="contactbox">
                 <h1>Contact</h1>
-                <small>Tarragon v.z.w.<br/>
-                    Sint-Jansstraat 21,<br/>
-                    8500 Kortrijk<br/>
-                    BE 0799.673.542<br/>
-                    RPR<br/>
-                    tarragonvzw@gmail.com<br/>
-                    www.tarragon.be<br/><br/>
+                <small>Tarragon v.z.w.  
+                    Sint-Jansstraat 21,  
+                    8500 Kortrijk  
+                    BE 0799.673.542  
+                    RPR  
+                    tarragonvzw@gmail.com  
+                    www.tarragon.be<br/>
                     Copyright 2024 Tarragon VZW, All rights reserved<br/><br/>
                     <Link href="/ToS">Membership ToS</Link>
                 </small>

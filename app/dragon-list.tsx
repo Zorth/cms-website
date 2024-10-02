@@ -19,7 +19,7 @@ export default function DragonList(props) {
                 </div>
             </div>
             <Link href={"/404"} className="dragon-snippet red-hover" style={{ background: 'var(--primary_dark)' }}>
-                <h1>Want to become a dragon?</h1>
+                <h2>Want to become a dragon?</h2>
                 <p>Click here!</p>
             </Link>
         </>
@@ -43,8 +43,8 @@ function DragonSnippet(dragon) {
                     height={500}
                     className="dragon-image"
                 />}
-                <h1>{dragon.node.name}</h1>
-                <h2>{dragon.node.title}</h2>
+                <h2>{dragon.node.name}</h2>
+                <h3>{dragon.node.title}</h3>
             </div>
         </div>
     )

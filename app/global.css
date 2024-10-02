@@ -105,15 +105,16 @@ header {
     align-items: center;
     width: 100%;
     height: 5rem;
-    background: var(--darker);
-    background: linear-gradient(0deg, rgba(0,0,0,0) 0%, var(--darker) 100%);
-    padding-top:1rem;
+    background: var(--dark);
+    /* background: linear-gradient(0deg, rgba(0,0,0,0) 0%, var(--darker) 100%); */
+    padding-top:0.5rem;
+    padding-bottom:0.5rem;
     z-index: 1000;
 }
 header * {
 }
 .padder {
-    height: 3rem;
+    height: 4rem;
 }
 
 header img, .header-img {
