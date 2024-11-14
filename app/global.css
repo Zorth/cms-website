@@ -45,6 +45,10 @@ h1 {
     }
 }
 
+img {
+    max-width: 100%;
+}
+
 h2 {
     font-family: Rockwell, serif;
     display: block;
