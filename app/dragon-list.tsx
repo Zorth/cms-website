@@ -28,7 +28,7 @@ export default function DragonList(props) {
 
 function DragonSnippet(dragon) {
     return (
-        <div id={dragon.node.id} className="dragon-snippet-container">
+        <div key={dragon.node.name} id={dragon.node.id} className="dragon-snippet-container">
             <div className="dragon-snippet">
                 {dragon.node.image ? <Image
                     src={dragon.node.image}

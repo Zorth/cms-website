@@ -1,6 +1,6 @@
 {
   "name": "starter-basic",
-  "version": "0.1.0",
+  "version": "0.5.3",
   "private": true,
   "scripts": {
     "dev": "tinacms dev -c \"next dev\"",
