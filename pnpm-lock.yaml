@@ -31,8 +31,8 @@ importers:
         version: 5.5.2
     devDependencies:
       '@tinacms/cli':
-        specifier: ^1.6.12
-        version: 1.6.12(@codemirror/language@6.0.0)(@types/node@22.1.0)(@types/react@18.3.3)(abstract-level@1.0.4)(immer@10.1.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@3.29.4)(scheduler@0.23.2)(sucrase@3.35.0)
+        specifier: ^1.7.0
+        version: 1.7.0(@codemirror/language@6.0.0)(@types/node@22.1.0)(@types/react@18.3.3)(abstract-level@1.0.4)(immer@10.1.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@3.29.4)(scheduler@0.23.2)(sucrase@3.35.0)
       '@types/node':
         specifier: ^22.1.0
         version: 22.1.0
@@ -1436,18 +1436,24 @@ packages:
   '@tanstack/virtual-core@3.8.4':
     resolution: {integrity: sha512-iO5Ujgw3O1yIxWDe9FgUPNkGjyT657b1WNX52u+Wv1DyBFEpdCdGkuVaky0M3hHFqNWjAmHWTn4wgj9rTr7ZQg==}
 
-  '@tinacms/app@2.1.12':
-    resolution: {integrity: sha512-npLatwjj9gAdTpYniXME2hEu4Z3y13a5wvLyIkdQv8nIGme5aiLy+G5HanycbG/E6J8+Z3g1dE9iwSA7rrqPag==}
+  '@tinacms/app@2.1.14':
+    resolution: {integrity: sha512-d4D0K39dHgojHB+Ehu131RZf1wqsTMbSDLZsbrLeXZ6+tZ+MARG+zJ7gwbchkT7rJuaZoZ32MWmLpkDk6S8wow==}
 
-  '@tinacms/cli@1.6.12':
-    resolution: {integrity: sha512-Jhb3em1LaMZg0pvcb+09NM8sCMDFJhSNK3IdaJV9XMHNTf5zxVty0DalCcmAfeiVHS7i5kfb1bZ+fJKmDR0HMw==}
+  '@tinacms/cli@1.7.0':
+    resolution: {integrity: sha512-mWHF+fAD+O6QEzQn8ksD6bBjC4txtrV54E6fSQoGaaeH1L9qZ7gwqRk4oeRtIf9tYOazaSg7BYymI0Uzd8ckGQ==}
     hasBin: true
 
   '@tinacms/graphql@1.5.8':
     resolution: {integrity: sha512-KndyaCTt6Xx26hn9VCz6Xbeqz0AH5Wh5ouA6dDHnlOg/TG5y/XwJtijs3deWzhlZ0Ik8+mhWUhWmCdHV19lCXA==}
 
+  '@tinacms/graphql@1.5.9':
+    resolution: {integrity: sha512-sQAb2xDbBxpI1Dwjg8+0w5PHla1k+zQY40QNlJGOdHtz8DrO7uebzVCIbodQSTLDZRt2eyBiRpRga3D52W4Ozg==}
+
   '@tinacms/mdx@1.5.2':
     resolution: {integrity: sha512-YA7qa5NtYuS+FuvwufJ0StSNcv7C4ykvQxV3lA38SBvNMuMP+1pWCvQmI+9Z7QBiTh+/drd/xOvfE24SyFdjjA==}
+
+  '@tinacms/mdx@1.5.3':
+    resolution: {integrity: sha512-4vkLeQMpHbQkKOGVKxzShpc4j7iYVmpommBFddvl1MKjPcJhA2h5qpaoQpPqSNY3kGQI/FAYZusoqQwqtdA0UQ==}
 
   '@tinacms/metrics@1.0.8':
     resolution: {integrity: sha512-MqY4y5viLE9Thwzj0EEaDa85oFnCbDpZW+ELY4s+e8zKvmqFPi8ba3GYPdjFqvXnxrAuYlSW1My058xKykXlEQ==}
@@ -1460,8 +1466,17 @@ packages:
       react: '>=16.14.0'
       yup: ^0.32.0
 
+  '@tinacms/schema-tools@1.6.9':
+    resolution: {integrity: sha512-NrbXN3Z8g1+O5Llmtd59Ovz+U7YiiTuXF67gzQ6zx3MXASZHeENXTuxMhjJ0lL9fa81uZEBtiNudYA//vIQp2A==}
+    peerDependencies:
+      react: '>=16.14.0'
+      yup: ^0.32.0
+
   '@tinacms/search@1.0.35':
     resolution: {integrity: sha512-3hIaDfVIjlDwaPfe0C/w9L3jG/tS2NoDq5QDdxffri4eliJ7iJ5kqNL/Ak1WWxrgNIkOI2rhtP9lYYW7Rd6lFA==}
+
+  '@tinacms/search@1.0.36':
+    resolution: {integrity: sha512-OFr7E46Y+U9Qyt1wyatLwRrgaMFl/8+UqqUbM6kmspnZVh0sDt6cVS9iRxS155JU62HQXzdNbEKsfDhVBNxEpQ==}
 
   '@types/acorn@4.0.6':
     resolution: {integrity: sha512-veQTnWP+1D/xbxVrPC3zHnCZRjSrKfhbMUlEA43iMZLu7EsnTtkJklIuwrCPbOi8YkvDQAiW05VQQFvvz9oieQ==}
@@ -4598,10 +4613,6 @@ packages:
     resolution: {integrity: sha512-PS08Iboia9mts/2ygV3eLpY5ghnUcfLV/EXTOW1E2qYxJKGGBUtNjN76FYHnMs36RmARn41bC0AZmn+rR0OVpQ==}
     engines: {node: ^10 || ^12 || >=14}
 
-  postcss@8.4.41:
-    resolution: {integrity: sha512-TesUflQ0WKZqAvg52PWL6kHgLKP6xB6heTOdoYM0Wt2UHyxNa4K25EZZMgKns3BH1RLVbZCREPpLY0rhnNoHVQ==}
-    engines: {node: ^10 || ^12 || >=14}
-
   postcss@8.4.49:
     resolution: {integrity: sha512-OCVPnIObs4N29kxTjzLfUryOkvZEq+pf8jTF0lg8E7uETuWHA+v7j3c/xJmiqpX450191LlmZfUKkXxkTry7nA==}
     engines: {node: ^10 || ^12 || >=14}
@@ -5273,6 +5284,12 @@ packages:
       react: '>=16.14.0'
       react-dom: '>=16.14.0'
 
+  tinacms@2.5.2:
+    resolution: {integrity: sha512-4hezJBh3e7v64sjNHsP/ngIgCLoe6TM+ihWzZn3WKMlglJeklLjjU23Okk9KtzAdj60C/J3/mpTWW8pTzz/9CQ==}
+    peerDependencies:
+      react: '>=16.14.0'
+      react-dom: '>=16.14.0'
+
   tiny-case@1.0.3:
     resolution: {integrity: sha512-Eet/eeMhkO6TX8mnUteS9zgPbUMQa4I6Kkp5ORiBD5476/m+PIRiumP5tmh5ioJpH7k51Kehawy2UDfsnxxY8Q==}
 
@@ -5797,7 +5814,7 @@ snapshots:
   '@babel/code-frame@7.24.7':
     dependencies:
       '@babel/highlight': 7.24.7
-      picocolors: 1.0.1
+      picocolors: 1.1.1
 
   '@babel/compat-data@7.25.2': {}
 
@@ -5922,7 +5939,7 @@ snapshots:
       '@babel/helper-validator-identifier': 7.24.7
       chalk: 2.4.2
       js-tokens: 4.0.0
-      picocolors: 1.0.1
+      picocolors: 1.1.1
 
   '@babel/parser@7.25.3':
     dependencies:
@@ -7239,13 +7256,13 @@ snapshots:
 
   '@tanstack/virtual-core@3.8.4': {}
 
-  '@tinacms/app@2.1.12(@codemirror/language@6.0.0)(@types/node@22.1.0)(@types/react@18.3.3)(abstract-level@1.0.4)(immer@10.1.1)(scheduler@0.23.2)(sucrase@3.35.0)(yup@1.4.0)':
+  '@tinacms/app@2.1.14(@codemirror/language@6.0.0)(@types/node@22.1.0)(@types/react@18.3.3)(abstract-level@1.0.4)(immer@10.1.1)(scheduler@0.23.2)(sucrase@3.35.0)(yup@1.4.0)':
     dependencies:
       '@graphiql/toolkit': 0.8.4(@types/node@22.1.0)(graphql@15.8.0)
       '@headlessui/react': 2.1.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@heroicons/react': 1.0.6(react@18.3.1)
       '@monaco-editor/react': 4.4.5(monaco-editor@0.31.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@tinacms/mdx': 1.5.2(react@18.3.1)(typescript@5.7.2)(yup@1.4.0)
+      '@tinacms/mdx': 1.5.3(react@18.3.1)(typescript@5.7.2)(yup@1.4.0)
       final-form: 4.20.10
       graphiql: 3.0.0-alpha.1(@codemirror/language@6.0.0)(@types/node@22.1.0)(@types/react@18.3.3)(graphql@15.8.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       graphql: 15.8.0
@@ -7253,7 +7270,7 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       react-router-dom: 6.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      tinacms: 2.5.0(@types/react@18.3.3)(abstract-level@1.0.4)(immer@10.1.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(scheduler@0.23.2)(sucrase@3.35.0)(typescript@5.7.2)
+      tinacms: 2.5.2(@types/react@18.3.3)(abstract-level@1.0.4)(immer@10.1.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(scheduler@0.23.2)(sucrase@3.35.0)(typescript@5.7.2)
       typescript: 5.7.2
       zod: 3.23.8
     transitivePeerDependencies:
@@ -7262,7 +7279,6 @@ snapshots:
       - '@types/react'
       - '@types/react-dom'
       - abstract-level
-      - encoding
       - graphql-ws
       - immer
       - react-native
@@ -7271,7 +7287,7 @@ snapshots:
       - supports-color
       - yup
 
-  '@tinacms/cli@1.6.12(@codemirror/language@6.0.0)(@types/node@22.1.0)(@types/react@18.3.3)(abstract-level@1.0.4)(immer@10.1.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@3.29.4)(scheduler@0.23.2)(sucrase@3.35.0)':
+  '@tinacms/cli@1.7.0(@codemirror/language@6.0.0)(@types/node@22.1.0)(@types/react@18.3.3)(abstract-level@1.0.4)(immer@10.1.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@3.29.4)(scheduler@0.23.2)(sucrase@3.35.0)':
     dependencies:
       '@graphql-codegen/core': 2.6.8(graphql@15.8.0)
       '@graphql-codegen/plugin-helpers': 5.1.0(graphql@15.8.0)
@@ -7286,11 +7302,11 @@ snapshots:
       '@tailwindcss/aspect-ratio': 0.4.2(tailwindcss@3.4.15)
       '@tailwindcss/container-queries': 0.1.1(tailwindcss@3.4.15)
       '@tailwindcss/typography': 0.5.15(tailwindcss@3.4.15)
-      '@tinacms/app': 2.1.12(@codemirror/language@6.0.0)(@types/node@22.1.0)(@types/react@18.3.3)(abstract-level@1.0.4)(immer@10.1.1)(scheduler@0.23.2)(sucrase@3.35.0)(yup@1.4.0)
-      '@tinacms/graphql': 1.5.8(react@18.3.1)(typescript@5.7.2)
+      '@tinacms/app': 2.1.14(@codemirror/language@6.0.0)(@types/node@22.1.0)(@types/react@18.3.3)(abstract-level@1.0.4)(immer@10.1.1)(scheduler@0.23.2)(sucrase@3.35.0)(yup@1.4.0)
+      '@tinacms/graphql': 1.5.9(react@18.3.1)(typescript@5.7.2)
       '@tinacms/metrics': 1.0.8(fs-extra@11.2.0)
-      '@tinacms/schema-tools': 1.6.8(react@18.3.1)(yup@1.4.0)
-      '@tinacms/search': 1.0.35(abstract-level@1.0.4)(react@18.3.1)(sucrase@3.35.0)(typescript@5.7.2)(yup@1.4.0)
+      '@tinacms/schema-tools': 1.6.9(react@18.3.1)(yup@1.4.0)
+      '@tinacms/search': 1.0.36(abstract-level@1.0.4)(react@18.3.1)(sucrase@3.35.0)(typescript@5.7.2)(yup@1.4.0)
       '@vitejs/plugin-react': 3.1.0(vite@4.5.5(@types/node@22.1.0))
       altair-express-middleware: 7.3.6
       auto-bind: 4.0.0
@@ -7317,7 +7333,7 @@ snapshots:
       prompts: 2.4.2
       readable-stream: 4.5.2
       tailwindcss: 3.4.15
-      tinacms: 2.5.0(@types/react@18.3.3)(abstract-level@1.0.4)(immer@10.1.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(scheduler@0.23.2)(sucrase@3.35.0)(typescript@5.7.2)
+      tinacms: 2.5.2(@types/react@18.3.3)(abstract-level@1.0.4)(immer@10.1.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(scheduler@0.23.2)(sucrase@3.35.0)(typescript@5.7.2)
       typanion: 3.13.0
       typescript: 5.7.2
       vite: 4.5.5(@types/node@22.1.0)
@@ -7377,11 +7393,11 @@ snapshots:
       - supports-color
       - typescript
 
-  '@tinacms/graphql@1.5.8(react@18.3.1)(typescript@5.7.2)':
+  '@tinacms/graphql@1.5.9(react@18.3.1)(typescript@5.7.2)':
     dependencies:
       '@iarna/toml': 2.2.5
-      '@tinacms/mdx': 1.5.2(react@18.3.1)(typescript@5.7.2)(yup@0.32.11)
-      '@tinacms/schema-tools': 1.6.8(react@18.3.1)(yup@0.32.11)
+      '@tinacms/mdx': 1.5.3(react@18.3.1)(typescript@5.7.2)(yup@0.32.11)
+      '@tinacms/schema-tools': 1.6.9(react@18.3.1)(yup@0.32.11)
       abstract-level: 1.0.4
       date-fns: 2.30.0
       fast-glob: 3.3.2
@@ -7483,9 +7499,9 @@ snapshots:
       - typescript
       - yup
 
-  '@tinacms/mdx@1.5.2(react@18.3.1)(typescript@5.7.2)(yup@0.32.11)':
+  '@tinacms/mdx@1.5.3(react@18.3.1)(typescript@5.7.2)(yup@0.32.11)':
     dependencies:
-      '@tinacms/schema-tools': 1.6.8(react@18.3.1)(yup@0.32.11)
+      '@tinacms/schema-tools': 1.6.9(react@18.3.1)(yup@0.32.11)
       acorn: 8.8.2
       ccount: 2.0.1
       estree-util-is-identifier-name: 2.1.0
@@ -7521,9 +7537,9 @@ snapshots:
       - typescript
       - yup
 
-  '@tinacms/mdx@1.5.2(react@18.3.1)(typescript@5.7.2)(yup@1.4.0)':
+  '@tinacms/mdx@1.5.3(react@18.3.1)(typescript@5.7.2)(yup@1.4.0)':
     dependencies:
-      '@tinacms/schema-tools': 1.6.8(react@18.3.1)(yup@1.4.0)
+      '@tinacms/schema-tools': 1.6.9(react@18.3.1)(yup@1.4.0)
       acorn: 8.8.2
       ccount: 2.0.1
       estree-util-is-identifier-name: 2.1.0
@@ -7582,6 +7598,22 @@ snapshots:
       yup: 1.4.0
       zod: 3.23.8
 
+  '@tinacms/schema-tools@1.6.9(react@18.3.1)(yup@0.32.11)':
+    dependencies:
+      picomatch-browser: 2.2.6
+      react: 18.3.1
+      url-pattern: 1.0.3
+      yup: 0.32.11
+      zod: 3.23.8
+
+  '@tinacms/schema-tools@1.6.9(react@18.3.1)(yup@1.4.0)':
+    dependencies:
+      picomatch-browser: 2.2.6
+      react: 18.3.1
+      url-pattern: 1.0.3
+      yup: 1.4.0
+      zod: 3.23.8
+
   '@tinacms/search@1.0.35(abstract-level@1.0.4)(react@18.3.1)(sucrase@3.35.0)(typescript@5.5.2)(yup@1.4.0)':
     dependencies:
       '@tinacms/graphql': 1.5.8(react@18.3.1)(typescript@5.5.2)
@@ -7598,10 +7630,10 @@ snapshots:
       - typescript
       - yup
 
-  '@tinacms/search@1.0.35(abstract-level@1.0.4)(react@18.3.1)(sucrase@3.35.0)(typescript@5.7.2)(yup@1.4.0)':
+  '@tinacms/search@1.0.36(abstract-level@1.0.4)(react@18.3.1)(sucrase@3.35.0)(typescript@5.7.2)(yup@1.4.0)':
     dependencies:
-      '@tinacms/graphql': 1.5.8(react@18.3.1)(typescript@5.7.2)
-      '@tinacms/schema-tools': 1.6.8(react@18.3.1)(yup@1.4.0)
+      '@tinacms/graphql': 1.5.9(react@18.3.1)(typescript@5.7.2)
+      '@tinacms/schema-tools': 1.6.9(react@18.3.1)(yup@1.4.0)
       memory-level: 1.0.0
       search-index: 4.0.0(abstract-level@1.0.4)
       sqlite-level: 1.2.0(sucrase@3.35.0)
@@ -11450,12 +11482,6 @@ snapshots:
       picocolors: 1.0.1
       source-map-js: 1.2.0
 
-  postcss@8.4.41:
-    dependencies:
-      nanoid: 3.3.7
-      picocolors: 1.0.1
-      source-map-js: 1.2.0
-
   postcss@8.4.49:
     dependencies:
       nanoid: 3.3.7
@@ -12359,7 +12385,7 @@ snapshots:
       - supports-color
       - typescript
 
-  tinacms@2.5.0(@types/react@18.3.3)(abstract-level@1.0.4)(immer@10.1.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(scheduler@0.23.2)(sucrase@3.35.0)(typescript@5.7.2):
+  tinacms@2.5.2(@types/react@18.3.3)(abstract-level@1.0.4)(immer@10.1.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(scheduler@0.23.2)(sucrase@3.35.0)(typescript@5.7.2):
     dependencies:
       '@ariakit/react': 0.4.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@floating-ui/dom': 1.6.12
@@ -12377,9 +12403,9 @@ snapshots:
       '@radix-ui/react-toolbar': 1.1.0(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-tooltip': 1.1.4(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-hook/window-size': 3.1.1(react@18.3.1)
-      '@tinacms/mdx': 1.5.2(react@18.3.1)(typescript@5.7.2)(yup@1.4.0)
-      '@tinacms/schema-tools': 1.6.8(react@18.3.1)(yup@1.4.0)
-      '@tinacms/search': 1.0.35(abstract-level@1.0.4)(react@18.3.1)(sucrase@3.35.0)(typescript@5.7.2)(yup@1.4.0)
+      '@tinacms/mdx': 1.5.3(react@18.3.1)(typescript@5.7.2)(yup@1.4.0)
+      '@tinacms/schema-tools': 1.6.9(react@18.3.1)(yup@1.4.0)
+      '@tinacms/search': 1.0.36(abstract-level@1.0.4)(react@18.3.1)(sucrase@3.35.0)(typescript@5.7.2)(yup@1.4.0)
       '@udecode/cn': 33.0.0(@types/react@18.3.3)(class-variance-authority@0.7.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwind-merge@2.5.5)
       '@udecode/plate': 36.5.9(@types/react@18.3.3)(immer@10.1.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(scheduler@0.23.2)(slate-history@0.100.0(slate@0.103.0))(slate-hyperscript@0.100.0(slate@0.103.0))(slate-react@0.107.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(slate@0.103.0))(slate@0.103.0)
       '@udecode/plate-autoformat': 36.5.6(@udecode/plate-common@36.5.9(@types/react@18.3.3)(immer@10.1.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(scheduler@0.23.2)(slate-history@0.100.0(slate@0.103.0))(slate-hyperscript@0.100.0(slate@0.103.0))(slate-react@0.107.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(slate@0.103.0))(slate@0.103.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(slate-history@0.100.0(slate@0.103.0))(slate-hyperscript@0.100.0(slate@0.103.0))(slate-react@0.107.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(slate@0.103.0))(slate@0.103.0)
@@ -12402,7 +12428,6 @@ snapshots:
       color-string: 1.9.1
       crypto-js: 4.2.0
       date-fns: 2.30.0
-      fetch-ponyfill: 7.1.0
       final-form: 4.20.10
       final-form-arrays: 3.1.0(final-form@4.20.10)
       final-form-set-field-data: 1.0.2(final-form@4.20.10)
@@ -12439,7 +12464,6 @@ snapshots:
       - '@types/react'
       - '@types/react-dom'
       - abstract-level
-      - encoding
       - immer
       - react-native
       - scheduler
@@ -12687,7 +12711,7 @@ snapshots:
     dependencies:
       browserslist: 4.23.3
       escalade: 3.1.2
-      picocolors: 1.0.1
+      picocolors: 1.1.1
 
   upper-case-first@2.0.2:
     dependencies:
@@ -12803,7 +12827,7 @@ snapshots:
   vite@4.5.5(@types/node@22.1.0):
     dependencies:
       esbuild: 0.18.20
-      postcss: 8.4.41
+      postcss: 8.4.49
       rollup: 3.29.4
     optionalDependencies:
       '@types/node': 22.1.0
