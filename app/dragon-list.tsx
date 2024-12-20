@@ -18,7 +18,7 @@ export default function DragonList(props) {
                     }
                 </div>
             </div>
-            <Link href={"/404"} className="dragon-snippet red-hover" style={{ background: 'var(--primary_dark)' }}>
+            <Link href={"https://docs.google.com/forms/d/e/1FAIpQLScC_krQjFrMLFC_0sw6X8DYdp1UFZNfRE2GFqBVZOxqUma-JA/viewform"} className="dragon-snippet red-hover" style={{ background: 'var(--primary_dark)' }}>
                 <h2>Want to become a dragon?</h2>
                 <p>Click here!</p>
             </Link>
