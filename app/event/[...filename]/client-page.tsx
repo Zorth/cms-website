@@ -22,7 +22,7 @@ export default function Event(props : ClientPageProps) {
     const event_date = new Date(data.event.date || "");
 
     return (
-      <div>
+      <div className="content">
         <h1 data-tina-field={tinaField(data.event, "title")}>{data.event.title}</h1>
         <h3 data-tina-field={tinaField(data.event, "date")}>{event_date.toDateString()}</h3>
         <div data-tina-field={tinaField(data.event, "body")}>

@@ -121,6 +121,15 @@ header * {
     height: 4rem;
 }
 
+@media only screen and (min-width: 800px) {
+    .content {
+        width: 64rem;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+
 header img, .header-img {
     width: auto;
     height: 5rem;

@@ -23,7 +23,7 @@ export default {
         {
             name: "icon",
             label: "Icon",
-            type: "image"
+            type: "image",
         }
     ],
     ui: {
