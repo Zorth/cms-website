@@ -19,7 +19,7 @@ export default function PagePage(props : ClientPageProps) {
       data: props.data,
     });
     return (
-        <div data-tina-field={tinaField(data.page, "body")}>
+        <div className="content" data-tina-field={tinaField(data.page, "body")}>
             <TinaMarkdown content={data.page.body} />
         </div>
     );
