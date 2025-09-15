@@ -31,7 +31,7 @@ export default async function Home() {
             <div className="infobox">
                 <h1>What is Tarragon?</h1>
                 <p>We organize events for new & experienced tabletop geeks. Whether you’re a board game veteran or want to get into D&D, we’ve got something for you!<br /><br />
-                    We meet <b>every Wednesday</b> from 19:00 to 22:00 @ <Link href='https://Craftypotions.com/'>Crafty Potions</Link> (Sint-Janstraat 21, Kortrijk)</p>
+                    We meet <b>every Wednesday</b> from 19:00 to 22:00 @ <Link href='https://maps.app.goo.gl/FVc87bcAtS4VVuip8'>Het Textielhuis</Link> (Rijselsestraat 19, 8500 Kortrijk)</p>
             </div>
             <div className="eventbox">
                 <h1>Upcoming Events:</h1>
