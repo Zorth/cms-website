@@ -8,7 +8,7 @@ export default function SponsorList(props) {
     return (
         <>
             <div className="sponsor-list">
-                <Link href={'https://forms.gle/YU3Mrm93vrmni6Vq9'} key="Signup" className="sponsor-snippet red-hover" style={{background: 'var(--primary_dark)'}}>
+                <Link href={'https://docs.google.com/forms/d/e/1FAIpQLScygq4PGugYAoluEoRRPiQToz9kuYW2YYCYq_E1ChfPgADDZQ/viewform?usp=header'} key="Signup" className="sponsor-snippet red-hover" style={{background: 'var(--primary_dark)'}}>
                 <h2>Become a Kobold!</h2>
                 <p>Click here to go to become a Tarragon member to get access to membership deals and discounts on events!</p>
                 </Link>
