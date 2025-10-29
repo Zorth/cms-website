@@ -1,3 +1,4 @@
+"use client";
 import './homepage.css';
 import Link from "next/link";
 import { useEffect, useState } from "react";
