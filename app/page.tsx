@@ -1,5 +1,7 @@
+"use client";
 import './homepage.css';
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { client } from "../tina/__generated__/client";
 import EventList from "./event-list";
 import SponsorList from './sponsor-list';
@@ -8,23 +10,45 @@ import { TinaMarkdown } from "tinacms/dist/rich-text";
 import { PageConnectionEdges } from '../tina/__generated__/types';
 import DragonList from './dragon-list';
 
-export default async function Home() {
+export default function Home() {
+    const [events, setEvents] = useState({ eventConnection: { edges: [] } });
+    const [sponsors, setSponsors] = useState({ sponsorConnection: { edges: [] } });
+    const [pages, setPages] = useState({ pageConnection: { edges: [] } });
+    const [dragons, setDragons] = useState({ dragonConnection: { edges: [] } });
 
+    useEffect(() => {
+        async function fetchData() {
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
 
+            const threeWeeksLater = new Date(yesterday);
+            threeWeeksLater.setDate(yesterday.getDate() + 21);
 
-    const yest = new Date();
-    yest.setDate(yest.getDate() - 1);
+            // Fetch and filter events within the date range
+            const eventsResult = await client.queries.eventConnection({
+                sort: "date",
+                filter: {
+                    date: {
+                        after: yesterday.toISOString(),
+                        before: threeWeeksLater.toISOString()
+                    }
+                }
+            });
 
-    const events = await client.queries.eventConnection({ sort: "date", filter: { date: { after: yest.toString() } } });
-    const sponsors = await client.queries.sponsorConnection();
-    const pages = await client.queries.pageConnection({ filter: { enabled: { eq: true } } });
-    const dragons = await client.queries.dragonConnection();
+            setEvents(eventsResult.data);
 
-    // this should be moved into a client page in order to make editable, what do we want editable?
-    // const fetch = await client.queries.page({
-    //     relativePath: `home.mdx`,
-    // });
-    // const data = fetch.data;
+            const sponsorsResult = await client.queries.sponsorConnection();
+            setSponsors(sponsorsResult.data);
+
+            const pagesResult = await client.queries.pageConnection({ filter: { enabled: { eq: true } } });
+            setPages(pagesResult.data);
+
+            const dragonsResult = await client.queries.dragonConnection();
+            setDragons(dragonsResult.data);
+        }
+
+        fetchData();
+    }, []);
 
     return (
         <div className="container">
@@ -35,16 +59,16 @@ export default async function Home() {
             </div>
             <div className="eventbox">
                 <h1>Upcoming Events:</h1>
-                <EventList {...events} />
+                <EventList data={events} />
             </div>
-            <Featurettes {...pages} />
+            <Featurettes data={pages} />
             <div className="koboldbox">
                 <h1>Kobold Deals</h1>
-                <SponsorList {...sponsors} />
+                <SponsorList data={sponsors} />
             </div>
             <div className="dragonbox">
                 <h1>Dragons</h1>
-                <DragonList {...dragons} />
+                <DragonList data={dragons} />
             </div>
             <div className="contactbox">
                 <h1>Contact</h1>
@@ -60,12 +84,11 @@ export default async function Home() {
                 </small>
             </div>
         </div>
-    )
+    );
 }
 
-
 function Featurettes(props) {
-    if (props.data.pageConnection.edges.length == 0) {
+    if (!props.data.pageConnection || props.data.pageConnection.edges.length === 0) {
         return <></>;
     }
     return (
@@ -78,4 +101,3 @@ function Featurettes(props) {
                 </Link>
             )));
 }
-
