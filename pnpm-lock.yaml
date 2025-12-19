@@ -27,8 +27,8 @@ importers:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
       tinacms:
-        specifier: ^3.1.0
-        version: 3.1.0(@types/react@19.2.6)(abstract-level@1.0.4)(immer@10.2.0)(react-dnd-html5-backend@16.0.1)(react-dnd@16.0.1(@types/hoist-non-react-statics@3.3.7(@types/react@19.2.6))(@types/node@22.1.0)(@types/react@19.2.6)(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(scheduler@0.23.2)(slate-dom@0.114.0(slate@0.114.0))(slate@0.114.0)(sucrase@3.35.1)(typescript@5.5.2)(use-sync-external-store@1.6.0(react@18.3.1))
+        specifier: ^3.1.2
+        version: 3.1.2(@types/react@19.2.6)(abstract-level@1.0.4)(immer@10.2.0)(react-dnd-html5-backend@16.0.1)(react-dnd@16.0.1(@types/hoist-non-react-statics@3.3.7(@types/react@19.2.6))(@types/node@22.1.0)(@types/react@19.2.6)(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(scheduler@0.23.2)(slate-dom@0.114.0(slate@0.114.0))(slate@0.114.0)(sucrase@3.35.1)(typescript@5.5.2)(use-sync-external-store@1.6.0(react@18.3.1))
       typescript:
         specifier: 5.5.2
         version: 5.5.2
@@ -1313,14 +1313,14 @@ packages:
   '@radix-ui/rect@1.1.1':
     resolution: {integrity: sha512-HPwpGIzkl28mWyZqG52jiqDJ12waP11Pa1lGoiyUkIEuMLBP0oeK/C89esbXrxsky5we7dfd8U58nm0SgAWpVw==}
 
-  '@react-aria/focus@3.21.2':
-    resolution: {integrity: sha512-JWaCR7wJVggj+ldmM/cb/DXFg47CXR55lznJhZBh4XVqJjMKwaOOqpT5vNN7kpC1wUpXicGNuDnJDN1S/+6dhQ==}
+  '@react-aria/focus@3.21.3':
+    resolution: {integrity: sha512-FsquWvjSCwC2/sBk4b+OqJyONETUIXQ2vM0YdPAuC+QFQh2DT6TIBo6dOZVSezlhudDla69xFBd6JvCFq1AbUw==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
       react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
 
-  '@react-aria/interactions@3.25.6':
-    resolution: {integrity: sha512-5UgwZmohpixwNMVkMvn9K1ceJe6TzlRlAfuYoQDUuOkk62/JVJNDLAPKIf5YMRc7d2B0rmfgaZLMtbREb0Zvkw==}
+  '@react-aria/interactions@3.26.0':
+    resolution: {integrity: sha512-AAEcHiltjfbmP1i9iaVw34Mb7kbkiHpYdqieWufldh4aplWgsF11YQZOfaCJW4QoR2ML4Zzoa9nfFwLXA52R7Q==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
       react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
@@ -1331,8 +1331,8 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
 
-  '@react-aria/utils@3.31.0':
-    resolution: {integrity: sha512-ABOzCsZrWzf78ysswmguJbx3McQUja7yeGj6/vZo4JVsZNlxAN+E9rs381ExBRI0KzVo6iBTeX5De8eMZPJXig==}
+  '@react-aria/utils@3.32.0':
+    resolution: {integrity: sha512-/7Rud06+HVBIlTwmwmJa2W8xVtgxgzm0+kLbuFooZRzKDON6hhozS1dOMR/YLMxyJOaYOTpImcP4vRR9gL1hEg==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
       react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
@@ -1374,8 +1374,8 @@ packages:
   '@react-stately/flags@3.1.2':
     resolution: {integrity: sha512-2HjFcZx1MyQXoPqcBGALwWWmgFVUk2TuKVIQxCbRq7fPyWXIl6VHcakCLurdtYC2Iks7zizvz0Idv48MQ38DWg==}
 
-  '@react-stately/utils@3.10.8':
-    resolution: {integrity: sha512-SN3/h7SzRsusVQjQ4v10LaVsDc81jyyR0DD5HnsQitm/I5WDpaSr2nRHtyloPFU48jlql1XX/S04T2DLQM7Y3g==}
+  '@react-stately/utils@3.11.0':
+    resolution: {integrity: sha512-8LZpYowJ9eZmmYLpudbo/eclIRnbhWIJZ994ncmlKlouNzKohtM8qTC6B1w1pwUbiwGdUoyzLuQbeaIor5Dvcw==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
 
@@ -1521,9 +1521,6 @@ packages:
       react: '>=18.3.1 <20.0.0'
       react-dom: '>=18.3.1 <20.0.0'
 
-  '@tinacms/graphql@2.0.2':
-    resolution: {integrity: sha512-Ym65gpKFIcsFQ2l3cl3FWHVoyMSqeXy4C0On9/O9QKPWQ0S9mM9EG8Ys1Gsok7/PkEjoGTN1Cw/GqBwNtcVxpQ==}
-
   '@tinacms/graphql@2.0.3':
     resolution: {integrity: sha512-tzLLs0Ou/UATv3ZiIklG8hBfF4QEopnLnqWjh7CBBh/T6gAX8L/L0m/antH139ejH7S3/wL+K72QWnvmTHjTZw==}
 
@@ -1540,9 +1537,6 @@ packages:
     peerDependencies:
       react: '>=16.14.0'
       yup: ^1.0.0
-
-  '@tinacms/search@1.1.6':
-    resolution: {integrity: sha512-83NzXaPs8FkPHlXXddcMXHS054p3tUvVVwoYNWgh2vq2NTCkl2ZmxHFK8ZIuy7otB92NVD5ZtgDy8dJoieaSIQ==}
 
   '@tinacms/search@1.1.7':
     resolution: {integrity: sha512-MxR40yY8fs0bl/1lVFcQy+vEU3ehlPKvOUQMuP83J2zLNkahrbSGySDgwNf1GG3sMhLgTo68MzX4IB+gYYh8OA==}
@@ -3632,8 +3626,8 @@ packages:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
     engines: {node: '>=10'}
 
-  lodash-es@4.17.21:
-    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
+  lodash-es@4.17.22:
+    resolution: {integrity: sha512-XEawp1t0gxSi9x01glktRZ5HDy0HXqrM0x5pXQM98EaI0NxO6jVM7omDOxsuEo5UIASAnm2bRp1Jt/e0a2XU8Q==}
 
   lodash.mapvalues@4.6.0:
     resolution: {integrity: sha512-JPFqXFeZQ7BfS00H58kClY7SPVeHertPE0lNuCyZ26/XlN8TvakYD7b9bGyNmXbT/D3BbtPAAmq90gPWqLkxlQ==}
@@ -4433,12 +4427,6 @@ packages:
       moment: ^2.16.0
       react: ^16.5.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  react-day-picker@9.12.0:
-    resolution: {integrity: sha512-t8OvG/Zrciso5CQJu5b1A7yzEmebvST+S3pOVQJWxwjjVngyG/CA2htN/D15dLI4uTEuLLkbZyS4YYt480FAtA==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      react: '>=16.8.0'
-
   react-day-picker@9.13.0:
     resolution: {integrity: sha512-euzj5Hlq+lOHqI53NiuNhCP8HWgsPf/bBAVijR50hNaY1XwjKjShAnIe8jm8RD2W9IJUvihDIZ+KrmqfFzNhFQ==}
     engines: {node: '>=18'}
@@ -5029,12 +5017,6 @@ packages:
   throttle-debounce@3.0.1:
     resolution: {integrity: sha512-dTEWWNu6JmeVXY0ZYoPuH5cRIwc0MeGbJwah9KUNYSJwommQpCzTySTpEe8Gs1J23aeWEuAobe4Ag7EHVt/LOg==}
     engines: {node: '>=10'}
-
-  tinacms@3.1.0:
-    resolution: {integrity: sha512-cA4b8EF9ov0ZAUFz2St8HwYLS12DO143HFadufezuvYOxrQ9uDzN+zW30zzfSEKdliVZBDFUJMtePKj1j840Jg==}
-    peerDependencies:
-      react: '>=16.14.0'
-      react-dom: '>=16.14.0'
 
   tinacms@3.1.2:
     resolution: {integrity: sha512-PoI6Exm8R8iNdOuMk1rhVbGat2TbC7NjZQW9gfcI+1tTDwdpwIzcSDjVlAezZ70XplhnccuJM6m8mSA8zZTyuw==}
@@ -6126,8 +6108,8 @@ snapshots:
   '@headlessui/react@2.1.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@floating-ui/react': 0.26.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@react-aria/focus': 3.21.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@react-aria/interactions': 3.25.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-aria/focus': 3.21.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-aria/interactions': 3.26.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@tanstack/react-virtual': 3.13.13(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -6715,20 +6697,20 @@ snapshots:
 
   '@radix-ui/rect@1.1.1': {}
 
-  '@react-aria/focus@3.21.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@react-aria/focus@3.21.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@react-aria/interactions': 3.25.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@react-aria/utils': 3.31.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-aria/interactions': 3.26.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-aria/utils': 3.32.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-types/shared': 3.32.1(react@18.3.1)
       '@swc/helpers': 0.5.17
       clsx: 2.1.1
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@react-aria/interactions@3.25.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@react-aria/interactions@3.26.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@react-aria/ssr': 3.9.10(react@18.3.1)
-      '@react-aria/utils': 3.31.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-aria/utils': 3.32.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-stately/flags': 3.1.2
       '@react-types/shared': 3.32.1(react@18.3.1)
       '@swc/helpers': 0.5.17
@@ -6740,11 +6722,11 @@ snapshots:
       '@swc/helpers': 0.5.17
       react: 18.3.1
 
-  '@react-aria/utils@3.31.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@react-aria/utils@3.32.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@react-aria/ssr': 3.9.10(react@18.3.1)
       '@react-stately/flags': 3.1.2
-      '@react-stately/utils': 3.10.8(react@18.3.1)
+      '@react-stately/utils': 3.11.0(react@18.3.1)
       '@react-types/shared': 3.32.1(react@18.3.1)
       '@swc/helpers': 0.5.17
       clsx: 2.1.1
@@ -6786,7 +6768,7 @@ snapshots:
     dependencies:
       '@swc/helpers': 0.5.17
 
-  '@react-stately/utils@3.10.8(react@18.3.1)':
+  '@react-stately/utils@3.11.0(react@18.3.1)':
     dependencies:
       '@swc/helpers': 0.5.17
       react: 18.3.1
@@ -7048,7 +7030,7 @@ snapshots:
       - use-sync-external-store
       - yaml
 
-  '@tinacms/graphql@2.0.2(react@18.3.1)(typescript@5.5.2)':
+  '@tinacms/graphql@2.0.3(react@18.3.1)(typescript@5.5.2)':
     dependencies:
       '@iarna/toml': 2.2.5
       '@tinacms/mdx': 2.0.1(react@18.3.1)(typescript@5.5.2)(yup@1.7.1)
@@ -7190,9 +7172,9 @@ snapshots:
       yup: 1.7.1
       zod: 3.25.76
 
-  '@tinacms/search@1.1.6(abstract-level@1.0.4)(react@18.3.1)(sucrase@3.35.1)(typescript@5.5.2)(yup@1.7.1)':
+  '@tinacms/search@1.1.7(abstract-level@1.0.4)(react@18.3.1)(sucrase@3.35.1)(typescript@5.5.2)(yup@1.7.1)':
     dependencies:
-      '@tinacms/graphql': 2.0.2(react@18.3.1)(typescript@5.5.2)
+      '@tinacms/graphql': 2.0.3(react@18.3.1)(typescript@5.5.2)
       '@tinacms/schema-tools': 2.1.0(react@18.3.1)(yup@1.7.1)
       memory-level: 1.0.0
       search-index: 4.0.0(abstract-level@1.0.4)
@@ -8284,7 +8266,7 @@ snapshots:
   dagre-d3-es@7.0.6:
     dependencies:
       d3: 7.9.0
-      lodash-es: 4.17.21
+      lodash-es: 4.17.22
 
   damerau-levenshtein@1.0.8: {}
 
@@ -9663,7 +9645,7 @@ snapshots:
     dependencies:
       p-locate: 5.0.0
 
-  lodash-es@4.17.21: {}
+  lodash-es@4.17.22: {}
 
   lodash.mapvalues@4.6.0: {}
 
@@ -9934,7 +9916,7 @@ snapshots:
       dagre-d3-es: 7.0.6
       dompurify: 2.4.1
       khroma: 2.1.0
-      lodash-es: 4.17.21
+      lodash-es: 4.17.22
       moment-mini: 2.29.4
       non-layered-tidy-tree-layout: 2.0.2
       stylis: 4.3.6
@@ -10733,13 +10715,6 @@ snapshots:
       prop-types: 15.8.1
       react: 18.3.1
 
-  react-day-picker@9.12.0(react@18.3.1):
-    dependencies:
-      '@date-fns/tz': 1.4.1
-      date-fns: 4.1.0
-      date-fns-jalali: 4.1.0-0
-      react: 18.3.1
-
   react-day-picker@9.13.0(react@18.3.1):
     dependencies:
       '@date-fns/tz': 1.4.1
@@ -11487,7 +11462,7 @@ snapshots:
 
   throttle-debounce@3.0.1: {}
 
-  tinacms@3.1.0(@types/react@19.2.6)(abstract-level@1.0.4)(immer@10.2.0)(react-dnd-html5-backend@16.0.1)(react-dnd@16.0.1(@types/hoist-non-react-statics@3.3.7(@types/react@19.2.6))(@types/node@22.1.0)(@types/react@19.2.6)(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(scheduler@0.23.2)(slate-dom@0.114.0(slate@0.114.0))(slate@0.114.0)(sucrase@3.35.1)(typescript@5.5.2)(use-sync-external-store@1.6.0(react@18.3.1)):
+  tinacms@3.1.2(@types/react@19.2.6)(abstract-level@1.0.4)(immer@10.2.0)(react-dnd-html5-backend@16.0.1)(react-dnd@16.0.1(@types/hoist-non-react-statics@3.3.7(@types/react@19.2.6))(@types/node@22.1.0)(@types/react@19.2.6)(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(scheduler@0.23.2)(slate-dom@0.114.0(slate@0.114.0))(slate@0.114.0)(sucrase@3.35.1)(typescript@5.5.2)(use-sync-external-store@1.6.0(react@18.3.1)):
     dependencies:
       '@ariakit/react': 0.4.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@dnd-kit/core': 6.3.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -11511,7 +11486,7 @@ snapshots:
       '@react-hook/window-size': 3.1.1(react@18.3.1)
       '@tinacms/mdx': 2.0.1(react@18.3.1)(typescript@5.5.2)(yup@1.7.1)
       '@tinacms/schema-tools': 2.1.0(react@18.3.1)(yup@1.7.1)
-      '@tinacms/search': 1.1.6(abstract-level@1.0.4)(react@18.3.1)(sucrase@3.35.1)(typescript@5.5.2)(yup@1.7.1)
+      '@tinacms/search': 1.1.7(abstract-level@1.0.4)(react@18.3.1)(sucrase@3.35.1)(typescript@5.5.2)(yup@1.7.1)
       '@udecode/cmdk': 0.2.2(@types/react@19.2.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@udecode/cn': 48.0.3(@types/react@19.2.6)(class-variance-authority@0.7.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwind-merge@2.6.0)
       '@udecode/plate': 48.0.5(@types/react@19.2.6)(immer@10.2.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(scheduler@0.23.2)(slate-dom@0.114.0(slate@0.114.0))(slate@0.114.0)(use-sync-external-store@1.6.0(react@18.3.1))
@@ -11560,7 +11535,7 @@ snapshots:
       react: 18.3.1
       react-colorful: 5.6.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-datetime: 3.3.1(moment@2.29.4)(react@18.3.1)
-      react-day-picker: 9.12.0(react@18.3.1)
+      react-day-picker: 9.13.0(react@18.3.1)
       react-dom: 18.3.1(react@18.3.1)
       react-dropzone: 14.2.3(react@18.3.1)
       react-final-form: 6.5.9(final-form@4.20.10)(react@18.3.1)
