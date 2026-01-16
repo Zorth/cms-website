@@ -1,4 +1,3 @@
-"use client";
 import './homepage.css';
 import Link from "next/link";
 import { client } from "../tina/__generated__/client";
