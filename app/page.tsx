@@ -21,12 +21,16 @@ export default function Home() {
             const yesterday = new Date();
             yesterday.setDate(yesterday.getDate() - 1);
 
+            const threeWeeksLater = new Date(yesterday);
+            threeWeeksLater.setDate(yesterday.getDate() + 21);
+
             // Fetch and filter events within the date range
             const eventsResult = await client.queries.eventConnection({
                 sort: "date",
                 filter: {
                     date: {
-                        after: yesterday.toISOString()
+                        after: yesterday.toISOString(),
+                        before: threeWeeksLater.toISOString()
                     }
                 }
             });
