@@ -28,11 +28,19 @@ export default function Event(props : ClientPageProps) {
         <div data-tina-field={tinaField(data.event, "body")}>
             <TinaMarkdown content={data.event.body} />
         </div>
-        {/* codeblock preview raw event data for debugging
-        <pre>
-          {JSON.stringify(data.event, null, 2)}
-        </pre>
-        */}
+        {data.event.signupUrl && (
+          <div className="signup-container">
+            <a 
+              href={data.event.signupUrl} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="signup-button"
+              data-tina-field={tinaField(data.event, "signupUrl")}
+            >
+              Sign Up for this Event
+            </a>
+          </div>
+        )}
       </div>
     );
   }

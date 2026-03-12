@@ -24,6 +24,11 @@
                 name: "body",
                 isBody: true,
             },
+            {
+                type: "string",
+                label: "Sign-up URL",
+                name: "signupUrl",
+            },
         ],
         ui: {
             router: ({ document }) => {
