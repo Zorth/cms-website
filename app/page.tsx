@@ -1,5 +1,6 @@
 import './homepage.css';
 import Link from "next/link";
+import Image from 'next/image';
 import { client } from "../tina/__generated__/client";
 import EventList from "./event-list";
 import SponsorList from './sponsor-list';
@@ -69,13 +70,28 @@ function Featurettes(props) {
         return <></>;
     }
     return (
-        props.data.pageConnection.edges
-            .map((page: PageConnectionEdges) => (
-                <Link href={`/${page.node?._sys.filename}`} key={page.node?.id} className="page-snippet">
-                    <div>
-                        <TinaMarkdown content={page.node?.snippet} />
-                    </div>
-                </Link>
-            )));
+        <div className="featurettes-container">
+            {props.data.pageConnection.edges
+                .map((page: PageConnectionEdges) => (
+                    <Link href={`/${page.node?._sys.filename}`} key={page.node?.id} className="page-snippet">
+                        {page.node?.icon && (
+                            <div className="page-snippet-icon-wrapper">
+                                <Image 
+                                    src={page.node.icon} 
+                                    alt={page.node.title} 
+                                    width={80} 
+                                    height={80} 
+                                    className="page-snippet-icon"
+                                />
+                            </div>
+                        )}
+                        <div className="page-snippet-content">
+                            <TinaMarkdown content={page.node?.snippet} />
+                            <span className="page-snippet-more">Explore more →</span>
+                        </div>
+                    </Link>
+                ))}
+        </div>
+    );
 }
 

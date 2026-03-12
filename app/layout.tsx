@@ -10,8 +10,42 @@ import client from '../tina/__generated__/client';
 import HeaderPages from './headerpages';
 
 // Import local Fonts
-const Rockwell = localFont({ src: './fonts/Rockwell.woff2' })
-const ORunde = localFont({ src: './fonts/OpenRunde-Bold.woff2' })
+const Rockwell = localFont({
+    src: [
+        {
+            path: './fonts/Rockwell.woff2',
+            weight: '700',
+            style: 'normal',
+        },
+    ],
+    variable: '--font-rockwell',
+})
+
+const ORunde = localFont({
+    src: [
+        {
+            path: './fonts/OpenRunde-Regular.woff2',
+            weight: '400',
+            style: 'normal',
+        },
+        {
+            path: './fonts/OpenRunde-Medium.woff2',
+            weight: '500',
+            style: 'normal',
+        },
+        {
+            path: './fonts/OpenRunde-Semibold.woff2',
+            weight: '600',
+            style: 'normal',
+        },
+        {
+            path: './fonts/OpenRunde-Bold.woff2',
+            weight: '700',
+            style: 'normal',
+        },
+    ],
+    variable: '--font-orunde',
+})
 
 
 export default async function RootLayout({
@@ -23,33 +57,34 @@ export default async function RootLayout({
     const pages = await client.queries.pageConnection({ filter: { enabled: { eq: true } } });
 
     return (
-        <html lang="en" className={ORunde.className}>
+        <html lang="en" className={`${Rockwell.variable} ${ORunde.variable}`}>
             <head>
                 <title>Tarragon</title>
             </head>
-            <body >
+            <body>
                 <header>
-                    <Link href="/"><div style={{ 'display': 'flex', 'alignItems': 'center' }}>
+                    <Link href="/" className="header-logo">
                         <Image
                             src={TarragonTiny}
                             alt="Tarragon Logo"
+                            className="header-img"
                         />
                         <Image
                             src={TarragonTitle}
                             alt="Tarragon Text"
                             className="TarragonTitle"
                         />
-                    </div></Link>
-                    {/* <Link href="/#Events"><h1>Events</h1></Link> */}
-                    <HeaderPages  {...pages} />
-                    <Link href="https://discord.com/invite/TjDUu2Gkag"><h2>Discord</h2></Link>
+                    </Link>
+                    <HeaderPages {...pages} />
+                    <Link href="https://discord.com/invite/TjDUu2Gkag" className="discord-link">
+                        <h2>Discord</h2>
+                    </Link>
                 </header>
-                <main style={{ margin: "3rem", }} >
-                    <div className="padder" />
-                    {children}</main>
+                <div className="padder"></div>
+                <main className="main-wrapper">
+                    {children}
+                </main>
             </body>
         </html>
     );
 }
-
-
