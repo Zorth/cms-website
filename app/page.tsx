@@ -41,6 +41,16 @@ export default async function Home() {
                     <span className="badge">English & Dutch</span>
                     <span className="badge">Free Entry</span>
                 </div>
+                <div className="quick-links">
+                    <Link href="https://guild.tarragon.be" className="quick-link-item">
+                        <span className="quick-link-icon">⚔️</span>
+                        <span>Guild Planning Tool</span>
+                    </Link>
+                    <Link href="https://void.tarragon.be" className="quick-link-item">
+                        <span className="quick-link-icon">📜</span>
+                        <span>Void Wiki</span>
+                    </Link>
+                </div>
             </div>
             <div className="eventbox">
                 <h1>Upcoming Events:</h1>

@@ -18,6 +18,11 @@
         gap: 1rem;
         width: 100%;
     }
+
+    .quick-links {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
 }
 
 /* Info Box */
@@ -51,6 +56,39 @@
     border-radius: 2rem;
     font-size: 0.85rem;
     font-weight: 600;
+}
+
+.quick-links {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.quick-link-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: var(--light);
+    font-weight: 600;
+    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.quick-link-item:hover {
+    background: rgba(151, 183, 142, 0.1);
+    border-color: var(--secondary);
+    transform: translateY(-2px);
+    color: var(--secondary);
+}
+
+.quick-link-icon {
+    font-size: 1.25rem;
 }
 
 .location-link {
