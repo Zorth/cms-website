@@ -98,7 +98,7 @@ function Featurettes(props) {
                             <div className="page-snippet-icon-wrapper">
                                 <Image 
                                     src={page.node.icon} 
-                                    alt={page.node.title} 
+                                    alt={page.node?.title || ""} 
                                     width={80} 
                                     height={80} 
                                     className="page-snippet-icon"
