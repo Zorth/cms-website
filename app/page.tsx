@@ -9,6 +9,8 @@ import { TinaMarkdown } from "tinacms/dist/rich-text";
 import { PageConnectionEdges } from '../tina/__generated__/types';
 import DragonList from './dragon-list';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
 
 
@@ -16,7 +18,7 @@ export default async function Home() {
     const yest = new Date();
     yest.setDate(yest.getDate() - 1);
 
-    const events = await client.queries.eventConnection({ sort: "date", filter: { date: { after: yest.toString() } } });
+    const events = await client.queries.eventConnection({ sort: "date", filter: { date: { after: yest.toISOString() } } });
     const sponsors = await client.queries.sponsorConnection();
     const pages = await client.queries.pageConnection({ filter: { enabled: { eq: true } } });
     const dragons = await client.queries.dragonConnection();
