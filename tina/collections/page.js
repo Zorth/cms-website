@@ -5,6 +5,13 @@ export default {
     format: "mdx",
     fields: [
         {
+            name: "title",
+            label: "Title",
+            type: "string",
+            isTitle: true,
+            required: true,
+        },
+        {
             name: "body",
             label: "Main Content",
             type: "rich-text",
