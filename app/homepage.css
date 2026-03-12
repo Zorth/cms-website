@@ -58,14 +58,6 @@
     font-weight: 600;
 }
 
-.quick-links {
-    display: flex;
-    gap: 1.5rem;
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
 .quick-link-item {
     display: flex;
     align-items: center;
@@ -217,7 +209,7 @@
 .featurettes-container {
     grid-column: span 12;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: 1.5rem;
     margin: 1rem 0;
 }
@@ -228,13 +220,12 @@
     border-radius: 1.25rem;
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 2rem;
     text-decoration: none;
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     border: 1px solid rgba(255, 255, 255, 0.1);
     position: relative;
     overflow: hidden;
-    min-height: 140px;
 }
 
 .page-snippet::before {
@@ -250,7 +241,7 @@
 }
 
 .page-snippet:hover {
-    transform: translateY(-5px) scale(1.02);
+    transform: translateY(-5px) scale(1.01);
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3), 0 0 15px rgba(151, 183, 142, 0.2);
     border-color: var(--secondary);
 }
@@ -282,11 +273,12 @@
     flex-direction: column;
     justify-content: center;
     z-index: 1;
+    flex-grow: 1;
 }
 
 .page-snippet-content p {
     color: var(--light_light);
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 500;
     margin: 0;
     line-height: 1.4;
@@ -319,6 +311,16 @@
         width: 2.5rem;
         height: 2.5rem;
     }
+}
+
+.quick-links {
+    grid-column: span 12;
+    display: flex;
+    gap: 1.5rem;
+    margin: 1.5rem 0 2rem 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    justify-content: center;
 }
 
 /* Kobold Box (Sponsors) */
