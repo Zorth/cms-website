@@ -21,6 +21,11 @@
     box-sizing: border-box;
 }
 
+*:focus-visible {
+    outline: 2px solid var(--secondary);
+    outline-offset: 4px;
+}
+
 html, body {
     font-family: var(--font-orunde), sans-serif;
     background-color: var(--darker);

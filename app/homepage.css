@@ -33,6 +33,34 @@
 .infobox h1 {
     text-align: left;
     margin-bottom: 1rem;
+    color: var(--secondary);
+}
+
+.welcome-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.badge {
+    background: rgba(151, 183, 142, 0.1);
+    color: var(--secondary);
+    border: 1px solid var(--secondary);
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.location-link {
+    color: var(--primary_light);
+    text-decoration: underline;
+    font-weight: 700;
+}
+
+.location-link:hover {
+    color: var(--primary);
 }
 
 .infobox p {

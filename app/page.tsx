@@ -30,9 +30,17 @@ export default async function Home() {
     return (
         <div className="container">
             <div className="infobox">
-                <h1>What is Tarragon?</h1>
-                <p>We organize events for new & experienced tabletop geeks. Whether you’re a board game veteran or want to get into D&D, we’ve got something for you!<br /><br />
-                    We meet <b>every Wednesday</b> from 19:00 to 22:00 @ <Link href='https://maps.app.goo.gl/FVc87bcAtS4VVuip8'>Het Textielhuis</Link> (Rijselsestraat 19, 8500 Kortrijk)</p>
+                <h1>Welcome to the Table!</h1>
+                <p>
+                    We organize weekly events for tabletop geeks in <b>Kortrijk</b>. Whether you’re a board game veteran or have never touched a 20-sided die, you’ll find a seat at our table. 
+                    <br /><br />
+                    We meet <b>every Wednesday</b> from 19:00 to 22:00 @ <Link href='https://maps.app.goo.gl/FVc87bcAtS4VVuip8' className="location-link">Het Textielhuis (Rijselsestraat 19)</Link>.
+                </p>
+                <div className="welcome-badges">
+                    <span className="badge">Beginners Welcome</span>
+                    <span className="badge">English & Dutch</span>
+                    <span className="badge">Free Entry</span>
+                </div>
             </div>
             <div className="eventbox">
                 <h1>Upcoming Events:</h1>
