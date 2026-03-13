@@ -158,10 +158,12 @@ header {
 
 .discord-link {
     justify-self: end;
-    display: flex;
+    display: inline-flex;
     align-items: center;
+    gap: 0.35rem;
     color: var(--secondary);
     transition: all 0.2s ease;
+    vertical-align: middle;
 }
 
 .discord-link:hover {

@@ -8,6 +8,7 @@ import SponsorList from './sponsor-list';
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import { PageConnectionEdges } from '../tina/__generated__/types';
 import DragonList from './dragon-list';
+import DiscordIcon from '../public/images/discord-icon.svg';
 
 export const dynamic = 'force-dynamic';
 
@@ -50,6 +51,17 @@ export default async function Home() {
             </div>
             <Featurettes {...pages} />
             <div className="quick-links">
+                <Link href="https://discord.com/invite/TjDUu2Gkag" className="quick-link-item">
+                    <span className="quick-link-icon" style={{ display: 'flex', alignItems: 'center' }}>
+                        <Image 
+                            src={DiscordIcon}
+                            alt="Discord"
+                            width={24}
+                            height={24}
+                        />
+                    </span>
+                    <span>Join our Discord</span>
+                </Link>
                 <Link href="https://guild.tarragon.be" className="quick-link-item">
                     <span className="quick-link-icon">⚔️</span>
                     <span>Guild Planning Tool</span>
