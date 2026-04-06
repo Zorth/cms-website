@@ -19,7 +19,11 @@ export default async function Home() {
     const yest = new Date();
     yest.setDate(yest.getDate() - 1);
 
-    const events = await client.queries.eventConnection({ sort: "date", filter: { date: { after: yest.toISOString() } } });
+    const events = await client.queries.eventConnection({ 
+        sort: "date", 
+        filter: { date: { after: yest.toISOString() } },
+        first: 100 
+    });
     const sponsors = await client.queries.sponsorConnection();
     const pages = await client.queries.pageConnection({ filter: { enabled: { eq: true } } });
     const dragons = await client.queries.dragonConnection();
@@ -45,10 +49,7 @@ export default async function Home() {
                     <span className="badge">Free Entry</span>
                 </div>
             </div>
-            <div className="eventbox">
-                <h1>Upcoming Events:</h1>
-                <EventList {...events} />
-            </div>
+            <EventList {...events} />
             <Featurettes {...pages} />
             <div className="quick-links">
                 <Link href="https://discord.com/invite/TjDUu2Gkag" className="quick-link-item">
