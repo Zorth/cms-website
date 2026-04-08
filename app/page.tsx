@@ -25,7 +25,13 @@ export default async function Home() {
         first: 100 
     });
     const sponsors = await client.queries.sponsorConnection();
-    const pages = await client.queries.pageConnection({ filter: { enabled: { eq: true } } });
+    const pages = await client.queries.pageConnection({ 
+        filter: { 
+            enabled: { eq: true },
+            language: { eq: "nl" }
+        },
+        sort: "weight"
+    });
     const dragons = await client.queries.dragonConnection();
 
     // this should be moved into a client page in order to make editable, what do we want editable?

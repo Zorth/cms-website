@@ -23,6 +23,12 @@ export default {
             type: "boolean",
         },
         {
+            name: "weight",
+            label: "Order Weight",
+            type: "number",
+            description: "Lower numbers appear first.",
+        },
+        {
             name: "snippet",
             label: "Snippet",
             type: "rich-text",
