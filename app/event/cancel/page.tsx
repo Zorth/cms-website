@@ -51,7 +51,7 @@ function CancelContent() {
           <CheckCircle2 size={48} color="var(--secondary)" />
           <h2>Registration Cancelled</h2>
           <p>{message}</p>
-          <p>We're sorry you can't make it, but thank you for letting us know!</p>
+          <p>We&apos;re sorry you can&apos;t make it, but thank you for letting us know!</p>
           <Link href="/" className="back-link">
             <ArrowLeft size={18} /> Back to Homepage
           </Link>
