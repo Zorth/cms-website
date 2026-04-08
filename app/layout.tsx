@@ -9,6 +9,7 @@ import TarragonTitle from "../public/images/Tarragon_Title.svg";
 import DiscordIcon from "../public/images/discord-icon.svg";
 import client from '../tina/__generated__/client';
 import HeaderPages from './headerpages';
+import ConvexClientProvider from './ConvexClientProvider';
 
 // Import local Fonts
 const Rockwell = localFont({
@@ -89,7 +90,9 @@ export default async function RootLayout({
                 </header>
                 <div className="padder"></div>
                 <main className="main-wrapper">
-                    {children}
+                    <ConvexClientProvider>
+                        {children}
+                    </ConvexClientProvider>
                 </main>
             </body>
         </html>

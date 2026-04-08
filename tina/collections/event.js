@@ -29,6 +29,26 @@
                 label: "Sign-up URL",
                 name: "signupUrl",
             },
+            {
+                type: "object",
+                label: "Groups",
+                name: "groups",
+                list: true,
+                fields: [
+                    {
+                        type: "string",
+                        label: "Name",
+                        name: "name",
+                        required: true,
+                    },
+                    {
+                        type: "number",
+                        label: "Max Slots",
+                        name: "maxSlots",
+                        required: true,
+                    },
+                ],
+            },
         ],
         ui: {
             router: ({ document }) => {

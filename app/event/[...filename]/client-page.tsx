@@ -2,6 +2,7 @@
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import { tinaField, useTina } from "tinacms/dist/react";
 import { EventQuery } from "../../../tina/__generated__/types";
+import SignupSystem from "../signup-system";
 
 interface ClientPageProps {
   query: string;
@@ -28,6 +29,13 @@ export default function Event(props : ClientPageProps) {
         <div data-tina-field={tinaField(data.event, "body")}>
             <TinaMarkdown content={data.event.body} />
         </div>
+
+        <SignupSystem 
+          eventSlug={props.variables.relativePath}
+          eventTitle={data.event.title}
+          groups={data.event.groups as any || []}
+        />
+
         {data.event.signupUrl && (
           <div className="signup-container">
             <a 
