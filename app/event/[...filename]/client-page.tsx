@@ -31,8 +31,8 @@ export default function Event(props : ClientPageProps) {
         </div>
 
         <SignupSystem 
-          eventSlug={props.variables.relativePath}
-          eventTitle={data.event.title}
+          eventSlug={props.variables.relativePath || ""}
+          eventTitle={data.event.title || "Tarragon Event"}
           groups={data.event.groups as any || []}
         />
 
