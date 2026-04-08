@@ -19,6 +19,6 @@ export default function Custom404()
                     height={20}
                 />
                 Discord
-            </Link> or send us an e-mail at <Link href="mailto:tarragonvzw@gmail.com">TarragonVZW@gmail.com</Link>
+            </Link> or send us an e-mail at <Link href="mailto:contact@tarragon.be">contact@tarragon.be</Link>
             </div>)
 }

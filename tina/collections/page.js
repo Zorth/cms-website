@@ -31,6 +31,36 @@ export default {
             name: "icon",
             label: "Icon",
             type: "image",
+        },
+        {
+            name: "iconName",
+            label: "Lucide Icon Name",
+            type: "string",
+            options: [
+                { label: "Dices", value: "Dices" },
+                { label: "Sparkles", value: "Sparkles" },
+                { label: "Calendar", value: "Calendar" },
+                { label: "Map", value: "Map" },
+                { label: "Users", value: "Users" },
+                { label: "Book", value: "Book" },
+                { label: "Sword", value: "Sword" },
+                { label: "Gamepad", value: "Gamepad" },
+            ],
+        },
+        {
+            name: "language",
+            label: "Language",
+            type: "string",
+            options: [
+                { label: "Dutch", value: "nl" },
+                { label: "English", value: "en" },
+            ],
+        },
+        {
+            name: "translation",
+            label: "Translation Page",
+            type: "reference",
+            collections: ["page"],
         }
     ],
     ui: {

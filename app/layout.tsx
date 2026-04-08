@@ -56,7 +56,12 @@ export default async function RootLayout({
     children: React.ReactNode;
 }) {
 
-    const pages = await client.queries.pageConnection({ filter: { enabled: { eq: true } } });
+    const pages = await client.queries.pageConnection({ 
+        filter: { 
+            enabled: { eq: true },
+            language: { eq: "nl" }
+        } 
+    });
 
     return (
         <html lang="en" className={`${Rockwell.variable} ${ORunde.variable}`}>

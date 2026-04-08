@@ -87,7 +87,7 @@ export default async function Home() {
                     8500 Kortrijk  
                     BE 0799.673.542  
                     RPR  
-                    tarragonvzw@gmail.com  
+                    contact@tarragon.be  
                     www.tarragon.be<br/>
                     Copyright 2024 Tarragon VZW, All rights reserved<br/><br/>
                     <Link href="/ToS">Membership ToS</Link>

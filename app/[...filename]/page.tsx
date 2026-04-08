@@ -2,7 +2,9 @@ import PagePage from "./client-page";
 import client from "../../tina/__generated__/client";
 
 export async function generateStaticParams() {
-    const pages = await client.queries.pageConnection();
+    const pages = await client.queries.pageConnection({
+        filter: { enabled: { eq: true } }
+    });
     const paths = pages.data?.pageConnection?.edges?.map((edge) => ({
         filename: edge?.node?._sys.breadcrumbs,
     }));
