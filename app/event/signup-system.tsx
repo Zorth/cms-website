@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { User, Mail, CheckCircle2, Loader2 } from "lucide-react";
@@ -30,7 +30,7 @@ export default function SignupSystem({
 
   if (!groups || groups.length === 0) return null;
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!selectedGroup) return;
 
@@ -139,7 +139,7 @@ export default function SignupSystem({
           <CheckCircle2 size={48} color="var(--secondary)" />
           <h3>Registration Successful!</h3>
           <p>
-            You've been signed up for <strong>{selectedGroup}</strong>. A confirmation email has
+            You&apos;ve been signed up for <strong>{selectedGroup}</strong>. A confirmation email has
             been sent to your inbox.
           </p>
           <button onClick={() => setSuccess(false)} className="submit-button">
