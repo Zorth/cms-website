@@ -1,17 +1,11 @@
 import './global.css';
-import Link from "next/link";
 import React from "react";
 import localFont from 'next/font/local';
-import Image from 'next/image';
 import { Metadata } from 'next';
 
-import TarragonTiny from "../public/images/Tarragon_Tiny.svg";
-import TarragonTitle from "../public/images/Tarragon_Title.svg";
-import DiscordIcon from "../public/images/discord-icon.svg";
 import client from '../tina/__generated__/client';
-import HeaderPages from './headerpages';
+import Header from './Header';
 import ConvexClientProvider from './ConvexClientProvider';
-import { Globe } from 'lucide-react';
 
 // Import local Fonts
 const Rockwell = localFont({
@@ -74,22 +68,18 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
     children,
-    params,
 }: {
     children: React.ReactNode;
-    params: { locale: string };
 }) {
-    const locale = params.locale || 'nl';
-
+    // Fetch ALL enabled pages so the client-side Header can filter them by locale
     const pages = await client.queries.pageConnection({ 
         filter: { 
-            enabled: { eq: true },
-            language: { eq: locale }
+            enabled: { eq: true }
         } 
     });
 
     return (
-        <html lang={locale} className={`${Rockwell.variable} ${ORunde.variable}`}>
+        <html className={`${Rockwell.variable} ${ORunde.variable}`}>
             <head>
                 <script
                     type="application/ld+json"
@@ -115,36 +105,7 @@ export default async function RootLayout({
                 />
             </head>
             <body>
-                <header>
-                    <Link href={`/${locale}`} className="header-logo">
-                        <Image
-                            src={TarragonTiny}
-                            alt="Tarragon Logo"
-                            className="header-img"
-                        />
-                        <Image
-                            src={TarragonTitle}
-                            alt="Tarragon Title"
-                            className="header-title"
-                        />
-                    </Link>
-                    <HeaderPages data={pages.data} locale={locale} />
-                    <div className="header-right">
-                        <Link href={locale === 'nl' ? '/en' : '/nl'} className="lang-toggle">
-                            <Globe size={20} />
-                            <span>{locale === 'nl' ? 'EN' : 'NL'}</span>
-                        </Link>
-                        <Link href="https://discord.com/invite/TjDUu2Gkag" className="discord-link">
-                            <Image
-                                src={DiscordIcon}
-                                alt="Discord"
-                                width={32}
-                                height={32}
-                                className="header-nav-icon"
-                            />
-                        </Link>
-                    </div>
-                </header>
+                <Header pagesData={pages.data} />
                 <div className="padder"></div>
                 <main className="main-wrapper">
                     <ConvexClientProvider>

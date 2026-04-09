@@ -7,16 +7,18 @@ export default function HeaderPages(props: any) {
     const locale = props.locale || 'nl';
     return (
         <nav className="header-nav">
-            {props.data.pageConnection.edges.map((page: any) => {
-                const IconComponent = page.node?.iconName ? (LucideIcons as any)[page.node.iconName] as LucideIcon : null;
+            {props.data.pageConnection.edges
+                .filter((page: any) => page.node?.language === locale)
+                .map((page: any) => {
+                    const IconComponent = page.node?.iconName ? (LucideIcons as any)[page.node.iconName] as LucideIcon : null;
 
-                return (
-                    <Link 
-                        key={page.node?.id} 
-                        href={`/${locale}/${page.node?._sys.filename}`}
-                        className="header-nav-link"
-                        title={page.node?.title || ""}
-                    >
+                    return (
+                        <Link 
+                            key={page.node?.id} 
+                            href={`/${locale}/${page.node?._sys.filename}`}
+                            className="header-nav-link"
+                            title={page.node?.title || ""}
+                        >
                         {page.node?.icon ? (
                             <Image
                                 src={page.node.icon}
