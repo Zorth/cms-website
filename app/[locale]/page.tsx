@@ -29,13 +29,26 @@ export default async function Home({ params }: { params: { locale: string } }) {
         first: 100 
     });
     const sponsors = await client.queries.sponsorConnection();
-    const pages = await client.queries.pageConnection({ 
+    const pagesResponse = await client.queries.pageConnection({ 
         filter: { 
-            enabled: { eq: true },
-            language: { eq: locale }
-        } as any,
-        sort: "weight"
+            enabled: { eq: true }
+        }
     });
+
+    // Filter by language and sort by weight in JS
+    const filteredPages = {
+        ...pagesResponse,
+        data: {
+            ...pagesResponse.data,
+            pageConnection: {
+                ...pagesResponse.data.pageConnection,
+                edges: pagesResponse.data.pageConnection.edges
+                    ?.filter((edge: any) => (edge?.node?.language === locale) || (!edge?.node?.language && locale === 'nl'))
+                    ?.sort((a: any, b: any) => (a.node.weight || 100) - (b.node.weight || 100))
+            }
+        }
+    };
+
     const dragons = await client.queries.dragonConnection();
 
     return (
@@ -57,7 +70,7 @@ export default async function Home({ params }: { params: { locale: string } }) {
                 </div>
             </div>
             <EventList {...event_fetch} locale={locale} />
-            <Featurettes data={pages.data} locale={locale} />
+            <Featurettes data={filteredPages.data} locale={locale} />
             <div className="quick-links">
                 <Link href="https://discord.com/invite/TjDUu2Gkag" className="quick-link-item">
                     <span className="quick-link-icon" style={{ display: 'flex', alignItems: 'center' }}>
