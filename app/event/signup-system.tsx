@@ -10,6 +10,7 @@ interface SignupSystemProps {
   eventTitle: string;
   groups: {
     name: string;
+    description?: string;
     maxSlots: number;
   }[];
 }
@@ -78,6 +79,7 @@ export default function SignupSystem({
                   {groupSignups.length} / {group.maxSlots} slots
                 </span>
               </div>
+              {group.description && <p className="group-description">{group.description}</p>}
               <div className="signup-names">
                 {groupSignups.map((s, i) => (
                   <span key={i} className="signup-name">
@@ -207,6 +209,12 @@ export default function SignupSystem({
           font-size: 0.85rem;
           font-weight: bold;
           color: var(--secondary);
+        }
+        .group-description {
+          font-size: 0.85rem;
+          color: rgba(242, 211, 180, 0.7);
+          margin: 0 0 0.75rem 0;
+          line-height: 1.3;
         }
         .signup-names {
           display: flex;

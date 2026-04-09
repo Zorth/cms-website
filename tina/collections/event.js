@@ -34,12 +34,22 @@
                 label: "Groups",
                 name: "groups",
                 list: true,
+                ui: {
+                    itemProps: (item) => {
+                        return { label: item?.name };
+                    },
+                },
                 fields: [
                     {
                         type: "string",
                         label: "Name",
                         name: "name",
                         required: true,
+                    },
+                    {
+                        type: "string",
+                        label: "Description",
+                        name: "description",
                     },
                     {
                         type: "number",
