@@ -123,13 +123,15 @@ header {
 }
 
 .header-img {
-    height: 2.2rem; /* Scaled down */
+    height: 2.2rem;
     width: auto;
+    flex-shrink: 0;
 }
 
-.TarragonTitle {
-    height: 1.8rem; /* Enlarged as requested */
+.header-title {
+    height: 1.8rem;
     width: auto;
+    flex-shrink: 0;
 }
 
 .header-nav {
@@ -156,8 +158,35 @@ header {
     object-fit: contain;
 }
 
-.discord-link {
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
     justify-self: end;
+}
+
+.lang-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--secondary) !important;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    padding: 0.25rem 0.6rem;
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.lang-toggle:hover {
+    background: var(--secondary);
+    color: var(--darker) !important;
+    transform: translateY(-1px);
+}
+
+.discord-link {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;

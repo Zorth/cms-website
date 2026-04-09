@@ -11,6 +11,7 @@ import DiscordIcon from "../public/images/discord-icon.svg";
 import client from '../tina/__generated__/client';
 import HeaderPages from './headerpages';
 import ConvexClientProvider from './ConvexClientProvider';
+import { Globe } from 'lucide-react';
 
 // Import local Fonts
 const Rockwell = localFont({
@@ -128,15 +129,21 @@ export default async function RootLayout({
                         />
                     </Link>
                     <HeaderPages data={pages.data} locale={locale} />
-                    <Link href="https://discord.com/invite/TjDUu2Gkag" className="discord-link">
-                        <Image
-                            src={DiscordIcon}
-                            alt="Discord"
-                            width={32}
-                            height={32}
-                            className="header-nav-icon"
-                        />
-                    </Link>
+                    <div className="header-right">
+                        <Link href={locale === 'nl' ? '/en' : '/nl'} className="lang-toggle">
+                            <Globe size={20} />
+                            <span>{locale === 'nl' ? 'EN' : 'NL'}</span>
+                        </Link>
+                        <Link href="https://discord.com/invite/TjDUu2Gkag" className="discord-link">
+                            <Image
+                                src={DiscordIcon}
+                                alt="Discord"
+                                width={32}
+                                height={32}
+                                className="header-nav-icon"
+                            />
+                        </Link>
+                    </div>
                 </header>
                 <div className="padder"></div>
                 <main className="main-wrapper">
