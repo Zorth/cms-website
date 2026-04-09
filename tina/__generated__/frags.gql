@@ -1,0 +1,92 @@
+fragment PageParts on Page {
+  __typename
+  title
+  body
+  enabled
+  weight
+  snippet
+  icon
+  iconName
+  language
+  translation {
+    ... on Page {
+      __typename
+      title
+      body
+      enabled
+      weight
+      snippet
+      icon
+      iconName
+      language
+      translation {
+        ... on Page {
+          __typename
+          title
+          body
+          enabled
+          weight
+          snippet
+          icon
+          iconName
+          language
+        }
+        ... on Document {
+          _sys {
+            filename
+            basename
+            hasReferences
+            breadcrumbs
+            path
+            relativePath
+            extension
+          }
+          id
+        }
+      }
+    }
+    ... on Document {
+      _sys {
+        filename
+        basename
+        hasReferences
+        breadcrumbs
+        path
+        relativePath
+        extension
+      }
+      id
+    }
+  }
+}
+
+fragment EventParts on Event {
+  __typename
+  title
+  date
+  body
+  signupUrl
+  groups {
+    __typename
+    name
+    description
+    maxSlots
+  }
+}
+
+fragment DragonParts on Dragon {
+  __typename
+  name
+  title
+  body
+  image
+}
+
+fragment SponsorParts on Sponsor {
+  __typename
+  name
+  link
+  snippet
+  body
+  image
+}
