@@ -111,6 +111,7 @@ export const sendConfirmationEmail = internalAction({
       },
       body: JSON.stringify({
         from: "Tarragon <noreply@tarragon.be>",
+        reply_to: "contact@tarragon.be",
         to: [args.email],
         subject: `Registration Confirmed: ${args.eventTitle}`,
         html: `
@@ -123,6 +124,12 @@ export const sendConfirmationEmail = internalAction({
               <p>Can't make it? No problem. You can cancel your registration by clicking the link below:</p>
               <a href="${cancelUrl}" style="color: #942822; font-weight: bold;">Cancel my registration</a>
               <p style="font-size: 0.8em; margin-top: 10px;">If the link doesn't work, copy and paste this URL into your browser:<br/> ${cancelUrl}</p>
+            </div>
+            
+            <div style="margin-top: 30px; font-size: 0.8em; color: #888;">
+              <p><strong>Tarragon VZW</strong><br/>
+              Het Textielhuis<br/>
+              Rijselsestraat 19, 8500 Kortrijk</p>
             </div>
             
             <br/>
