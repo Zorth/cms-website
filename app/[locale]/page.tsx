@@ -25,13 +25,10 @@ export default async function Home({ params }: { params: { locale: string } }) {
         sort: "date", 
         filter: { 
             date: { after: yest.toISOString() },
-            language: { eq: locale }
-        } as any,
+        },
         first: 100 
     });
-    const sponsors = await client.queries.sponsorConnection({
-        filter: { language: { eq: locale } } as any
-    });
+    const sponsors = await client.queries.sponsorConnection();
     const pages = await client.queries.pageConnection({ 
         filter: { 
             enabled: { eq: true },
@@ -59,7 +56,7 @@ export default async function Home({ params }: { params: { locale: string } }) {
                     <span className="badge">{locale === 'nl' ? 'Gratis Toegang' : 'Free Entry'}</span>
                 </div>
             </div>
-            <EventList {...event_fetch} />
+            <EventList {...event_fetch} locale={locale} />
             <Featurettes data={pages.data} locale={locale} />
             <div className="quick-links">
                 <Link href="https://discord.com/invite/TjDUu2Gkag" className="quick-link-item">
@@ -84,11 +81,11 @@ export default async function Home({ params }: { params: { locale: string } }) {
             </div>
             <div className="koboldbox">
                 <h1>Kobold Deals</h1>
-                <SponsorList {...sponsors} />
+                <SponsorList {...sponsors} locale={locale} />
             </div>
             <div className="dragonbox">
                 <h1>Dragons</h1>
-                <DragonList {...dragons} />
+                <DragonList {...dragons} locale={locale} />
             </div>
             <div className="contactbox">
                 <h1>Contact</h1>

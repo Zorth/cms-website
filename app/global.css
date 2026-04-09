@@ -96,18 +96,17 @@ img {
     height: auto;
     display: block;
 }
-
 header {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
     width: 100%;
-    height: 3.5rem; /* Reduced height */
-    background: rgba(30, 33, 36, 0.85); /* Darker header background */
+    height: 3.5rem;
+    background: rgba(30, 33, 36, 0.85);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
@@ -119,13 +118,14 @@ header {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    justify-self: start;
 }
 
-.header-img {
-    height: 2.2rem;
-    width: auto;
-    flex-shrink: 0;
+.header-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex: 1;
+    justify-content: center;
 }
 
 .header-title {

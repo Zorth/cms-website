@@ -1,7 +1,7 @@
 "use client"
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import { tinaField, useTina } from "tinacms/dist/react";
-import { EventQuery } from "../../../../tina/__generated__/types";
+import { EventQuery } from "../../../tina/__generated__/types";
 import SignupSystem from "../signup-system";
 import Link from "next/link";
 import { Globe } from "lucide-react";

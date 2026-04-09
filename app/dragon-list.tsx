@@ -7,6 +7,7 @@ import Image from 'next/image';
 import TarragonLogo from '../public/images/Tarragon_Full.svg';
 
 export default function DragonList(props) {
+    const locale = props.locale || 'nl';
     const [emblaRef] = useEmblaCarousel({ loop: true }, [Autoplay()]);
 
     return (
@@ -19,8 +20,8 @@ export default function DragonList(props) {
                 </div>
             </div>
             <Link href={"https://docs.google.com/forms/d/e/1FAIpQLScC_krQjFrMLFC_0sw6X8DYdp1UFZNfRE2GFqBVZOxqUma-JA/viewform"} className="dragon-snippet red-hover" style={{ background: 'var(--primary_dark)' }}>
-                <h2>Want to become a dragon?</h2>
-                <p>Click here!</p>
+                <h2>{locale === 'nl' ? 'Wil je een dragon worden?' : 'Want to become a dragon?'}</h2>
+                <p>{locale === 'nl' ? 'Klik hier!' : 'Click here!'}</p>
             </Link>
         </>
     )

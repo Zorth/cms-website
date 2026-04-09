@@ -4,8 +4,9 @@ import { useEffect, useState } from 'react';
 import './homepage.css';
 import Link from "next/link";
 
-export default function EventList(props) {
-    const [now, setNow] = useState(null);
+export default function EventList(props: any) {
+    const locale = props.locale || 'nl';
+    const [now, setNow] = useState<Date | null>(null);
 
     useEffect(() => {
         setNow(new Date());
@@ -23,13 +24,13 @@ export default function EventList(props) {
     today.setHours(0, 0, 0, 0);
 
     const futureEvents = props.data.eventConnection.edges
-        .filter((event) => {
+        .filter((event: any) => {
             if (!event || !event.node || !event.node.date) return false;
             const date = new Date(event.node.date);
             return date >= today;
         })
         // Ensure they are sorted by date
-        .sort((a, b) => new Date(a.node.date).getTime() - new Date(b.node.date).getTime());
+        .sort((a: any, b: any) => new Date(a.node.date).getTime() - new Date(b.node.date).getTime());
 
     // Hide entire section if no future events
     if (futureEvents.length === 0) {
@@ -38,9 +39,9 @@ export default function EventList(props) {
 
     return (
         <div className="eventbox">
-            <h1>Upcoming Special Events:</h1>
+            <h1>{locale === 'nl' ? 'Aankomende Evenementen:' : 'Upcoming Special Events:'}</h1>
             <div className="eventbox-list" suppressHydrationWarning>
-                {futureEvents.map((event) => (
+                {futureEvents.map((event: any) => (
                     <EventSnippet key={event.node.id} event={event} />
                 ))}
             </div>
@@ -49,7 +50,7 @@ export default function EventList(props) {
 }
 
 
-function EventSnippet({ event }) {
+function EventSnippet({ event }: { event: any }) {
     const date = new Date(event.node.date);
     return (
         <Link href={`/event/${event.node._sys.filename}`} className="event-snippet">

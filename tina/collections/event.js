@@ -49,21 +49,6 @@
                     },
                 ],
             },
-            {
-                name: "language",
-                label: "Language",
-                type: "string",
-                options: [
-                    { label: "Dutch", value: "nl" },
-                    { label: "English", value: "en" },
-                ],
-            },
-            {
-                name: "translation",
-                label: "Translation Event",
-                type: "reference",
-                collections: ["event"],
-            }
         ],
         ui: {
             router: ({ document }) => {

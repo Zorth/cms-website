@@ -26,9 +26,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const events: any[] = [];
   eventsResponse.data.eventConnection.edges?.forEach((edge) => {
     const node = edge?.node as any;
-    const lang = node?.language || 'nl';
     events.push({
-      url: `${baseUrl}/${lang}/event/${node?._sys.filename}`,
+      url: `${baseUrl}/event/${node?._sys.filename}`,
       lastModified: new Date(),
       changeFrequency: 'daily' as const,
       priority: 0.6,

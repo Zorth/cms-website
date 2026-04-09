@@ -33,15 +33,6 @@
                 label: "Image",
                 name: "image",
             },
-            {
-                name: "language",
-                label: "Language",
-                type: "string",
-                options: [
-                    { label: "Dutch", value: "nl" },
-                    { label: "English", value: "en" },
-                ],
-            },
         ],
         ui: {
             router: ({ document }) => {
