@@ -2,7 +2,7 @@
 
 import { useState, FormEvent } from "react";
 import { useQuery, useMutation } from "convex/react";
-import { api } from "../../convex/_generated/api";
+import { api } from "../../../convex/_generated/api";
 import { User, Mail, CheckCircle2, Loader2 } from "lucide-react";
 
 interface SignupSystemProps {

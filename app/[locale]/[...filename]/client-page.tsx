@@ -1,6 +1,6 @@
 "use client"
 import { tinaField, useTina } from "tinacms/dist/react";
-import { PageQuery } from "../../tina/__generated__/types";
+import { PageQuery } from "../../../tina/__generated__/types";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import Link from "next/link";
 import { Globe } from "lucide-react";
@@ -11,6 +11,7 @@ interface ClientPageProps {
     relativePath: string;
   };
   data: PageQuery;
+  locale: string;
 }
 
 export default function PagePage(props : ClientPageProps) {
@@ -22,12 +23,13 @@ export default function PagePage(props : ClientPageProps) {
     });
 
     const translation = data.page.translation;
+    const targetLocale = data.page.language === 'nl' ? 'en' : 'nl';
 
     return (
         <div className="content">
             {translation && (
               <div className="language-switcher">
-                <Link href={`/${(translation as any)._sys.filename}`} className="lang-link">
+                <Link href={`/${targetLocale}/${(translation as any)._sys.filename}`} className="lang-link">
                   <Globe size={16} />
                   {data.page.language === 'nl' ? 'Switch to English' : 'Naar het Nederlands'}
                 </Link>

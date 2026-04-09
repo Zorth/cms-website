@@ -4,6 +4,7 @@ import * as LucideIcons from 'lucide-react';
 import { LucideIcon } from 'lucide-react';
 
 export default function HeaderPages(props: any) {
+    const locale = props.locale || 'nl';
     return (
         <nav className="header-nav">
             {props.data.pageConnection.edges.map((page: any) => {
@@ -12,7 +13,7 @@ export default function HeaderPages(props: any) {
                 return (
                     <Link 
                         key={page.node?.id} 
-                        href={`/${page.node?._sys.filename}`}
+                        href={`/${locale}/${page.node?._sys.filename}`}
                         className="header-nav-link"
                         title={page.node?.title || ""}
                     >
