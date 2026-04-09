@@ -36,11 +36,15 @@ export default function Header({ pagesData }: { pagesData: any }) {
                     src={TarragonTiny}
                     alt="Tarragon Logo"
                     className="header-img"
+                    width={35}
+                    height={35}
                 />
                 <Image
                     src={TarragonTitle}
                     alt="Tarragon Title"
                     className="header-title"
+                    width={150}
+                    height={30}
                 />
             </Link>
             <HeaderPages data={pagesData} locale={locale} />
