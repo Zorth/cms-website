@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
-import { CreditCard, QrCode, Smartphone } from "lucide-react";
+import { QrCode, Smartphone } from "lucide-react";
 
 interface DonationButtonProps {
   iban: string;
