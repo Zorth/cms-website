@@ -16,6 +16,51 @@ export default {
             label: "Main Content",
             type: "rich-text",
             isBody: true,
+            templates: [
+                {
+                    name: "DonationButton",
+                    label: "Donation Button",
+                    fields: [
+                        {
+                            name: "iban",
+                            label: "IBAN",
+                            type: "string",
+                            required: true,
+                        },
+                        {
+                            name: "name",
+                            label: "Recipient Name",
+                            type: "string",
+                            required: true,
+                        },
+                        {
+                            name: "bic",
+                            label: "BIC",
+                            type: "string",
+                        },
+                        {
+                            name: "message",
+                            label: "Message / Communication",
+                            type: "string",
+                        },
+                        {
+                            name: "amount",
+                            label: "Fixed Amount (Optional)",
+                            type: "number",
+                        },
+                        {
+                            name: "labelEn",
+                            label: "Button Label (EN)",
+                            type: "string",
+                        },
+                        {
+                            name: "labelNl",
+                            label: "Button Label (NL)",
+                            type: "string",
+                        },
+                    ],
+                },
+            ],
         },
         {
             name: "enabled",

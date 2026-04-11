@@ -4,6 +4,7 @@ import { PageQuery } from "../../../tina/__generated__/types";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import Link from "next/link";
 import { Globe } from "lucide-react";
+import { DonationButton } from "../../../components/DonationButton";
 
 interface ClientPageProps {
   query: string;
@@ -25,6 +26,10 @@ export default function PagePage(props : ClientPageProps) {
     const translation = data.page.translation;
     const targetLocale = data.page.language === 'nl' ? 'en' : 'nl';
 
+    const components = {
+      DonationButton: (props: any) => <DonationButton {...props} />,
+    };
+
     return (
         <div className="content">
             {translation && (
@@ -36,7 +41,7 @@ export default function PagePage(props : ClientPageProps) {
               </div>
             )}
             <div data-tina-field={tinaField(data.page, "body")}>
-                <TinaMarkdown content={data.page.body} />
+                <TinaMarkdown content={data.page.body} components={components} />
             </div>
 
             <style jsx>{`
