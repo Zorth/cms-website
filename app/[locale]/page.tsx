@@ -68,6 +68,9 @@ export default async function Home({ params }: { params: { locale: string } }) {
                     <span className="badge">English & Dutch</span>
                     <span className="badge">{locale === 'nl' ? 'Gratis Toegang' : 'Free Entry'}</span>
                 </div>
+                <Link href={`/${locale}/${locale === 'nl' ? 'Doneren' : 'Donate'}`} className="donate-button">
+                    {locale === 'nl' ? '💖 Steun Tarragon' : '💖 Support Tarragon'}
+                </Link>
             </div>
             <EventList {...event_fetch} locale={locale} />
             <Featurettes data={filteredPages.data} locale={locale} />
