@@ -47,14 +47,18 @@ const ORunde = localFont({
 
 export const metadata: Metadata = {
     title: {
-        default: 'Tarragon | TTRPG & Geek Community Kortrijk',
+        default: 'Tarragon | TTRPG, Boardgames & Geek Community Kortrijk',
         template: '%s | Tarragon'
     },
-    description: 'Tarragon is een VZW in Kortrijk voor fans van Dungeons & Dragons, boardgames en geek cultuur. Sluit je aan bij onze wekelijkse speelavonden!',
-    keywords: ['D&D Kortrijk', 'Dungeons and Dragons Belgium', 'TTRPG Kortrijk', 'Boardgames Kortrijk', 'Geek community', 'Roleplaying games'],
+    description: 'Tarragon is een VZW in Kortrijk voor fans van Dungeons & Dragons, bordspellen (boardgames), LARP, minipainting en geek cultuur. Sluit je aan bij onze wekelijkse speelavonden!',
+    keywords: [
+        'Boardgames Kortrijk', 'Bordspellen Kortrijk', 'TTRPG Kortrijk', 'Kortrijk Tabletop', 
+        'D&D Kortrijk', 'Dungeons and Dragons Belgium', 'LARP Kortrijk', 'Minipainting Kortrijk',
+        'Geek community Kortrijk', 'Gezelschapspellen Kortrijk', 'Roleplaying games Belgium'
+    ],
     openGraph: {
         title: 'Tarragon | TTRPG & Geek Community Kortrijk',
-        description: 'De gezelligste community voor rollenspellen en boardgames in Kortrijk.',
+        description: 'De gezelligste community voor rollenspellen, bordspellen en geek cultuur in Kortrijk.',
         url: 'https://tarragon.be',
         siteName: 'Tarragon',
         locale: 'nl_BE',
@@ -86,19 +90,36 @@ export default async function RootLayout({
                     dangerouslySetInnerHTML={{
                         __html: JSON.stringify({
                             "@context": "https://schema.org",
-                            "@type": "NGO",
+                            "@type": "SocialGroup",
                             "name": "Tarragon",
                             "url": "https://tarragon.be",
                             "logo": "https://tarragon.be/images/Tarragon_Full.svg",
-                            "description": "VZW in Kortrijk voor Tabletop RPGs en geek cultuur.",
+                            "description": "VZW in Kortrijk voor Tabletop RPGs, bordspellen, LARP en geek cultuur. Wekelijkse evenementen in Het Textielhuis.",
                             "address": {
                                 "@type": "PostalAddress",
+                                "streetAddress": "Rijselsestraat 19",
                                 "addressLocality": "Kortrijk",
+                                "postalCode": "8500",
                                 "addressRegion": "West-Vlaanderen",
                                 "addressCountry": "BE"
                             },
+                            "location": {
+                                "@type": "Place",
+                                "name": "Het Textielhuis",
+                                "address": {
+                                    "@type": "PostalAddress",
+                                    "streetAddress": "Rijselsestraat 19",
+                                    "addressLocality": "Kortrijk",
+                                    "postalCode": "8500",
+                                    "addressCountry": "BE"
+                                }
+                            },
+                            "foundingDate": "2023",
+                            "knowsAbout": ["Dungeons & Dragons", "Board games", "Tabletop RPGs", "LARP", "Miniature Painting"],
                             "sameAs": [
-                                "https://discord.com/invite/TjDUu2Gkag"
+                                "https://discord.com/invite/TjDUu2Gkag",
+                                "https://www.facebook.com/TarragonVZW",
+                                "https://www.instagram.com/tarragonvzw"
                             ]
                         })
                     }}
