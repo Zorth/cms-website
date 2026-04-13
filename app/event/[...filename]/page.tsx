@@ -2,8 +2,10 @@ import PagePage from "./client-page";
 import client from "../../../tina/__generated__/client";
 import { Metadata } from 'next';
 
+export const revalidate = 60;
+
 export async function generateMetadata({ params }: { params: { filename: string[], locale: string } }): Promise<Metadata> {
-    try {
+...
         const data = await client.queries.event({
             relativePath: `${params.filename}.mdx`,
         });
