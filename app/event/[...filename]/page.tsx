@@ -2,7 +2,7 @@ import PagePage from "./client-page";
 import client from "../../../tina/__generated__/client";
 import { Metadata } from 'next';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function generateMetadata({ params }: { params: { filename: string[] } }): Promise<Metadata> {
     try {
