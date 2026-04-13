@@ -57,19 +57,19 @@ export default async function Home({ params }: { params: { locale: string } }) {
                 <h1>{locale === 'nl' ? 'Welkom aan Tafel!' : 'Welcome to the Table!'}</h1>
                 <p>
                     {locale === 'nl' 
-                        ? 'Wij organiseren wekelijkse evenementen voor tabletop geeks in Kortrijk. Of je nu een bordspelveteraan bent of nog nooit een 20-zijdige dobbelsteen hebt aangeraakt, je vindt altijd een plekje aan onze tafel.'
-                        : 'We organize weekly events for tabletop geeks in Kortrijk. Whether you’re a board game veteran or have never touched a 20-sided die, you’ll find a seat at our table.'
+                        ? 'Tarragon is dé ontmoetingsplaats voor tabletop geeks in Kortrijk. Of je nu komt voor wekelijkse Dungeons & Dragons sessies, strategische bordspellen (boardgames), minipainting workshops of LARP—er is altijd een plekje aan onze tafel.'
+                        : 'Tarragon is the premier meeting place for tabletop geeks in Kortrijk. Whether you’re joining us for weekly Dungeons & Dragons sessions, strategic board games, minipainting workshops, or LARP—there’s always a seat at our table.'
                     }
                     <br /><br />
-                    {locale === 'nl' ? 'We komen elke woensdag samen' : 'We meet every Wednesday'} van 19:00 tot 22:00 @ <Link href='https://maps.app.goo.gl/FVc87bcAtS4VVuip8' className="location-link">Het Textielhuis (Rijselsestraat 19)</Link>.
+                    {locale === 'nl' ? 'Elke woensdagavond' : 'Every Wednesday evening'} van 19:00 tot 22:00 @ <Link href='https://maps.app.goo.gl/FVc87bcAtS4VVuip8' className="location-link">Het Textielhuis (Rijselsestraat 19, 8500 Kortrijk)</Link>.
                 </p>
                 <div className="welcome-badges">
-                    <span className="badge">{locale === 'nl' ? 'Beginners Welkom' : 'Beginners Welcome'}</span>
-                    <span className="badge">English & Dutch</span>
-                    <span className="badge">{locale === 'nl' ? 'Gratis Toegang' : 'Free Entry'}</span>
+                    <span className="badge">{locale === 'nl' ? 'Bordspellen & TTRPG' : 'Boardgames & TTRPG'}</span>
+                    <span className="badge">Minipainting & LARP</span>
+                    <span className="badge">Kortrijk Geek Community</span>
                 </div>
                 <Link href={`/${locale}/${locale === 'nl' ? 'Doneren' : 'Donate'}`} className="donate-button">
-                    {locale === 'nl' ? 'Steun Tarragon' : 'Support Tarragon'}
+                    {locale === 'nl' ? 'Steun Tarragon VZW' : 'Support Tarragon VZW'}
                 </Link>
             </div>
             <EventList {...event_fetch} locale={locale} />
@@ -105,6 +105,11 @@ export default async function Home({ params }: { params: { locale: string } }) {
             </div>
             <div className="contactbox">
                 <h1>Contact</h1>
+                <div className="social-footer">
+                    <Link href="https://www.facebook.com/TarragonVZW">Facebook</Link>
+                    <Link href="https://www.instagram.com/tarragonvzw">Instagram</Link>
+                    <Link href="https://discord.com/invite/TjDUu2Gkag">Discord</Link>
+                </div>
                 <small>Tarragon v.z.w.  
                     Sint-Jansstraat 21,  
                     8500 Kortrijk  
