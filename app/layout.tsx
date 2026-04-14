@@ -106,6 +106,7 @@ export default async function RootLayout({
                             "location": {
                                 "@type": "Place",
                                 "name": "Het Textielhuis",
+                                "url": "https://www.bolwerk.be/projecten/het-textielhuis",
                                 "address": {
                                     "@type": "PostalAddress",
                                     "streetAddress": "Rijselsestraat 19",

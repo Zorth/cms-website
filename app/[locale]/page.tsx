@@ -61,7 +61,7 @@ export default async function Home({ params }: { params: { locale: string } }) {
                         : 'Tarragon is the premier meeting place for tabletop geeks in Kortrijk. Whether you’re joining us for weekly Dungeons & Dragons sessions, strategic board games, minipainting workshops, or LARP—there’s always a seat at our table.'
                     }
                     <br /><br />
-                    {locale === 'nl' ? 'Elke woensdagavond' : 'Every Wednesday evening'} van 19:00 tot 22:00 @ <Link href='https://maps.app.goo.gl/FVc87bcAtS4VVuip8' className="location-link">Het Textielhuis (Rijselsestraat 19, 8500 Kortrijk)</Link>.
+                    {locale === 'nl' ? 'Elke woensdagavond' : 'Every Wednesday evening'} van 19:00 tot 22:00 @ <Link href='https://www.bolwerk.be/projecten/het-textielhuis' className="location-link">Het Textielhuis</Link> (<Link href='https://maps.app.goo.gl/FVc87bcAtS4VVuip8' className="location-link">Rijselsestraat 19, 8500 Kortrijk</Link>).
                 </p>
                 <div className="welcome-badges">
                     <span className="badge">{locale === 'nl' ? 'Bordspellen & TTRPG' : 'Boardgames & TTRPG'}</span>
