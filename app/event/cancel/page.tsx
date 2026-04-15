@@ -7,16 +7,6 @@ import { api } from "../../../convex/_generated/api";
 import { Loader2, CheckCircle2, XCircle, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-import { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Cancel Registration | Tarragon',
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
-
 function CancelContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");

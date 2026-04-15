@@ -4,28 +4,29 @@ import { Metadata } from 'next';
 
 export async function generateMetadata({ params }: { params: { filename: string[], locale: string } }): Promise<Metadata> {
     try {
+        const path = params.filename.join('/');
         const data = await client.queries.page({
-            relativePath: `${params.filename}.mdx`,
+            relativePath: `${path}.mdx`,
         });
-        
+
         const title = data.data.page.title;
         const translation = data.data.page.translation as any;
-        
+
         const languages: Record<string, string> = {};
-        languages[params.locale] = `/${params.locale}/${params.filename}`;
-        
+        languages[params.locale] = `/${params.locale}/${path}`;
+
         if (translation && translation._sys) {
             const targetLocale = params.locale === 'nl' ? 'en' : 'nl';
             languages[targetLocale] = `/${targetLocale}/${translation._sys.filename}`;
-            languages['x-default'] = `/nl/${params.locale === 'nl' ? params.filename : translation._sys.filename}`;
+            languages['x-default'] = `/nl/${params.locale === 'nl' ? path : translation._sys.filename}`;
         } else {
-            languages['x-default'] = `/nl/${params.filename}`;
+            languages['x-default'] = `/nl/${path}`;
         }
 
         return {
             title: `${title} | D&D & Boardgames Kortrijk`,
             alternates: {
-                canonical: `/${params.locale}/${params.filename}`,
+                canonical: `/${params.locale}/${path}`,
                 languages: languages,
             }
         };
@@ -62,9 +63,10 @@ export default async function Page({
     params: { filename: string[], locale: string };
 }) {
     const locale = params.locale || 'nl';
+    const path = params.filename.join('/');
 
     const data = await client.queries.page({
-        relativePath: `${params.filename}.mdx`,
+        relativePath: `${path}.mdx`,
     });
 
     if (data.data.page.enabled) {
