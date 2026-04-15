@@ -13,7 +13,29 @@ import DiscordIcon from '../../public/images/discord-icon.svg';
 import * as LucideIcons from 'lucide-react';
 import { LucideIcon } from 'lucide-react';
 
+import { Metadata } from 'next';
+
 export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
+    const locale = params.locale || 'nl';
+    const isNl = locale === 'nl';
+
+    return {
+        title: isNl ? 'Tarragon | D&D, Boardgames & Geek Community Kortrijk' : 'Tarragon | D&D, Boardgames & Geek Community in Kortrijk',
+        description: isNl 
+            ? 'Tarragon is de tabletop geek community in Kortrijk voor Dungeons & Dragons, boardgames (bordspellen), LARP, minipainting en meer. Sluit je aan bij onze wekelijkse speelavonden!'
+            : 'Tarragon is the tabletop geek community in Kortrijk for Dungeons & Dragons, board games, LARP, minipainting, and more. Join our weekly gaming nights!',
+        alternates: {
+            canonical: `/${locale}`,
+            languages: {
+                'nl': '/nl',
+                'en': '/en',
+                'x-default': '/nl',
+            },
+        },
+    };
+}
 
 export default async function Home({ params }: { params: { locale: string } }) {
     const locale = params.locale || 'nl';
@@ -54,7 +76,7 @@ export default async function Home({ params }: { params: { locale: string } }) {
     return (
         <div className="container">
             <div className="infobox">
-                <h1>{locale === 'nl' ? 'Welkom aan Tafel!' : 'Welcome to the Table!'}</h1>
+                <h1>{locale === 'nl' ? 'Tarragon Kortrijk | D&D & Boardgames' : 'Tarragon Kortrijk | D&D & Board Games'}</h1>
                 <p>
                     {locale === 'nl' 
                         ? 'Tarragon is dé ontmoetingsplaats voor tabletop geeks in Kortrijk. Of je nu komt voor wekelijkse Dungeons & Dragons sessies, strategische bordspellen (boardgames), minipainting workshops of LARP—er is altijd een plekje aan onze tafel.'

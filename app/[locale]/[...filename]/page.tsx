@@ -7,14 +7,30 @@ export async function generateMetadata({ params }: { params: { filename: string[
         const data = await client.queries.page({
             relativePath: `${params.filename}.mdx`,
         });
+        
+        const title = data.data.page.title;
+        const translation = data.data.page.translation as any;
+        
+        const languages: Record<string, string> = {};
+        languages[params.locale] = `/${params.locale}/${params.filename}`;
+        
+        if (translation && translation._sys) {
+            const targetLocale = params.locale === 'nl' ? 'en' : 'nl';
+            languages[targetLocale] = `/${targetLocale}/${translation._sys.filename}`;
+            languages['x-default'] = `/nl/${params.locale === 'nl' ? params.filename : translation._sys.filename}`;
+        } else {
+            languages['x-default'] = `/nl/${params.filename}`;
+        }
+
         return {
-            title: data.data.page.title,
+            title: `${title} | D&D & Boardgames Kortrijk`,
             alternates: {
                 canonical: `/${params.locale}/${params.filename}`,
+                languages: languages,
             }
         };
     } catch (e) {
-        return { title: 'Tarragon' };
+        return { title: 'Tarragon | D&D Kortrijk' };
     }
 }
 

@@ -116,10 +116,11 @@ export default {
     ],
     ui: {
         router: ({ document }) => {
+            const locale = document.language || "nl";
             if (document._sys.filename === "home") {
-                return `/`;
+                return `/${locale}`;
             }
-            return `/${document._sys.filename}`;
+            return `/${locale}/${document._sys.filename}`;
         },
     },
 };

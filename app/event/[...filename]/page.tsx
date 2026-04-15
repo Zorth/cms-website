@@ -9,15 +9,18 @@ export async function generateMetadata({ params }: { params: { filename: string[
         const data = await client.queries.event({
             relativePath: `${params.filename}.mdx`,
         });
+        const date = new Date(data.data.event.date);
+        const formattedDate = date.toLocaleDateString('nl-BE', { day: 'numeric', month: 'long', year: 'numeric' });
+
         return {
-            title: data.data.event.title,
-            description: `Join us for ${data.data.event.title} on ${new Date(data.data.event.date).toLocaleDateString()}. Register now!`,
+            title: `${data.data.event.title} | D&D & Boardgames Kortrijk`,
+            description: `Kom naar ${data.data.event.title} op ${formattedDate} bij Tarragon Kortrijk. De gezelligste D&D en boardgame community van West-Vlaanderen!`,
             alternates: {
                 canonical: `/event/${params.filename}`,
             }
         };
     } catch (e) {
-        return { title: 'Tarragon Event' };
+        return { title: 'Tarragon Event | D&D Kortrijk' };
     }
 }
 
