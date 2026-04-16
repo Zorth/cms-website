@@ -25,8 +25,9 @@ export function middleware(request: NextRequest) {
     !pathname.startsWith('/robots.txt') &&
     !pathname.includes('.')
   ) {
-    const url = new URL(`/nl${pathname}`, request.url);
-    return NextResponse.redirect(url);
+    const targetPath = pathname === '/' ? '/nl' : `/nl${pathname}`;
+    const url = new URL(targetPath, request.url);
+    return NextResponse.redirect(url, 301);
   }
 }
 

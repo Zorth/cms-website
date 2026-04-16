@@ -2,6 +2,15 @@ import Link from "next/link";
 import Image from "next/image";
 import DiscordIcon from "../public/images/discord-icon.svg";
 
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    robots: {
+        index: false,
+        follow: true,
+    },
+};
+
 export default function Custom404()
 {
     return (<div>

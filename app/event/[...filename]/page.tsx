@@ -6,8 +6,9 @@ export const revalidate = 0;
 
 export async function generateMetadata({ params }: { params: { filename: string[] } }): Promise<Metadata> {
     try {
+        const path = params.filename.join('/');
         const data = await client.queries.event({
-            relativePath: `${params.filename}.mdx`,
+            relativePath: `${path}.mdx`,
         });
         const date = new Date(data.data.event.date);
         const formattedDate = date.toLocaleDateString('nl-BE', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -16,7 +17,7 @@ export async function generateMetadata({ params }: { params: { filename: string[
             title: `${data.data.event.title} | D&D & Boardgames Kortrijk`,
             description: `Kom naar ${data.data.event.title} op ${formattedDate} bij Tarragon Kortrijk. De gezelligste D&D en boardgame community van West-Vlaanderen!`,
             alternates: {
-                canonical: `/event/${params.filename}`,
+                canonical: `/event/${path}`,
             }
         };
     } catch (e) {
@@ -44,8 +45,9 @@ export default async function PostPage({
 }: {
   params: { filename: string[] };
 }) {
+  const path = params.filename.join('/');
   const data = await client.queries.event({
-    relativePath: `${params.filename}.mdx`,
+    relativePath: `${path}.mdx`,
   });
 
   // Default to 'nl' for events as they don't have a locale prefix in their path

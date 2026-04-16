@@ -24,13 +24,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Fetch all events
   const eventsResponse = await client.queries.eventConnection();
   const events: any[] = [];
+  const now = new Date();
+
   eventsResponse.data.eventConnection.edges?.forEach((edge) => {
     const node = edge?.node as any;
+    const eventDate = new Date(node?.date || 0);
+    const isPast = eventDate < now;
+
     events.push({
       url: `${baseUrl}/event/${node?._sys.filename}`,
       lastModified: new Date(),
-      changeFrequency: 'daily' as const,
-      priority: 0.6,
+      changeFrequency: isPast ? 'monthly' : 'daily',
+      priority: isPast ? 0.3 : 0.7,
     });
   });
 
