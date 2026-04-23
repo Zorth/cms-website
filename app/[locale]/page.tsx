@@ -140,7 +140,9 @@ export default async function Home({ params }: { params: { locale: string } }) {
                     contact@tarragon.be  
                     www.tarragon.be<br/>
                     Copyright 2024 Tarragon VZW, All rights reserved<br/><br/>
-                    <Link href={`/${locale}/ToS`}>Membership ToS</Link>
+                    <Link href={`/${locale}/${locale === 'nl' ? 'Voorwaarden' : 'ToS'}`}>
+                        {locale === 'nl' ? 'Lidmaatschap Voorwaarden' : 'Membership ToS'}
+                    </Link>
                 </small>
             </div>
         </div>

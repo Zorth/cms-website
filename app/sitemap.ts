@@ -13,11 +13,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   pagesResponse.data.pageConnection.edges?.forEach((edge) => {
     const node = edge?.node as any;
     const lang = node?.language || 'nl';
+    const filename = node?._sys.filename;
+    const url = filename === 'home' 
+      ? `${baseUrl}/${lang}` 
+      : `${baseUrl}/${lang}/${filename}`;
+      
     pages.push({
-      url: `${baseUrl}/${lang}/${node?._sys.filename}`,
+      url: url,
       lastModified: new Date(),
       changeFrequency: 'weekly' as const,
-      priority: 0.8,
+      priority: filename === 'home' ? 1.0 : 0.8,
     });
   });
 

@@ -1,6 +1,7 @@
 import PagePage from "./client-page";
 import client from "../../../tina/__generated__/client";
 import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 
 export const revalidate = 0;
 
@@ -46,12 +47,21 @@ export default async function PostPage({
   params: { filename: string[] };
 }) {
   const path = params.filename.join('/');
-  const data = await client.queries.event({
-    relativePath: `${path}.mdx`,
-  });
+  
+  try {
+    const data = await client.queries.event({
+        relativePath: `${path}.mdx`,
+    });
 
-  // Default to 'nl' for events as they don't have a locale prefix in their path
-  return (
-    <PagePage {...data} locale="nl"></PagePage>
-  );
+    if (!data.data.event) {
+        notFound();
+    }
+
+    // Default to 'nl' for events as they don't have a locale prefix in their path
+    return (
+        <PagePage {...data} locale="nl"></PagePage>
+    );
+  } catch (e) {
+    notFound();
+  }
 }

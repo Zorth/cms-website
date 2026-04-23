@@ -68,6 +68,11 @@ export default {
             type: "boolean",
         },
         {
+            name: "hideFromHeader",
+            label: "Hide from Header",
+            type: "boolean",
+        },
+        {
             name: "weight",
             label: "Order Weight",
             type: "number",

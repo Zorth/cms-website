@@ -1,6 +1,7 @@
 import PagePage from "./client-page";
 import client from "../../../tina/__generated__/client";
 import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 
 export async function generateMetadata({ params }: { params: { filename: string[], locale: string } }): Promise<Metadata> {
     try {
@@ -65,16 +66,19 @@ export default async function Page({
     const locale = params.locale || 'nl';
     const path = params.filename.join('/');
 
-    const data = await client.queries.page({
-        relativePath: `${path}.mdx`,
-    });
+    try {
+        const data = await client.queries.page({
+            relativePath: `${path}.mdx`,
+        });
 
-    if (data.data.page.enabled) {
+        if (!data.data.page) {
+            notFound();
+        }
+
         return (
             <PagePage {...data} locale={locale}></PagePage>
         );
-    }
-    else {
-        return <>Woopsies, this page is not on right now...</>
+    } catch (e) {
+        notFound();
     }
 }

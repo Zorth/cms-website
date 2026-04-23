@@ -8,6 +8,7 @@ export default function HeaderPages(props: any) {
     return (
         <nav className="header-nav">
             {props.data.pageConnection.edges
+                .filter((page: any) => !page.node?.hideFromHeader)
                 .filter((page: any) => (page.node?.language === locale) || (!page.node?.language && locale === 'nl'))
                 .sort((a: any, b: any) => (a.node.weight || 100) - (b.node.weight || 100))
                 .map((page: any) => {
