@@ -94,6 +94,18 @@ export default async function Home({ params }: { params: { locale: string } }) {
                     {locale === 'nl' ? 'Steun Tarragon VZW' : 'Support Tarragon VZW'}
                 </Link>
             </div>
+            <div className="announcement-banner">
+                <div className="announcement-icon">⚠️</div>
+                <div className="announcement-content">
+                    <h3>{locale === 'nl' ? 'Belangrijke Mededeling: Zomerpauze' : 'Important Notice: Summer Break'}</h3>
+                    <p>
+                        {locale === 'nl' 
+                            ? 'Er zijn geen wekelijkse speelavonden of evenementen van 22/07 tot en met 05/08. Vanaf woensdag 12/08 heten we jullie weer van harte welkom!'
+                            : 'There will be no weekly game nights or events from 22/07 up until 05/08. We gladly welcome you all back again on 12/08!'
+                        }
+                    </p>
+                </div>
+            </div>
             <EventList {...event_fetch} locale={locale} />
             <Featurettes data={filteredPages.data} locale={locale} />
             <div className="quick-links">

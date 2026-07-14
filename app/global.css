@@ -301,3 +301,23 @@ header {
     box-shadow: var(--shadow-lg);
     color: var(--darker) !important;
 }
+
+/* Custom Blockquote Styles for notices */
+blockquote {
+    border-left: 4px solid var(--primary_light);
+    background: rgba(199, 107, 84, 0.05);
+    padding: 0.75rem 1.25rem;
+    margin: 1.5rem 0;
+    border-radius: 0 0.5rem 0.5rem 0;
+}
+
+blockquote p {
+    margin: 0;
+    color: var(--light_light);
+    font-size: 1.05rem;
+    line-height: 1.5;
+}
+
+blockquote strong {
+    color: var(--primary_light);
+}
