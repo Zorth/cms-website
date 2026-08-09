@@ -150,12 +150,13 @@ export default async function Home({ params }: { params: { locale: string } }) {
 }
 
 function Featurettes({ data, locale }: { data: any, locale: string }) {
-    if (data.pageConnection.edges.length == 0) {
+    const featuretteEdges = data.pageConnection.edges?.filter((page: any) => Boolean(page.node?.snippet));
+    if (!featuretteEdges || featuretteEdges.length === 0) {
         return <></>;
     }
     return (
         <div className="featurettes-container">
-            {data.pageConnection.edges
+            {featuretteEdges
                 .map((page: any) => {
                     const node = page.node;
                     const IconComponent = node?.iconName ? (LucideIcons as any)[node.iconName] as LucideIcon : null;
