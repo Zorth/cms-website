@@ -149,8 +149,24 @@ export default async function Home({ params }: { params: { locale: string } }) {
     )
 }
 
+function hasSnippetContent(snippet: any): boolean {
+    if (!snippet) return false;
+    if (typeof snippet === 'string') return snippet.trim().length > 0;
+    if (snippet.children && Array.isArray(snippet.children)) {
+        const hasTextOrElement = (nodes: any[]): boolean => {
+            return nodes.some((n: any) => {
+                if (n.text !== undefined) return n.text.trim().length > 0;
+                if (n.children && Array.isArray(n.children)) return hasTextOrElement(n.children);
+                return Boolean(n.type && n.type !== 'p');
+            });
+        };
+        return hasTextOrElement(snippet.children);
+    }
+    return false;
+}
+
 function Featurettes({ data, locale }: { data: any, locale: string }) {
-    const featuretteEdges = data.pageConnection.edges?.filter((page: any) => Boolean(page.node?.snippet));
+    const featuretteEdges = data.pageConnection.edges?.filter((page: any) => hasSnippetContent(page.node?.snippet));
     if (!featuretteEdges || featuretteEdges.length === 0) {
         return <></>;
     }
