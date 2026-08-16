@@ -19,7 +19,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "resend": "^6.10.0",
-    "tinacms": "3.10.1",
+    "tinacms": "3.11.0",
     "typescript": "5.5.2"
   },
   "devDependencies": {
