@@ -11,7 +11,7 @@ export async function updateClerkMembership(
   role: "user" | "member" | "dragon"
 ) {
   const isMember = role === "member" || role === "dragon";
-  const client = clerkClient();
+  const client = await clerkClient();
 
   await client.users.updateUserMetadata(clerkUserId, {
     publicMetadata: {

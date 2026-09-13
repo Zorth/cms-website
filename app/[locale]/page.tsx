@@ -17,8 +17,8 @@ import { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
 
-export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
-    const locale = params.locale || 'nl';
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+    const { locale = 'nl' } = await params;
     const isNl = locale === 'nl';
 
     return {
@@ -37,8 +37,8 @@ export async function generateMetadata({ params }: { params: { locale: string } 
     };
 }
 
-export default async function Home({ params }: { params: { locale: string } }) {
-    const locale = params.locale || 'nl';
+export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
+    const { locale = 'nl' } = await params;
 
     const yest = new Date();
     yest.setDate(yest.getDate() - 1);

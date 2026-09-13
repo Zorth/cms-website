@@ -5,9 +5,10 @@ import { notFound } from 'next/navigation';
 
 export const revalidate = 0;
 
-export async function generateMetadata({ params }: { params: { filename: string[] } }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ filename: string[] }> }): Promise<Metadata> {
     try {
-        const path = params.filename.join('/');
+        const resolvedParams = await params;
+        const path = resolvedParams.filename.join('/');
         const data = await client.queries.event({
             relativePath: `${path}.mdx`,
         });
@@ -44,9 +45,10 @@ export async function generateStaticParams() {
 export default async function PostPage({
   params,
 }: {
-  params: { filename: string[] };
+  params: Promise<{ filename: string[] }>;
 }) {
-  const path = params.filename.join('/');
+  const resolvedParams = await params;
+  const path = resolvedParams.filename.join('/');
   
   try {
     const data = await client.queries.event({

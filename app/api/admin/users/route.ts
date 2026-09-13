@@ -35,7 +35,7 @@ export async function GET() {
   }
 
   try {
-    const client = clerkClient();
+    const client = await clerkClient();
     const response = await client.users.getUserList({
       limit: 200,
       orderBy: "-created_at",

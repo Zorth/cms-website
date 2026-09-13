@@ -3,9 +3,10 @@ import client from "../../../tina/__generated__/client";
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-export async function generateMetadata({ params }: { params: { filename: string[], locale: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ filename: string[], locale: string }> }): Promise<Metadata> {
     try {
-        const path = params.filename.join('/');
+        const resolvedParams = await params;
+        const path = resolvedParams.filename.join('/');
         const data = await client.queries.page({
             relativePath: `${path}.mdx`,
         });
@@ -14,12 +15,12 @@ export async function generateMetadata({ params }: { params: { filename: string[
         const translation = data.data.page.translation as any;
 
         const languages: Record<string, string> = {};
-        languages[params.locale] = `/${params.locale}/${path}`;
+        languages[resolvedParams.locale] = `/${resolvedParams.locale}/${path}`;
 
         if (translation && translation._sys) {
-            const targetLocale = params.locale === 'nl' ? 'en' : 'nl';
+            const targetLocale = resolvedParams.locale === 'nl' ? 'en' : 'nl';
             languages[targetLocale] = `/${targetLocale}/${translation._sys.filename}`;
-            languages['x-default'] = `/nl/${params.locale === 'nl' ? path : translation._sys.filename}`;
+            languages['x-default'] = `/nl/${resolvedParams.locale === 'nl' ? path : translation._sys.filename}`;
         } else {
             languages['x-default'] = `/nl/${path}`;
         }
@@ -27,7 +28,7 @@ export async function generateMetadata({ params }: { params: { filename: string[
         return {
             title: `${title} | D&D & Boardgames Kortrijk`,
             alternates: {
-                canonical: `/${params.locale}/${path}`,
+                canonical: `/${resolvedParams.locale}/${path}`,
                 languages: languages,
             }
         };
@@ -61,10 +62,11 @@ export async function generateStaticParams() {
 export default async function Page({
     params,
 }: {
-    params: { filename: string[], locale: string };
+    params: Promise<{ filename: string[], locale: string }>;
 }) {
-    const locale = params.locale || 'nl';
-    const path = params.filename.join('/');
+    const resolvedParams = await params;
+    const locale = resolvedParams.locale || 'nl';
+    const path = resolvedParams.filename.join('/');
 
     try {
         const data = await client.queries.page({

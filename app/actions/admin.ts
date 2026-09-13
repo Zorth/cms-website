@@ -36,7 +36,7 @@ export async function updateUserRoleAction(
 
   const isMember = newRole === "member" || newRole === "dragon";
 
-  const client = clerkClient();
+  const client = await clerkClient();
   await client.users.updateUserMetadata(targetClerkId, {
     publicMetadata: {
       role: newRole,
