@@ -2,8 +2,14 @@
 
 module.exports = {
     images: {
-        remotePatterns: [{
-            hostname: 'assets.tina.io'}],
+        remotePatterns: [
+            {
+                hostname: 'assets.tina.io',
+            },
+            {
+                hostname: 'img.clerk.com',
+            },
+        ],
     },
   async rewrites() {
     return [

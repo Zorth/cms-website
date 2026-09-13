@@ -200,6 +200,293 @@ header {
     transform: scale(1.1);
 }
 
+.auth-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.auth-btn {
+    background: var(--primary);
+    color: var(--light);
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.35rem 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.auth-btn:hover {
+    background: var(--primary_light);
+    transform: translateY(-1px);
+}
+
+.user-profile-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.role-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: 9999px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.role-badge.role-dragon {
+    background: rgba(220, 38, 38, 0.2);
+    color: #f87171;
+    border: 1px solid rgba(220, 38, 38, 0.4);
+}
+
+.role-badge.role-member {
+    background: rgba(16, 185, 129, 0.2);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.admin-header-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.65rem;
+    background: rgba(220, 38, 38, 0.15);
+    color: #f87171 !important;
+    border: 1px solid rgba(220, 38, 38, 0.35);
+    border-radius: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.2s ease;
+}
+
+.admin-header-btn:hover {
+    background: rgba(220, 38, 38, 0.3);
+    color: #fca5a5 !important;
+    transform: translateY(-1px);
+    border-color: rgba(220, 38, 38, 0.6);
+}
+
+/* Dragon Admin Page Styles */
+.dragon-admin-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 1.5rem 0;
+}
+
+.dragon-admin-header {
+    margin-bottom: 2rem;
+}
+
+.dragon-admin-header h1 {
+    font-size: 2rem;
+    font-family: var(--font-rockwell), serif;
+    color: var(--light);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.5rem;
+}
+
+.dragon-admin-header p {
+    color: var(--secondary);
+    font-size: 0.95rem;
+}
+
+.dragon-tabs {
+    display: flex;
+    gap: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 1.5rem;
+}
+
+.dragon-tab {
+    padding: 0.6rem 1.2rem;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--secondary);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.dragon-tab:hover {
+    color: var(--light);
+}
+
+.dragon-tab.active {
+    color: #f87171;
+    border-bottom: 2px solid #ef4444;
+}
+
+.dragon-panel {
+    background: rgba(30, 33, 36, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    backdrop-filter: blur(8px);
+}
+
+.dragon-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.dragon-search-input {
+    flex: 1;
+    min-width: 250px;
+    background: rgba(20, 22, 25, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0.5rem;
+    padding: 0.6rem 1rem;
+    color: var(--light);
+    font-size: 0.9rem;
+    font-family: inherit;
+}
+
+.dragon-search-input:focus {
+    outline: none;
+    border-color: #ef4444;
+}
+
+.dragon-filter-select {
+    background: rgba(20, 22, 25, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0.5rem;
+    padding: 0.6rem 1rem;
+    color: var(--light);
+    font-size: 0.9rem;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.dragon-table-wrapper {
+    overflow-x: auto;
+}
+
+.dragon-users-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.dragon-users-table th {
+    padding: 0.75rem 1rem;
+    color: var(--secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dragon-users-table td {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    vertical-align: middle;
+}
+
+.dragon-users-table tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.dragon-user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.dragon-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    object-fit: cover;
+    background: rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+}
+
+.dragon-user-names {
+    display: flex;
+    flex-direction: column;
+}
+
+.dragon-fullname {
+    font-weight: 600;
+    color: var(--light);
+}
+
+.dragon-username {
+    font-size: 0.8rem;
+    color: var(--secondary);
+}
+
+.role-select {
+    background: rgba(20, 22, 25, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.4rem;
+    padding: 0.4rem 0.75rem;
+    color: var(--light);
+    font-size: 0.85rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.role-select:focus {
+    outline: none;
+    border-color: #ef4444;
+}
+
+.role-select.role-dragon {
+    color: #f87171;
+    border-color: rgba(220, 38, 38, 0.5);
+}
+
+.role-select.role-member {
+    color: #34d399;
+    border-color: rgba(16, 185, 129, 0.5);
+}
+
+.role-select.role-user {
+    color: var(--secondary);
+}
+
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    margin-left: 0.5rem;
+}
+
+.status-indicator.saving {
+    color: #fbbf24;
+}
+
+.status-indicator.saved {
+    color: #34d399;
+}
+
 .padder {
     height: 3.5rem;
 }
