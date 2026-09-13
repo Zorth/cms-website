@@ -15,3 +15,7 @@ Convex agent skills for common tasks can be installed by running `npx convex ai-
   - `isMember` is `true` if and only if the user is a `"member"` or a `"dragon"`.
   - `isMember` is `false` for standard `"user"` accounts.
   - This status syncs to Clerk `publicMetadata.isMember` for cross-site authorization (`tarragon.be` & `guild.tarragon.be`).
+
+## Git Operations Rule
+
+- **Do NOT commit or push** git changes unless the user explicitly tells you to do so.
