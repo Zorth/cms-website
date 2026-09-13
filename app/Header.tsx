@@ -82,16 +82,6 @@ export default function Header({ pagesData }: { pagesData: any }) {
                                     Admin
                                 </Link>
                             )}
-                            {currentUser?.role === 'dragon' && (
-                                <span className="role-badge role-dragon" title="Dragon">
-                                    🐉 Dragon
-                                </span>
-                            )}
-                            {currentUser?.role === 'member' && (
-                                <span className="role-badge role-member" title="Member">
-                                    🛡️ Member
-                                </span>
-                            )}
                             <UserButton afterSignOutUrl="/" />
                         </div>
                     </SignedIn>
