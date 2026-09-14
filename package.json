@@ -12,7 +12,7 @@
     "node": "24.x"
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.39.6",
+    "@clerk/nextjs": "^7.9.2",
     "better-sqlite3": "^11.8.1",
     "convex": "^1.45.0",
     "embla-carousel-autoplay": "^8.6.0",
