@@ -3,6 +3,9 @@
 import ReactMarkdown from "react-markdown";
 import SignupSystem from "../signup-system";
 
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+
 interface EventPageProps {
   event: {
     slug: string;
@@ -17,7 +20,11 @@ interface EventPageProps {
   };
 }
 
-export default function EventClientPage({ event }: EventPageProps) {
+export default function EventClientPage({ event: initialEvent }: EventPageProps) {
+  // Subscribe in real-time to Convex so changes in /dragon reflect immediately without rebuilding
+  const liveEvent = useQuery(api.events.getEventBySlug, { slug: initialEvent.slug });
+  const event = liveEvent || initialEvent;
+
   const eventDate = new Date(event.date);
   const formattedDate = isNaN(eventDate.getTime())
     ? event.date

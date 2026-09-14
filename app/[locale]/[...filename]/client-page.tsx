@@ -7,6 +7,9 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { DonationButton } from "../../../components/DonationButton";
 
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+
 interface ClientPageProps {
   page: {
     _id: string;
@@ -24,7 +27,11 @@ interface ClientPageProps {
   };
 }
 
-export default function PagePage({ page }: ClientPageProps) {
+export default function PagePage({ page: initialPage }: ClientPageProps) {
+  // Subscribe live to Convex so any edits in /dragon reflect immediately
+  const livePage = useQuery(api.pages.getPageBySlug, { slug: initialPage.slug });
+  const page = livePage || initialPage;
+
   const targetLocale = page.language === "nl" ? "en" : "nl";
   const translationSlug = page.translationSlug;
 
