@@ -1,12 +1,45 @@
-# Stripe Integration Guide
+# Stripe Integration Guide (Tarragon VZW)
 
-This application integrates with **Stripe** for handling community event signups, memberships, and payments.
+This application integrates directly with **Stripe** to process memberships, event ticketing, and community contributions for **Tarragon VZW** (non-profit tabletop organization in Belgium).
 
 ---
 
-## 1. Environment Variables
+## 1. Belgian VAT (BTW) Compliance
 
-The following Stripe environment variables are configured in `.env.local` (and should be mirrored on Vercel):
+To comply with Belgian and European VAT regulations:
+- Payments are handled **directly through Stripe** (rather than through Clerk billing).
+- Checkout sessions enable `tax_id_collection: { enabled: true }` to collect VAT/BTW numbers where applicable.
+- Official Belgian VAT receipts and invoices are generated and accessible to members through the **Stripe Customer Portal**.
+
+---
+
+## 2. "Kobold" Membership Subscription
+
+- **Name**: Kobold Membership
+- **Price**: 10 EUR / year (recurring subscription)
+- **Benefits**:
+  - Unlocks `"member"` role (`isMember = true`) in Convex and Clerk.
+  - Priority signups for weekly D&D, boardgames, LARP, and hobby nights.
+  - Member discounts on tournaments and special events.
+  - Access to member-only guild features across `tarragon.be` & `guild.tarragon.be`.
+
+---
+
+## 3. Account Menu Popup Integration
+
+Users can manage their membership directly from Clerk's profile popup (`<UserButton />`):
+1. **Dropdown Action**: "Join Kobold (10€/yr)" or "Kobold Membership (Active)" right inside the avatar menu.
+2. **"Membership" Tab in Manage Account Modal**:
+   - Custom `<UserButton.UserProfilePage>` titled **"Membership"**.
+   - Displays real-time status: Dragon Council, Active Kobold Member, or Standard User.
+   - For non-members: One-click button to start Stripe Checkout for Kobold (10 EUR/year).
+   - For active members: One-click button to open the **Stripe Customer Portal** to manage card details, view invoices, or update subscriptions.
+
+---
+
+## 4. Environment Variables
+
+Configured in `.env.local` and Vercel:
 
 ```env
 # Client-side publishable key
@@ -16,15 +49,18 @@ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
 STRIPE_PUBLISHABLE_KEY=pk_test_...
 STRIPE_SECRET_KEY=sk_test_...
 
-# Webhook secret (for validating Stripe events)
+# Optional: Specific Stripe Price ID for Kobold (falls back to auto-discovery/creation)
+STRIPE_KOBOLD_PRICE_ID=price_...
+
+# Webhook secret for /api/webhooks/stripe
 STRIPE_WEBHOOK_SECRET=whsec_...
 ```
 
 ---
 
-## 2. Payment & Membership Architecture
+## 5. Webhook Events & Lifecycle
 
-1. **Checkout**: When a user selects a membership plan or event ticket, a Stripe Checkout session or PaymentIntent is created server-side.
-2. **Webhooks**: Stripe sends event notifications (e.g. `checkout.session.completed`, `customer.subscription.created`) to `/api/webhooks/stripe`.
-3. **Convex Update**: On successful payment, the webhook handler updates the event signup status or calls Convex mutations to promote the user role to `"member"`.
-4. **Clerk Entitlement Sync**: Convex triggers `syncClerkMembership`, propagating `isMember: true` into Clerk's public metadata so all sibling apps immediately recognize the membership.
+Endpoint: `/api/webhooks/stripe`
+- `checkout.session.completed`: Marks subscription active, sets Convex role to `"member"`, and syncs `isMember: true` to Clerk.
+- `customer.subscription.updated`: Syncs active, trialing, past due, or canceled state.
+- `customer.subscription.deleted`: Reverts role to `"user"` (`isMember: false`), while preserving Dragon status if the user is a Council Dragon.

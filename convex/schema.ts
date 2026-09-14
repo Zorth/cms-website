@@ -14,11 +14,15 @@ export default defineSchema({
       v.literal("dragon")
     ),
     isMember: v.boolean(),
+    stripeCustomerId: v.optional(v.string()),
+    stripeSubscriptionId: v.optional(v.string()),
+    subscriptionStatus: v.optional(v.string()),
   })
     .index("by_tokenIdentifier", ["tokenIdentifier"])
     .index("by_clerkId", ["clerkId"])
     .index("by_role", ["role"])
-    .index("by_isMember", ["isMember"]),
+    .index("by_isMember", ["isMember"])
+    .index("by_stripeCustomerId", ["stripeCustomerId"]),
 
   signups: defineTable({
     eventSlug: v.string(),

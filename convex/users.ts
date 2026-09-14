@@ -297,3 +297,83 @@ export const listUsers = query({
     return await ctx.db.query("users").take(50);
   },
 });
+
+/**
+ * Update Stripe customer, subscription status, and role for a user.
+ */
+export const updateUserStripeInfo = mutation({
+  args: {
+    clerkId: v.string(),
+    stripeCustomerId: v.optional(v.string()),
+    stripeSubscriptionId: v.optional(v.string()),
+    subscriptionStatus: v.optional(v.string()),
+    role: v.optional(
+      v.union(
+        v.literal("user"),
+        v.literal("member"),
+        v.literal("dragon")
+      )
+    ),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
+      .unique();
+
+    if (!user) {
+      return { success: false, reason: "User not found" };
+    }
+
+    const patchData: {
+      stripeCustomerId?: string;
+      stripeSubscriptionId?: string;
+      subscriptionStatus?: string;
+      role?: "user" | "member" | "dragon";
+      isMember?: boolean;
+    } = {};
+
+    if (args.stripeCustomerId !== undefined) patchData.stripeCustomerId = args.stripeCustomerId;
+    if (args.stripeSubscriptionId !== undefined) patchData.stripeSubscriptionId = args.stripeSubscriptionId;
+    if (args.subscriptionStatus !== undefined) patchData.subscriptionStatus = args.subscriptionStatus;
+
+    if (args.role !== undefined) {
+      // Never demote a Dragon to a member
+      if (user.role === "dragon" && args.role === "member") {
+        patchData.isMember = true;
+      } else {
+        patchData.role = args.role;
+        patchData.isMember = args.role === "member" || args.role === "dragon";
+      }
+    }
+
+    await ctx.db.patch(user._id, patchData);
+
+    // Sync isMember to Clerk if role or membership changed
+    if (patchData.isMember !== undefined) {
+      await ctx.scheduler.runAfter(0, internal.users.syncClerkMembership, {
+        clerkId: args.clerkId,
+        isMember: patchData.isMember,
+        role: patchData.role ?? user.role,
+      });
+    }
+
+    return { success: true };
+  },
+});
+
+/**
+ * Get user by their Stripe Customer ID.
+ */
+export const getUserByStripeCustomerId = query({
+  args: { stripeCustomerId: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("users")
+      .withIndex("by_stripeCustomerId", (q) =>
+        q.eq("stripeCustomerId", args.stripeCustomerId)
+      )
+      .unique();
+  },
+});
+

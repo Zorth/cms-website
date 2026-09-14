@@ -608,3 +608,214 @@ blockquote p {
 blockquote strong {
     color: var(--primary_light);
 }
+
+/* Membership Profile & Stripe Subscription Section */
+.membership-profile-page {
+    padding: 1rem 0;
+    font-family: inherit;
+}
+
+.membership-card {
+    background: #1e2421;
+    border: 1px solid rgba(151, 183, 142, 0.2);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    color: #e5ede3;
+}
+
+.membership-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(151, 183, 142, 0.15);
+    padding-bottom: 1rem;
+}
+
+.membership-icon {
+    font-size: 2rem;
+    background: rgba(151, 183, 142, 0.15);
+    width: 3.25rem;
+    height: 3.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid rgba(151, 183, 142, 0.3);
+}
+
+.membership-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+}
+
+.membership-subtitle {
+    font-size: 0.85rem;
+    color: #97b78e;
+    margin: 0.2rem 0 0 0;
+}
+
+.membership-status-box {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.status-badge-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.badge-pill {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.badge-pill.badge-dragon {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.badge-pill.badge-member {
+    background: rgba(16, 185, 129, 0.2);
+    color: #6ee7b7;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.badge-pill.badge-active {
+    background: rgba(59, 130, 246, 0.2);
+    color: #93c5fd;
+    border: 1px solid rgba(59, 130, 246, 0.4);
+}
+
+.status-desc {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #cbd5e1;
+    margin-bottom: 1.25rem;
+}
+
+.price-tag {
+    display: flex;
+    align-items: baseline;
+    gap: 0.2rem;
+    margin-bottom: 1.25rem;
+}
+
+.price-currency {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #97b78e;
+}
+
+.price-amount {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1;
+}
+
+.price-interval {
+    font-size: 0.95rem;
+    color: #94a3b8;
+    margin-left: 0.3rem;
+}
+
+.membership-benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.25rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.membership-benefits-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.9rem;
+    color: #e2e8f0;
+}
+
+.check-icon {
+    color: #10b981;
+    font-weight: bold;
+}
+
+.vat-notice {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.8rem;
+    color: #fde68a;
+    line-height: 1.4;
+}
+
+.vat-notice p {
+    margin: 0;
+}
+
+.btn-subscribe-kobold {
+    width: 100%;
+    background: #97b78e;
+    color: #1a221d;
+    border: none;
+    padding: 0.85rem 1.5rem;
+    border-radius: 0.6rem;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-subscribe-kobold:hover:not(:disabled) {
+    background: #add1a3;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(151, 183, 142, 0.35);
+}
+
+.btn-subscribe-kobold:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-manage-billing {
+    display: inline-block;
+    background: #334155;
+    color: #f1f5f9;
+    border: 1px solid #475569;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-manage-billing:hover:not(:disabled) {
+    background: #475569;
+    border-color: #64748b;
+}
+
+.membership-error-box {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+}
+

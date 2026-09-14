@@ -16,6 +16,13 @@ Convex agent skills for common tasks can be installed by running `npx convex ai-
   - `isMember` is `false` for standard `"user"` accounts.
   - This status syncs to Clerk `publicMetadata.isMember` for cross-site authorization (`tarragon.be` & `guild.tarragon.be`).
 
+## Organization & Payments Rules
+
+- **Organization**: Tarragon VZW (non-profit in Belgium).
+- **VAT / BTW Compliance**: Payments are processed directly through Stripe (NOT through Clerk billing) to properly handle Belgian VAT (BTW) regulations.
+- **"Kobold" Membership**: 10 EUR / year subscription.
+- **Membership Activation**: Successful payment of the Kobold membership activates `"member"` status (`isMember = true`) in Convex and syncs to Clerk `publicMetadata.isMember`.
+
 ## Git Operations Rule
 
 - **Do NOT commit or push** git changes unless the user explicitly tells you to do so.

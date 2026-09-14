@@ -5,18 +5,47 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Globe } from 'lucide-react';
 import HeaderPages from './headerpages';
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignInButton, SignedIn, SignedOut, UserButton, useClerk } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
+import MembershipSection from "./MembershipSection";
+import {
+    createKoboldCheckoutSessionAction,
+    createCustomerPortalSessionAction,
+} from "./actions/stripe";
 
 import TarragonTiny from "../public/images/Tarragon_Tiny.svg";
 import TarragonTitle from "../public/images/Tarragon_Title.svg";
 import DiscordIcon from "../public/images/discord-icon.svg";
 
 export default function Header({ pagesData }: { pagesData: any }) {
+    const { openUserProfile } = useClerk();
     const currentUser = useQuery(api.users.getCurrentUser);
     const isDragon = currentUser?.role === 'dragon';
+    const isMember = currentUser?.role === 'member' || isDragon;
     const pathname = usePathname();
+
+    const handleJoinKobold = async () => {
+        try {
+            const res = await createKoboldCheckoutSessionAction(pathname);
+            if (res?.url) {
+                window.location.href = res.url;
+            }
+        } catch (err: any) {
+            alert(err.message || "Failed to start checkout");
+        }
+    };
+
+    const handleManageBilling = async () => {
+        try {
+            const res = await createCustomerPortalSessionAction(pathname);
+            if (res?.url) {
+                window.location.href = res.url;
+            }
+        } catch (err: any) {
+            openUserProfile();
+        }
+    };
     
     // Detect locale from pathname (e.g., /nl/page -> nl, /en/page -> en)
     const segments = pathname.split('/');
@@ -82,7 +111,22 @@ export default function Header({ pagesData }: { pagesData: any }) {
                                     Admin
                                 </Link>
                             )}
-                            <UserButton afterSignOutUrl="/" />
+                            <UserButton afterSignOutUrl="/">
+                                <UserButton.MenuItems>
+                                    <UserButton.Action
+                                        label={isMember ? "Manage Membership & VAT" : "Join Kobold (10€/yr)"}
+                                        labelIcon={<span>🦎</span>}
+                                        onClick={isMember ? handleManageBilling : handleJoinKobold}
+                                    />
+                                </UserButton.MenuItems>
+                                <UserButton.UserProfilePage
+                                    label="Membership"
+                                    url="membership"
+                                    labelIcon={<span>🦎</span>}
+                                >
+                                    <MembershipSection />
+                                </UserButton.UserProfilePage>
+                            </UserButton>
                         </div>
                     </SignedIn>
                 </div>

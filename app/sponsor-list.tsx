@@ -2,6 +2,7 @@ import Image from 'next/image';
 import './homepage.css';
 import Link from "next/link";
 import { TinaMarkdown } from 'tinacms/dist/rich-text';
+import KoboldSignupCard from './KoboldSignupCard';
 
 export default function SponsorList(props) {
     const locale = props.locale || 'nl';
@@ -9,15 +10,7 @@ export default function SponsorList(props) {
     return (
         <>
             <div className="sponsor-list">
-                <Link href={'https://docs.google.com/forms/d/e/1FAIpQLScygq4PGugYAoluEoRRPiQToz9kuYW2YYCYq_E1ChfPgADDZQ/viewform?usp=header'} key="Signup" className="sponsor-snippet red-hover" style={{background: 'var(--primary_dark)'}}>
-                <h2>{locale === 'nl' ? 'Word een Kobold!' : 'Become a Kobold!'}</h2>
-                <p>
-                    {locale === 'nl' 
-                        ? 'Klik hier om Tarragon lid te worden en krijg toegang tot exclusieve deals en kortingen op evenementen!' 
-                        : 'Click here to go to become a Tarragon member to get access to membership deals and discounts on events!'
-                    }
-                </p>
-                </Link>
+                <KoboldSignupCard locale={locale} />
                 {props.data.sponsorConnection.edges
                     .map((sponsor) => (SponsorSnippet(sponsor)))
                 }
