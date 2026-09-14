@@ -110,6 +110,7 @@ export default function DragonAdminPage() {
     body: string;
     groups: { name: string; description?: string; maxSlots: number }[];
   } | null>(null);
+  const [eventDateLocal, setEventDateLocal] = useState("");
   const [savingEvent, setSavingEvent] = useState(false);
   const [deletingEventId, setDeletingEventId] = useState<string | null>(null);
   const [eventModalError, setEventModalError] = useState<string | null>(null);
@@ -323,6 +324,7 @@ export default function DragonAdminPage() {
     const dateStr = brusselsLocalToUtcIso(defaultLocal);
     const slugDate = todayDate.replace(/-/g, "");
 
+    setEventDateLocal(defaultLocal);
     setEditingEvent({
       slug: `${slugDate}_Event`,
       title: "",
@@ -334,6 +336,8 @@ export default function DragonAdminPage() {
   };
 
   const handleOpenEditEvent = (ev: any) => {
+    const localStr = utcIsoToBrusselsLocal(ev.date) || "";
+    setEventDateLocal(localStr);
     setEditingEvent({
       _id: ev._id,
       slug: ev.slug,
@@ -357,6 +361,16 @@ export default function DragonAdminPage() {
       setEventModalError("Event slug is required.");
       return;
     }
+    if (!eventDateLocal) {
+      setEventModalError("Date and start time are required.");
+      return;
+    }
+
+    const utcIso = brusselsLocalToUtcIso(eventDateLocal);
+    if (!utcIso) {
+      setEventModalError("Invalid Date or Time format.");
+      return;
+    }
 
     setSavingEvent(true);
     setEventModalError(null);
@@ -366,7 +380,7 @@ export default function DragonAdminPage() {
         id: editingEvent._id,
         slug: editingEvent.slug,
         title: editingEvent.title,
-        date: editingEvent.date,
+        date: utcIso,
         body: editingEvent.body,
         groups: editingEvent.groups,
       });
@@ -695,12 +709,18 @@ export default function DragonAdminPage() {
     return matchesSearch && matchesRole;
   });
 
-  const filteredEvents = (events || []).filter((ev) => {
-    return (
-      ev.title.toLowerCase().includes(eventSearchQuery.toLowerCase()) ||
-      ev.slug.toLowerCase().includes(eventSearchQuery.toLowerCase())
-    );
-  });
+  const filteredEvents = (events ? [...events] : [])
+    .filter((ev) => {
+      return (
+        ev.title.toLowerCase().includes(eventSearchQuery.toLowerCase()) ||
+        ev.slug.toLowerCase().includes(eventSearchQuery.toLowerCase())
+      );
+    })
+    .sort((a, b) => {
+      const timeA = new Date(a.date).getTime() || 0;
+      const timeB = new Date(b.date).getTime() || 0;
+      return timeB - timeA; // Newest / latest dates first
+    });
 
   const filteredDragons = (dragons || []).filter((d) => {
     return (
@@ -1050,7 +1070,12 @@ export default function DragonAdminPage() {
                         onClick={() => handleOpenEditEvent(ev)}
                       >
                         <td style={{ color: "var(--secondary)", whiteSpace: "nowrap" }}>
-                          {formattedDate} {formattedTime && <span style={{ opacity: 0.75, fontSize: "0.85em" }}>({formattedTime})</span>}
+                          <div style={{ display: "flex", flexDirection: "column", gap: "0.2rem" }}>
+                            <span style={{ fontWeight: 600, color: "var(--light)" }}>{formattedDate}</span>
+                            <span style={{ fontSize: "0.82rem", color: "var(--secondary)", fontWeight: 500 }}>
+                              {formattedTime ? `⏰ ${formattedTime}` : "—"}
+                            </span>
+                          </div>
                         </td>
                         <td style={{ fontWeight: 600, color: "var(--light)" }}>
                           {ev.title}
@@ -1143,7 +1168,7 @@ export default function DragonAdminPage() {
                       if (!editingEvent._id) {
                         // Generate slug suggestion from title + date
                         const slugSuffix = title.replace(/[^a-zA-Z0-9]/g, "");
-                        const datePrefix = editingEvent.date.slice(0, 10).replace(/-/g, "");
+                        const datePrefix = eventDateLocal ? eventDateLocal.slice(0, 10).replace(/-/g, "") : "";
                         setEditingEvent({
                           ...editingEvent,
                           title,
@@ -1177,20 +1202,14 @@ export default function DragonAdminPage() {
                   </div>
 
                   <div className="dragon-form-group">
-                    <label htmlFor="event-date">Date & Time (Brussels / CEST 24h) *</label>
+                    <label htmlFor="event-date">Date & Start Time (Brussels 24h) *</label>
                     <input
                       id="event-date"
                       type="datetime-local"
                       required
                       className="dragon-form-input"
-                      value={utcIsoToBrusselsLocal(editingEvent.date)}
-                      onChange={(e) => {
-                        const utcIso = brusselsLocalToUtcIso(e.target.value);
-                        setEditingEvent({
-                          ...editingEvent,
-                          date: utcIso || e.target.value,
-                        });
-                      }}
+                      value={eventDateLocal}
+                      onChange={(e) => setEventDateLocal(e.target.value)}
                     />
                   </div>
                 </div>

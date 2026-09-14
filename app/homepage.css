@@ -661,6 +661,7 @@
     text-decoration: none !important;
     transition: all 0.15s ease;
     overflow: hidden;
+    position: relative;
 }
 
 .daybox-guild-badge:hover {
@@ -679,6 +680,26 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
+}
+
+.daybox-guild-full-icon {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: rgba(220, 38, 38, 0.35);
+    border: 1px solid rgba(239, 68, 68, 0.7);
+    color: #fca5a5;
+    border-radius: 0.25rem;
+    padding: 0.08rem 0.25rem;
+    font-size: 0.55rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    text-transform: uppercase;
 }
 
 /* Compact Events Section */

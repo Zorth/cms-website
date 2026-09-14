@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useQuery } from 'convex/react';
 import { api } from '../convex/_generated/api';
-import { Calendar as CalendarIcon, Clock, ChevronRight, Users, Sparkles, ExternalLink } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, ChevronRight, Users, Sparkles } from 'lucide-react';
 import VoidLogo from '../public/images/Void_Logo_WhiteTransparent.png';
 
 interface EventListProps {
@@ -25,10 +25,6 @@ interface GuildSession {
   locked?: boolean;
   planning?: boolean;
 }
-
-type UnifiedItem = 
-  | { kind: 'convex'; data: any; sortDate: Date }
-  | { kind: 'guild'; data: GuildSession; sortDate: Date };
 
 export default function EventList({ locale = 'nl' }: EventListProps) {
   // Brussels time calculations
@@ -164,32 +160,11 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
     return map;
   }, [guildSessions]);
 
-  // Combined list sorted chronologically
-  const unifiedEventsList = useMemo(() => {
-    const items: UnifiedItem[] = [];
-
-    if (futureEvents) {
-      for (const ev of futureEvents) {
-        items.push({ kind: 'convex', data: ev, sortDate: new Date(ev.date) });
-      }
-    }
-
-    const startOfToday = new Date(nowDate);
-    startOfToday.setHours(0, 0, 0, 0);
-    const sixMonthsLater = new Date(startOfToday);
-    sixMonthsLater.setMonth(sixMonthsLater.getMonth() + 6);
-
-    for (const s of guildSessions) {
-      if (!s.date) continue;
-      const sDate = new Date(s.date);
-      if (sDate >= startOfToday && sDate <= sixMonthsLater) {
-        items.push({ kind: 'guild', data: s, sortDate: sDate });
-      }
-    }
-
-    items.sort((a, b) => a.sortDate.getTime() - b.sortDate.getTime());
-    return items;
-  }, [futureEvents, guildSessions, nowDate]);
+  // Sorted upcoming Convex events for the compact list
+  const upcomingEvents = useMemo(() => {
+    if (!futureEvents) return [];
+    return [...futureEvents].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  }, [futureEvents]);
 
   // If loading
   if (futureEvents === undefined) {
@@ -287,6 +262,10 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
                       ? `${session.system} ${session.level ? `(Lvl ${session.level})` : 'Session'}`
                       : 'Void Session';
 
+                    const playersCount = session.characters?.length || 0;
+                    const maxPlayers = session.maxPlayers || 6;
+                    const isFull = Boolean(session.locked || playersCount >= maxPlayers);
+
                     return (
                       <a
                         key={session._id}
@@ -294,7 +273,7 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="daybox-guild-badge"
-                        title={`Guild Session: ${sessionTitle} - Click to open on Guild of The Void`}
+                        title={`Guild Session: ${sessionTitle} (${isFull ? (locale === 'nl' ? 'Volzet' : 'Full') : `${playersCount}/${maxPlayers}`}) - Click to open on Guild of The Void`}
                       >
                         <Image
                           src={VoidLogo}
@@ -304,6 +283,11 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
                           className="daybox-void-logo"
                         />
                         <span className="daybox-guild-name">{sessionTitle}</span>
+                        {isFull && (
+                          <span className="daybox-guild-full-icon" title={locale === 'nl' ? 'Volzet' : 'Full'}>
+                            {locale === 'nl' ? 'VOL' : 'FULL'}
+                          </span>
+                        )}
                       </a>
                     );
                   })}
@@ -320,16 +304,16 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
         </div>
       </div>
 
-      {/* Compact List of All Upcoming Events & Guild Sessions in Next 6 Months */}
+      {/* Compact List of Upcoming Events in Next 6 Months */}
       <div className="compact-events-section">
         <div className="compact-events-header">
           <span>{locale === 'nl' ? 'Evenementenkalender' : 'Schedule'}</span>
-          <span className="count-badge">{unifiedEventsList.length}</span>
+          <span className="count-badge">{upcomingEvents.length}</span>
         </div>
 
         <div className="compact-events-list">
-          {unifiedEventsList.map((item) => {
-            const evDate = item.sortDate;
+          {upcomingEvents.map((event) => {
+            const evDate = new Date(event.date);
             const weekday = evDate.toLocaleDateString(locale === 'nl' ? 'nl-BE' : 'en-US', {
               timeZone: 'Europe/Brussels',
               weekday: 'short',
@@ -349,76 +333,20 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
               hour12: false,
             });
 
-            if (item.kind === 'convex') {
-              const event = item.data;
-              const groups = event.groups || [];
-              const hasGroups = groups.length > 0;
-              const totalSlots = hasGroups
-                ? groups.reduce((acc: number, g: any) => acc + (g.maxSlots || 0), 0)
-                : 0;
-
-              return (
-                <Link
-                  key={`convex-${event._id}`}
-                  href={`/event/${event.slug}`}
-                  className="compact-event-row"
-                >
-                  {/* Date Capsule (Placed cleanly on Left) */}
-                  <div className="compact-date-capsule">
-                    <span className="compact-date-weekday">{weekday}</span>
-                    <span className="compact-date-day">{dayNum}</span>
-                    <span className="compact-date-month">{monthShort}</span>
-                  </div>
-
-                  {/* Event Details */}
-                  <div className="compact-event-info">
-                    <div className="compact-title-row">
-                      <h2 className="compact-event-title">{event.title}</h2>
-                      {hasGroups && (
-                        <span className="compact-slots-badge">
-                          <Users size={12} />
-                          <span>
-                            {groups.length} {locale === 'nl' ? 'tafels' : 'tables'} ({totalSlots} {locale === 'nl' ? 'plekken' : 'slots'})
-                          </span>
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="compact-event-meta">
-                      <span className="compact-meta-time">
-                        <Clock size={13} />
-                        <span>{timeStr}</span>
-                      </span>
-                      <span className="compact-meta-location">
-                        {event.location || 'Het Textielhuis, Kortrijk'}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Arrow Icon */}
-                  <div className="compact-event-arrow">
-                    <ChevronRight size={18} />
-                  </div>
-                </Link>
-              );
-            }
-
-            // Guild of The Void session row
-            const session = item.data;
-            const systemLabel = session.system === 'PF' ? 'Pathfinder 2e' : session.system === 'DnD' ? 'D&D 5e' : (session.system || 'TTRPG');
-            const playersCount = session.characters ? session.characters.length : 0;
-            const maxPlayers = session.maxPlayers || 6;
+            const groups = event.groups || [];
+            const hasGroups = groups.length > 0;
+            const totalSlots = hasGroups
+              ? groups.reduce((acc: number, g: any) => acc + (g.maxSlots || 0), 0)
+              : 0;
 
             return (
-              <a
-                key={`guild-${session._id}`}
-                href={`https://guild.tarragon.be/sessions/${session._id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="compact-event-row compact-guild-row"
+              <Link
+                key={`convex-${event._id}`}
+                href={`/event/${event.slug}`}
+                className="compact-event-row"
               >
                 {/* Date Capsule (Placed cleanly on Left) */}
-                <div className="compact-date-capsule guild-date-capsule">
+                <div className="compact-date-capsule">
                   <span className="compact-date-weekday">{weekday}</span>
                   <span className="compact-date-day">{dayNum}</span>
                   <span className="compact-date-month">{monthShort}</span>
@@ -427,29 +355,15 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
                 {/* Event Details */}
                 <div className="compact-event-info">
                   <div className="compact-title-row">
-                    <div className="guild-title-container">
-                      <div className="guild-inline-logo">
-                        <Image
-                          src={VoidLogo}
-                          alt="Void Guild"
-                          width={14}
-                          height={14}
-                          style={{ objectFit: 'contain' }}
-                        />
-                      </div>
-                      <h2 className="compact-event-title">
-                        {session.questName || `${systemLabel} Session ${session.level ? `(Lvl ${session.level})` : ''}`}
-                      </h2>
-                    </div>
-                    <span className="compact-guild-tag">
-                      Guild of The Void
-                    </span>
-                    <span className="compact-slots-badge guild-slots-badge">
-                      <Users size={12} />
-                      <span>
-                        {playersCount} / {maxPlayers} {locale === 'nl' ? 'spelers' : 'players'}
+                    <h2 className="compact-event-title">{event.title}</h2>
+                    {hasGroups && (
+                      <span className="compact-slots-badge">
+                        <Users size={12} />
+                        <span>
+                          {groups.length} {locale === 'nl' ? 'tafels' : 'tables'} ({totalSlots} {locale === 'nl' ? 'plekken' : 'slots'})
+                        </span>
                       </span>
-                    </span>
+                    )}
                   </div>
 
                   <div className="compact-event-meta">
@@ -458,16 +372,16 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
                       <span>{timeStr}</span>
                     </span>
                     <span className="compact-meta-location">
-                      {session.location?.startsWith('http') ? 'Het Textielhuis, Kortrijk' : (session.location || 'Het Textielhuis, Kortrijk')}
+                      Het Textielhuis, Kortrijk
                     </span>
                   </div>
                 </div>
 
-                {/* External Link Icon */}
-                <div className="compact-event-arrow guild-arrow">
-                  <ExternalLink size={16} />
+                {/* Arrow Icon */}
+                <div className="compact-event-arrow">
+                  <ChevronRight size={18} />
                 </div>
-              </a>
+              </Link>
             );
           })}
         </div>
