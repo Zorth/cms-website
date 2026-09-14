@@ -94,17 +94,20 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                     <Link href="https://www.instagram.com/tarragonvzw">Instagram</Link>
                     <Link href="https://discord.com/invite/TjDUu2Gkag">Discord</Link>
                 </div>
-                <small>Tarragon v.z.w.  
-                    Sint-Jansstraat 21,  
-                    8500 Kortrijk  
-                    BE 0799.673.542  
-                    RPR  
-                    contact@tarragon.be  
-                    www.tarragon.be<br/>
-                    Copyright 2024 Tarragon VZW, All rights reserved<br/><br/>
-                    <Link href={`/${locale}/${locale === 'nl' ? 'Voorwaarden' : 'ToS'}`}>
-                        {locale === 'nl' ? 'Lidmaatschap Voorwaarden' : 'Membership ToS'}
-                    </Link>
+                <small>
+                    <strong>Tarragon VZW</strong><br/>
+                    Wijngaardstraat 15 bus 13, 8500 Kortrijk, Belgium<br/>
+                    KBO / BTW: BE 0799.673.542 | RPR Gent (afdeling Kortrijk)<br/>
+                    contact@tarragon.be | www.tarragon.be<br/><br/>
+                    © {new Date().getFullYear()} Tarragon VZW. All rights reserved.<br/><br/>
+                    <span style={{ display: 'inline-flex', gap: '1.25rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+                        <Link href={`/${locale}/${locale === 'nl' ? 'Voorwaarden' : 'ToS'}`}>
+                            {locale === 'nl' ? 'Algemene Voorwaarden' : 'Terms of Service'}
+                        </Link>
+                        <Link href={`/${locale}/${locale === 'nl' ? 'Privacy-Beleid' : 'Privacy-Policy'}`}>
+                            {locale === 'nl' ? 'Privacy- & Cookiebeleid (GDPR)' : 'Privacy & Cookies (GDPR)'}
+                        </Link>
+                    </span>
                 </small>
             </div>
         </div>

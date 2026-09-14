@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, FormEvent } from "react";
+import Link from "next/link";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { User, Mail, CheckCircle2, Loader2 } from "lucide-react";
@@ -133,6 +134,10 @@ export default function SignupSystem({
               "Confirm Registration"
             )}
           </button>
+          <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.75rem', textAlign: 'center', lineHeight: 1.4 }}>
+            We only use your name and email to manage this registration and send your confirmation token.
+            See our <Link href="/nl/Privacy-Beleid" style={{ color: 'var(--secondary)', textDecoration: 'underline' }}>Privacy Policy</Link>.
+          </p>
         </form>
       )}
 

@@ -93,9 +93,11 @@ export async function createKoboldCheckoutSessionAction(returnPath: string = "/"
         quantity: 1,
       },
     ],
-    // Essential for Belgian / European VAT (BTW) compliance
     tax_id_collection: {
       enabled: true,
+    },
+    consent_collection: {
+      terms_of_service: "required",
     },
     customer_update: {
       name: "auto",

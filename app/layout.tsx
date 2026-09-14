@@ -4,6 +4,7 @@ import localFont from 'next/font/local';
 import { Metadata } from 'next';
 
 import Header from './Header';
+import CookieBanner from '../components/CookieBanner';
 import ConvexClientProvider from './ConvexClientProvider';
 import { ClerkProvider } from '@clerk/nextjs';
 
@@ -92,7 +93,7 @@ export default function RootLayout({
                             "description": "VZW in Kortrijk voor Tabletop RPGs (D&D), bordspellen, LARP en geek cultuur. Wekelijkse evenementen in Het Textielhuis.",
                             "address": {
                                 "@type": "PostalAddress",
-                                "streetAddress": "Rijselsestraat 19",
+                                "streetAddress": "Wijngaardstraat 15 bus 13",
                                 "addressLocality": "Kortrijk",
                                 "postalCode": "8500",
                                 "addressRegion": "West-Vlaanderen",
@@ -129,6 +130,7 @@ export default function RootLayout({
                         <main className="main-wrapper">
                             {children}
                         </main>
+                        <CookieBanner />
                     </ConvexClientProvider>
                 </ClerkProvider>
             </body>
