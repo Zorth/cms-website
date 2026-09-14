@@ -41,21 +41,20 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
     return () => clearInterval(interval);
   }, []);
 
-  // Fetch upcoming sessions from Guild API
+  // Fetch upcoming sessions from internal API proxy (to avoid CORS)
   useEffect(() => {
     let isCancelled = false;
     async function fetchGuildSessions() {
       try {
-        const res = await fetch('https://guild.tarragon.be/api/external/v1/sessions?past=false');
+        const res = await fetch('/api/guild/sessions');
         if (!res.ok) return;
         const data = await res.json();
         if (!isCancelled && Array.isArray(data)) {
-          // Filter only sessions that have an explicit scheduled date
+          // Filter only sessions that have an explicit scheduled date and are not planning
           const scheduled = data.filter((s: GuildSession) => typeof s.date === 'number' && !s.planning);
           setGuildSessions(scheduled);
         }
       } catch (err) {
-        // Silently fail if external API is unreachable
         console.error('Failed to load Guild sessions:', err);
       }
     }
@@ -197,8 +196,10 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
     return (
       <div className="eventbox">
         <div className="eventbox-header-title">
-          <CalendarIcon size={20} className="eventbox-title-icon" />
-          <h1>{locale === 'nl' ? 'Aankomende Evenementen' : 'Upcoming Events'}</h1>
+          <div className="title-left">
+            <CalendarIcon size={22} className="eventbox-title-icon" />
+            <h1>{locale === 'nl' ? 'Aankomende Evenementen' : 'Upcoming Events'}</h1>
+          </div>
         </div>
         <div className="eventbox-loading">
           <span>{locale === 'nl' ? 'Evenementen laden...' : 'Loading events...'}</span>
@@ -280,7 +281,9 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
 
                   {/* Guild Sessions Badges */}
                   {daySessions.map((session) => {
-                    const sessionTitle = session.system 
+                    const sessionTitle = session.questName
+                      ? session.questName
+                      : session.system 
                       ? `${session.system} ${session.level ? `(Lvl ${session.level})` : 'Session'}`
                       : 'Void Session';
 
@@ -331,12 +334,14 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
               timeZone: 'Europe/Brussels',
               weekday: 'short',
             });
-            const dayMonth = evDate.toLocaleDateString(locale === 'nl' ? 'nl-BE' : 'en-US', {
+            const dayNum = evDate.toLocaleDateString('default', {
               timeZone: 'Europe/Brussels',
               day: 'numeric',
+            });
+            const monthShort = evDate.toLocaleDateString(locale === 'nl' ? 'nl-BE' : 'en-US', {
+              timeZone: 'Europe/Brussels',
               month: 'short',
             });
-            const year = evDate.getFullYear();
             const timeStr = evDate.toLocaleTimeString('en-GB', {
               timeZone: 'Europe/Brussels',
               hour: '2-digit',
@@ -358,11 +363,11 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
                   href={`/event/${event.slug}`}
                   className="compact-event-row"
                 >
-                  {/* Date Capsule */}
+                  {/* Date Capsule (Placed cleanly on Left) */}
                   <div className="compact-date-capsule">
                     <span className="compact-date-weekday">{weekday}</span>
-                    <span className="compact-date-day">{dayMonth}</span>
-                    <span className="compact-date-year">{year}</span>
+                    <span className="compact-date-day">{dayNum}</span>
+                    <span className="compact-date-month">{monthShort}</span>
                   </div>
 
                   {/* Event Details */}
@@ -385,7 +390,7 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
                         <span>{timeStr}</span>
                       </span>
                       <span className="compact-meta-location">
-                        Het Textielhuis, Kortrijk
+                        {event.location || 'Het Textielhuis, Kortrijk'}
                       </span>
                     </div>
                   </div>
@@ -412,11 +417,11 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
                 rel="noopener noreferrer"
                 className="compact-event-row compact-guild-row"
               >
-                {/* Date Capsule */}
+                {/* Date Capsule (Placed cleanly on Left) */}
                 <div className="compact-date-capsule guild-date-capsule">
                   <span className="compact-date-weekday">{weekday}</span>
-                  <span className="compact-date-day">{dayMonth}</span>
-                  <span className="compact-date-year">{year}</span>
+                  <span className="compact-date-day">{dayNum}</span>
+                  <span className="compact-date-month">{monthShort}</span>
                 </div>
 
                 {/* Event Details */}
@@ -427,13 +432,13 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
                         <Image
                           src={VoidLogo}
                           alt="Void Guild"
-                          width={18}
-                          height={18}
+                          width={14}
+                          height={14}
                           style={{ objectFit: 'contain' }}
                         />
                       </div>
                       <h2 className="compact-event-title">
-                        {systemLabel} Session {session.level ? `(Level ${session.level})` : ''}
+                        {session.questName || `${systemLabel} Session ${session.level ? `(Lvl ${session.level})` : ''}`}
                       </h2>
                     </div>
                     <span className="compact-guild-tag">
@@ -467,539 +472,6 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
           })}
         </div>
       </div>
-
-      <style jsx>{`
-        .eventbox {
-          grid-column: span 12;
-          background: var(--dark);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 1.25rem;
-          padding: 1.75rem;
-          display: flex;
-          flex-direction: column;
-          gap: 1.75rem;
-          box-shadow: var(--shadow-lg);
-          width: 100%;
-        }
-
-        .eventbox-header-title {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          flex-wrap: wrap;
-          gap: 0.75rem;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-          padding-bottom: 1rem;
-        }
-
-        .title-left {
-          display: flex;
-          align-items: center;
-          gap: 0.6rem;
-        }
-
-        .eventbox-title-icon {
-          color: var(--secondary);
-        }
-
-        .eventbox-header-title h1 {
-          font-size: 1.6rem;
-          margin: 0;
-          color: var(--light);
-          font-family: var(--font-rockwell), serif;
-        }
-
-        .eventbox-window-tag {
-          font-size: 0.78rem;
-          font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-          color: var(--secondary);
-          background: rgba(151, 183, 142, 0.12);
-          border: 1px solid rgba(151, 183, 142, 0.25);
-          padding: 0.3rem 0.75rem;
-          border-radius: 2rem;
-        }
-
-        .eventbox-loading {
-          padding: 2rem;
-          text-align: center;
-          color: var(--secondary);
-          font-size: 0.95rem;
-        }
-
-        /* Six Day Overview */
-        .six-day-overview {
-          display: flex;
-          flex-direction: column;
-          gap: 0.65rem;
-        }
-
-        .six-day-label {
-          font-size: 0.8rem;
-          font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-          color: rgba(242, 211, 180, 0.6);
-        }
-
-        .dayboxes-grid {
-          display: grid;
-          grid-template-columns: repeat(6, 1fr);
-          gap: 0.6rem;
-        }
-
-        @media (max-width: 768px) {
-          .dayboxes-grid {
-            grid-template-columns: repeat(3, 1fr);
-          }
-        }
-
-        @media (max-width: 480px) {
-          .dayboxes-grid {
-            grid-template-columns: repeat(2, 1fr);
-          }
-        }
-
-        .daybox-card {
-          background: rgba(0, 0, 0, 0.25);
-          border-radius: 0.75rem;
-          padding: 0.75rem 0.65rem;
-          display: flex;
-          flex-direction: column;
-          min-height: 95px;
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          transition: all 0.2s ease;
-          position: relative;
-        }
-
-        .daybox-default {
-          opacity: 0.85;
-        }
-
-        .daybox-card.is-today {
-          border-color: rgba(151, 183, 142, 0.4);
-          background: rgba(151, 183, 142, 0.05);
-        }
-
-        /* Highlighted Daybox when there is an event */
-        .daybox-highlighted {
-          border: 1.5px solid var(--secondary) !important;
-          background: rgba(151, 183, 142, 0.15) !important;
-          box-shadow: 0 0 14px rgba(151, 183, 142, 0.18);
-          opacity: 1;
-        }
-
-        .daybox-highlighted:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 18px rgba(151, 183, 142, 0.28);
-        }
-
-        /* Highlighted Daybox when there is a Guild session */
-        .daybox-guild-highlighted {
-          border: 1.5px solid #a855f7 !important;
-          background: rgba(168, 85, 247, 0.12) !important;
-          box-shadow: 0 0 14px rgba(168, 85, 247, 0.18);
-          opacity: 1;
-        }
-
-        .daybox-guild-highlighted:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 18px rgba(168, 85, 247, 0.28);
-        }
-
-        .daybox-header {
-          display: flex;
-          flex-direction: column;
-          gap: 0.2rem;
-          margin-bottom: 0.4rem;
-        }
-
-        .today-badge {
-          font-size: 0.62rem;
-          font-weight: 800;
-          color: var(--secondary);
-          letter-spacing: 0.06em;
-          line-height: 1;
-        }
-
-        .daybox-date-row {
-          display: flex;
-          align-items: baseline;
-          justify-content: space-between;
-        }
-
-        .daybox-weekday {
-          font-size: 0.75rem;
-          font-weight: 600;
-          text-transform: capitalize;
-          color: rgba(242, 211, 180, 0.7);
-        }
-
-        .daybox-number {
-          font-size: 1.15rem;
-          font-weight: 800;
-          color: var(--light);
-          line-height: 1;
-        }
-
-        .daybox-content {
-          margin-top: auto;
-          display: flex;
-          flex-direction: column;
-          gap: 0.25rem;
-        }
-
-        .daybox-empty {
-          font-size: 0.8rem;
-          color: rgba(255, 255, 255, 0.15);
-          text-align: center;
-        }
-
-        .daybox-event-link {
-          text-decoration: none;
-          display: flex;
-          flex-direction: column;
-          gap: 0.2rem;
-        }
-
-        .daybox-event-badge {
-          display: flex;
-          align-items: center;
-          gap: 0.25rem;
-          background: var(--secondary);
-          color: #1a221d;
-          border-radius: 0.4rem;
-          padding: 0.2rem 0.4rem;
-          font-weight: 700;
-          font-size: 0.68rem;
-          line-height: 1.2;
-          overflow: hidden;
-        }
-
-        .badge-sparkle {
-          flex-shrink: 0;
-        }
-
-        .daybox-event-name {
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .daybox-more-count {
-          font-size: 0.62rem;
-          color: var(--secondary);
-          font-weight: 600;
-          text-align: right;
-        }
-
-        /* Guild badge inside Daybox */
-        .daybox-guild-badge {
-          display: flex;
-          align-items: center;
-          gap: 0.35rem;
-          background: rgba(168, 85, 247, 0.2);
-          border: 1px solid rgba(168, 85, 247, 0.45);
-          color: #f3e8ff;
-          border-radius: 0.4rem;
-          padding: 0.2rem 0.4rem;
-          font-weight: 700;
-          font-size: 0.68rem;
-          line-height: 1.2;
-          text-decoration: none !important;
-          transition: all 0.15s ease;
-          overflow: hidden;
-        }
-
-        .daybox-guild-badge:hover {
-          background: rgba(168, 85, 247, 0.35);
-          border-color: #c084fc;
-          transform: scale(1.02);
-        }
-
-        .daybox-void-logo {
-          flex-shrink: 0;
-          object-fit: contain;
-          filter: drop-shadow(0 0 4px rgba(168, 85, 247, 0.6));
-        }
-
-        .daybox-guild-name {
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        /* Compact Events Section */
-        .compact-events-section {
-          display: flex;
-          flex-direction: column;
-          gap: 0.75rem;
-          width: 100%;
-        }
-
-        .compact-events-header {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          font-size: 0.8rem;
-          font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-          color: rgba(242, 211, 180, 0.6);
-        }
-
-        .count-badge {
-          background: rgba(255, 255, 255, 0.1);
-          color: var(--light);
-          font-size: 0.7rem;
-          padding: 0.1rem 0.45rem;
-          border-radius: 1rem;
-        }
-
-        .compact-events-list {
-          display: flex;
-          flex-direction: column;
-          gap: 0.6rem;
-          width: 100%;
-        }
-
-        .compact-event-row {
-          display: flex !important;
-          flex-direction: row !important;
-          align-items: center !important;
-          gap: 1.15rem;
-          background: rgba(0, 0, 0, 0.25);
-          border: 1px solid rgba(255, 255, 255, 0.07);
-          border-radius: 0.75rem;
-          padding: 0.65rem 1rem;
-          text-decoration: none !important;
-          transition: all 0.2s ease;
-          width: 100%;
-          box-sizing: border-box;
-        }
-
-        .compact-event-row:hover {
-          background: rgba(151, 183, 142, 0.09);
-          border-color: rgba(151, 183, 142, 0.35);
-          transform: translateX(3px);
-        }
-
-        /* Clean Date Capsule (Left of Title) */
-        .compact-date-capsule {
-          display: flex !important;
-          flex-direction: column !important;
-          align-items: center !important;
-          justify-content: center !important;
-          width: 54px;
-          min-width: 54px;
-          max-width: 54px;
-          height: 54px;
-          padding: 0.25rem;
-          background: rgba(0, 0, 0, 0.45);
-          border: 1.5px solid rgba(151, 183, 142, 0.3);
-          border-radius: 0.55rem;
-          line-height: 1;
-          flex-shrink: 0;
-          box-sizing: border-box;
-        }
-
-        .compact-date-weekday {
-          font-size: 0.62rem;
-          font-weight: 700;
-          text-transform: uppercase;
-          color: var(--secondary);
-          letter-spacing: 0.05em;
-          margin-bottom: 0.15rem;
-        }
-
-        .compact-date-day {
-          font-size: 1.1rem;
-          font-weight: 800;
-          color: var(--light);
-          line-height: 1;
-          margin: 0;
-        }
-
-        .compact-date-year {
-          font-size: 0.6rem;
-          color: rgba(255, 255, 255, 0.45);
-          margin-top: 0.15rem;
-        }
-
-        /* Info */
-        .compact-event-info {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          gap: 0.3rem;
-          min-width: 0;
-        }
-
-        .compact-title-row {
-          display: flex;
-          align-items: center;
-          flex-wrap: wrap;
-          gap: 0.5rem;
-        }
-
-        .compact-event-title {
-          font-size: 1.05rem;
-          margin: 0;
-          color: var(--light);
-          font-weight: 700;
-          font-family: var(--font-rockwell), serif;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .compact-slots-badge {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.25rem;
-          font-size: 0.7rem;
-          color: var(--secondary);
-          background: rgba(151, 183, 142, 0.1);
-          border: 1px solid rgba(151, 183, 142, 0.25);
-          padding: 0.1rem 0.45rem;
-          border-radius: 1rem;
-          font-weight: 600;
-        }
-
-        .compact-event-meta {
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-          font-size: 0.8rem;
-          color: #94a3b8;
-        }
-
-        .compact-meta-time {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.25rem;
-          color: var(--secondary);
-          font-weight: 600;
-          font-feature-settings: "tnum";
-        }
-
-        .compact-meta-location {
-          color: rgba(255, 255, 255, 0.5);
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .compact-event-arrow {
-          color: rgba(255, 255, 255, 0.3);
-          transition: transform 0.2s ease, color 0.2s ease;
-          flex-shrink: 0;
-          display: flex;
-          align-items: center;
-        }
-
-        .compact-event-row:hover .compact-event-arrow {
-          color: var(--secondary);
-          transform: translateX(3px);
-        }
-
-        /* Guild Row Styles */
-        .compact-guild-row {
-          border-color: rgba(168, 85, 247, 0.2);
-          background: rgba(168, 85, 247, 0.05);
-        }
-
-        .compact-guild-row:hover {
-          background: rgba(168, 85, 247, 0.12);
-          border-color: rgba(168, 85, 247, 0.45);
-        }
-
-        .guild-date-capsule {
-          border-color: rgba(168, 85, 247, 0.4);
-        }
-
-        .guild-date-capsule .compact-date-weekday {
-          color: #c084fc;
-        }
-
-        .guild-title-container {
-          display: flex;
-          align-items: center;
-          gap: 0.45rem;
-          min-width: 0;
-        }
-
-        .guild-inline-logo {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-          background: rgba(168, 85, 247, 0.2);
-          border: 1px solid rgba(168, 85, 247, 0.4);
-          border-radius: 0.35rem;
-          padding: 0.12rem;
-        }
-
-        .compact-guild-tag {
-          font-size: 0.65rem;
-          font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-          color: #c084fc;
-          background: rgba(168, 85, 247, 0.12);
-          border: 1px solid rgba(168, 85, 247, 0.3);
-          padding: 0.1rem 0.45rem;
-          border-radius: 1rem;
-        }
-
-        .guild-slots-badge {
-          color: #e9d5ff;
-          background: rgba(168, 85, 247, 0.1);
-          border-color: rgba(168, 85, 247, 0.25);
-        }
-
-        .compact-guild-row:hover .guild-arrow {
-          color: #c084fc;
-          transform: translate(2px, -2px);
-        }
-
-        @media (max-width: 600px) {
-          .compact-event-row {
-            gap: 0.75rem;
-            padding: 0.6rem 0.75rem;
-          }
-
-          .compact-date-capsule {
-            width: 48px;
-            min-width: 48px;
-            max-width: 48px;
-            height: 48px;
-            padding: 0.2rem;
-          }
-
-          .compact-date-day {
-            font-size: 0.95rem;
-          }
-
-          .compact-date-weekday {
-            font-size: 0.58rem;
-          }
-
-          .compact-date-year {
-            font-size: 0.55rem;
-          }
-
-          .compact-event-title {
-            font-size: 0.95rem;
-          }
-
-          .compact-event-meta {
-            font-size: 0.75rem;
-            gap: 0.5rem;
-          }
-        }
-      `}</style>
     </div>
   );
 }

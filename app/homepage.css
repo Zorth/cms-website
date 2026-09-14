@@ -414,3 +414,550 @@
         font-size: 1.75rem;
     }
 }
+
+/* ==========================================================================
+   EventBox & Compact Events List Styles
+   ========================================================================== */
+
+.eventbox {
+    grid-column: span 12;
+    background: var(--dark);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1.25rem;
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+}
+
+.eventbox-header-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 1rem;
+}
+
+.title-left {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.eventbox-title-icon {
+    color: var(--secondary);
+    flex-shrink: 0;
+}
+
+.eventbox-header-title h1 {
+    font-size: 1.6rem;
+    margin: 0;
+    color: var(--light);
+    font-family: var(--font-rockwell), serif;
+}
+
+.eventbox-window-tag {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--secondary);
+    background: rgba(151, 183, 142, 0.12);
+    border: 1px solid rgba(151, 183, 142, 0.25);
+    padding: 0.3rem 0.75rem;
+    border-radius: 2rem;
+}
+
+.eventbox-loading {
+    padding: 2rem;
+    text-align: center;
+    color: var(--secondary);
+    font-size: 0.95rem;
+}
+
+/* Six Day Overview */
+.six-day-overview {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    width: 100%;
+}
+
+.six-day-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(242, 211, 180, 0.6);
+}
+
+.dayboxes-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.6rem;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .dayboxes-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .dayboxes-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.daybox-card {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 0.75rem;
+    padding: 0.75rem 0.65rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 95px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.2s ease;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.daybox-default {
+    opacity: 0.85;
+}
+
+.daybox-card.is-today {
+    border-color: rgba(151, 183, 142, 0.4);
+    background: rgba(151, 183, 142, 0.05);
+}
+
+.daybox-highlighted {
+    border: 1.5px solid var(--secondary) !important;
+    background: rgba(151, 183, 142, 0.15) !important;
+    box-shadow: 0 0 14px rgba(151, 183, 142, 0.18);
+    opacity: 1;
+}
+
+.daybox-highlighted:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 18px rgba(151, 183, 142, 0.28);
+}
+
+.daybox-guild-highlighted {
+    border: 1.5px solid #a855f7 !important;
+    background: rgba(168, 85, 247, 0.12) !important;
+    box-shadow: 0 0 14px rgba(168, 85, 247, 0.18);
+    opacity: 1;
+}
+
+.daybox-guild-highlighted:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 18px rgba(168, 85, 247, 0.28);
+}
+
+.daybox-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    margin-bottom: 0.4rem;
+}
+
+.today-badge {
+    font-size: 0.62rem;
+    font-weight: 800;
+    color: var(--secondary);
+    letter-spacing: 0.06em;
+    line-height: 1;
+}
+
+.daybox-date-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+.daybox-weekday {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    color: rgba(242, 211, 180, 0.7);
+}
+
+.daybox-number {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--light);
+    line-height: 1;
+}
+
+.daybox-content {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.daybox-empty {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.15);
+    text-align: center;
+}
+
+.daybox-event-link {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.daybox-event-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: var(--secondary);
+    color: #1a221d;
+    border-radius: 0.4rem;
+    padding: 0.2rem 0.4rem;
+    font-weight: 700;
+    font-size: 0.68rem;
+    line-height: 1.2;
+    overflow: hidden;
+}
+
+.badge-sparkle {
+    flex-shrink: 0;
+}
+
+.daybox-event-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.daybox-more-count {
+    font-size: 0.62rem;
+    color: var(--secondary);
+    font-weight: 600;
+    text-align: right;
+}
+
+.daybox-guild-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: rgba(168, 85, 247, 0.2);
+    border: 1px solid rgba(168, 85, 247, 0.45);
+    color: #f3e8ff;
+    border-radius: 0.4rem;
+    padding: 0.2rem 0.4rem;
+    font-weight: 700;
+    font-size: 0.68rem;
+    line-height: 1.2;
+    text-decoration: none !important;
+    transition: all 0.15s ease;
+    overflow: hidden;
+}
+
+.daybox-guild-badge:hover {
+    background: rgba(168, 85, 247, 0.35);
+    border-color: #c084fc;
+    transform: scale(1.02);
+}
+
+.daybox-void-logo {
+    flex-shrink: 0;
+    object-fit: contain;
+    filter: drop-shadow(0 0 4px rgba(168, 85, 247, 0.6));
+}
+
+.daybox-guild-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Compact Events Section */
+.compact-events-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.compact-events-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(242, 211, 180, 0.6);
+}
+
+.count-badge {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--light);
+    font-size: 0.7rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 1rem;
+}
+
+.compact-events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    width: 100%;
+}
+
+/* Compact Event Row (Strict Horizontal Flex Layout) */
+.compact-event-row {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 1.25rem !important;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    text-decoration: none !important;
+    transition: all 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.compact-event-row:hover {
+    background: rgba(151, 183, 142, 0.09);
+    border-color: rgba(151, 183, 142, 0.35);
+    transform: translateX(3px);
+}
+
+/* Date Capsule (Fixed Box on Left of Row) */
+.compact-date-capsule {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 58px !important;
+    min-width: 58px !important;
+    max-width: 58px !important;
+    height: 58px !important;
+    padding: 0.25rem 0.15rem !important;
+    background: rgba(0, 0, 0, 0.45);
+    border: 1.5px solid rgba(151, 183, 142, 0.35);
+    border-radius: 0.55rem;
+    line-height: 1;
+    flex-shrink: 0 !important;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.compact-date-weekday {
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--secondary);
+    letter-spacing: 0.05em;
+    line-height: 1;
+}
+
+.compact-date-day {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--light);
+    line-height: 1.1;
+    margin: 2px 0 1px 0;
+}
+
+.compact-date-month {
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: rgba(242, 211, 180, 0.7);
+    line-height: 1;
+}
+
+/* Center Info Box */
+.compact-event-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+}
+
+.compact-title-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+}
+
+.compact-event-title {
+    font-size: 1.05rem;
+    margin: 0;
+    color: var(--light);
+    font-weight: 700;
+    font-family: var(--font-rockwell), serif;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.25;
+}
+
+.compact-slots-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.72rem;
+    color: var(--secondary);
+    background: rgba(151, 183, 142, 0.12);
+    border: 1px solid rgba(151, 183, 142, 0.28);
+    padding: 0.12rem 0.5rem;
+    border-radius: 1rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.compact-event-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.82rem;
+    color: #94a3b8;
+    flex-wrap: wrap;
+}
+
+.compact-meta-time {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--secondary);
+    font-weight: 600;
+    font-feature-settings: "tnum";
+}
+
+.compact-meta-location {
+    color: rgba(255, 255, 255, 0.5);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Right Arrow */
+.compact-event-arrow {
+    color: rgba(255, 255, 255, 0.3);
+    transition: transform 0.2s ease, color 0.2s ease;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
+.compact-event-row:hover .compact-event-arrow {
+    color: var(--secondary);
+    transform: translateX(3px);
+}
+
+/* Guild Specifics */
+.compact-guild-row {
+    border-color: rgba(168, 85, 247, 0.25);
+    background: rgba(168, 85, 247, 0.05);
+}
+
+.compact-guild-row:hover {
+    background: rgba(168, 85, 247, 0.12);
+    border-color: rgba(168, 85, 247, 0.45);
+}
+
+.guild-date-capsule {
+    border-color: rgba(168, 85, 247, 0.45) !important;
+}
+
+.guild-date-capsule .compact-date-weekday {
+    color: #c084fc !important;
+}
+
+.guild-date-capsule .compact-date-month {
+    color: #e9d5ff !important;
+}
+
+.guild-title-container {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-width: 0;
+}
+
+.guild-inline-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: rgba(168, 85, 247, 0.25);
+    border: 1px solid rgba(168, 85, 247, 0.45);
+    border-radius: 0.35rem;
+    padding: 0.15rem;
+}
+
+.compact-guild-tag {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #c084fc;
+    background: rgba(168, 85, 247, 0.12);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    padding: 0.1rem 0.45rem;
+    border-radius: 1rem;
+    white-space: nowrap;
+}
+
+.guild-slots-badge {
+    color: #e9d5ff;
+    background: rgba(168, 85, 247, 0.12);
+    border-color: rgba(168, 85, 247, 0.3);
+}
+
+.compact-guild-row:hover .guild-arrow {
+    color: #c084fc;
+    transform: translate(2px, -2px);
+}
+
+@media (max-width: 600px) {
+    .compact-event-row {
+        gap: 0.75rem !important;
+        padding: 0.6rem 0.75rem;
+    }
+
+    .compact-date-capsule {
+        width: 50px !important;
+        min-width: 50px !important;
+        max-width: 50px !important;
+        height: 50px !important;
+        padding: 0.15rem !important;
+    }
+
+    .compact-date-day {
+        font-size: 1.05rem;
+    }
+
+    .compact-date-weekday,
+    .compact-date-month {
+        font-size: 0.58rem;
+    }
+
+    .compact-event-title {
+        font-size: 0.95rem;
+    }
+
+    .compact-event-meta {
+        font-size: 0.75rem;
+        gap: 0.5rem;
+    }
+}
