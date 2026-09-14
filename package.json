@@ -28,7 +28,7 @@
     "stripe": "^22.6.2"
   },
   "devDependencies": {
-    "@types/node": "^22.19.15",
+    "@types/node": "^26.5.1",
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",
     "eslint": "8.57.0",
