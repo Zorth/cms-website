@@ -22,6 +22,22 @@ export const signup = mutation({
     eventTitle: v.string(),
   },
   handler: async (ctx, args) => {
+    // Check if user is logged in via Clerk/Convex auth
+    const identity = await ctx.auth.getUserIdentity();
+    let convexUserId: any = undefined;
+
+    if (identity) {
+      const user = await ctx.db
+        .query("users")
+        .withIndex("by_tokenIdentifier", (q) =>
+          q.eq("tokenIdentifier", identity.tokenIdentifier)
+        )
+        .unique();
+      if (user) {
+        convexUserId = user._id;
+      }
+    }
+
     // Check current signups for this group
     const existing = await ctx.db
       .query("signups")
@@ -34,19 +50,25 @@ export const signup = mutation({
       throw new Error("This group is already full!");
     }
 
-    // Check if email already signed up for this event
-    const emailCheck = await ctx.db
+    // Check if user/email already signed up for this event
+    const eventSignups = await ctx.db
       .query("signups")
       .withIndex("by_event", (q) => q.eq("eventSlug", args.eventSlug))
-      .filter((q) => q.eq(q.field("email"), args.email))
-      .unique();
+      .collect();
 
-    if (emailCheck) {
-      throw new Error("You are already signed up for this event!");
+    const alreadySignedUp = eventSignups.some((s) => {
+      if (convexUserId && s.userId === convexUserId) return true;
+      return s.email.toLowerCase() === args.email.toLowerCase();
+    });
+
+    if (alreadySignedUp) {
+      throw new Error("You are already registered for this event!");
     }
 
-    // Generate a simple unique token
-    const cancelToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    // Generate a secure unique cancellation token
+    const cancelToken =
+      Math.random().toString(36).substring(2, 15) +
+      Math.random().toString(36).substring(2, 15);
 
     const id = await ctx.db.insert("signups", {
       eventSlug: args.eventSlug,
@@ -54,6 +76,7 @@ export const signup = mutation({
       name: args.name,
       email: args.email,
       cancelToken,
+      userId: convexUserId,
     });
 
     await ctx.scheduler.runAfter(0, internal.signups.sendConfirmationEmail, {
@@ -82,6 +105,43 @@ export const cancelSignup = mutation({
 
     await ctx.db.delete(signup._id);
     return { success: true, eventTitle: signup.eventSlug, name: signup.name };
+  },
+});
+
+export const cancelMySignup = mutation({
+  args: { signupId: v.id("signups") },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("You must be logged in to cancel your registration.");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_tokenIdentifier", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      )
+      .unique();
+
+    if (!user) {
+      throw new Error("User account not found.");
+    }
+
+    const signup = await ctx.db.get(args.signupId);
+    if (!signup) {
+      throw new Error("Registration not found.");
+    }
+
+    // Allow user to cancel if they own the signup, or if they are a dragon
+    const isOwner = signup.userId === user._id || (user.email && signup.email.toLowerCase() === user.email.toLowerCase());
+    const isDragon = user.role === "dragon";
+
+    if (!isOwner && !isDragon) {
+      throw new Error("You do not have permission to cancel this registration.");
+    }
+
+    await ctx.db.delete(signup._id);
+    return { success: true };
   },
 });
 

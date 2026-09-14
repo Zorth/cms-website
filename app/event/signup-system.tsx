@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import Link from "next/link";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { User, Mail, CheckCircle2, Loader2 } from "lucide-react";
+import { useUser, SignInButton } from "@clerk/nextjs";
+import { User, Mail, CheckCircle2, Loader2, LogIn, Trash2, Shield } from "lucide-react";
 
 interface SignupSystemProps {
   eventSlug: string;
@@ -21,16 +22,54 @@ export default function SignupSystem({
   eventTitle,
   groups,
 }: SignupSystemProps) {
+  const { isLoaded, isSignedIn, user: clerkUser } = useUser();
+  const currentUser = useQuery(api.users.getCurrentUser);
   const signups = useQuery(api.signups.getEventSignups, { eventSlug });
   const signupMutation = useMutation(api.signups.signup);
+  const cancelMySignupMutation = useMutation(api.signups.cancelMySignup);
 
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
   const [formData, setFormData] = useState({ name: "", email: "" });
   const [submitting, setSubmitting] = useState(false);
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
+  // Auto-fill from Clerk account if logged in
+  useEffect(() => {
+    if (isSignedIn && clerkUser) {
+      const bestName =
+        currentUser?.name ||
+        clerkUser.fullName ||
+        `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim() ||
+        clerkUser.username ||
+        "";
+      const bestEmail =
+        currentUser?.email ||
+        clerkUser.primaryEmailAddress?.emailAddress ||
+        clerkUser.emailAddresses[0]?.emailAddress ||
+        "";
+
+      setFormData((prev) => ({
+        name: prev.name || bestName,
+        email: prev.email || bestEmail,
+      }));
+    }
+  }, [isSignedIn, clerkUser, currentUser]);
+
   if (!groups || groups.length === 0) return null;
+
+  // Check if current user is already registered for this event
+  const mySignup = signups?.find((s) => {
+    if (currentUser?._id && s.userId === currentUser._id) return true;
+    if (clerkUser?.primaryEmailAddress?.emailAddress) {
+      return (
+        s.email.toLowerCase() ===
+        clerkUser.primaryEmailAddress.emailAddress.toLowerCase()
+      );
+    }
+    return false;
+  });
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -47,12 +86,12 @@ export default function SignupSystem({
         eventSlug,
         eventTitle,
         groupName: selectedGroup,
-        name: formData.name,
-        email: formData.email,
+        name: formData.name.trim(),
+        email: formData.email.trim(),
         maxSlots: group.maxSlots,
       });
       setSuccess(true);
-      setFormData({ name: "", email: "" });
+      setSelectedGroup(null);
     } catch (err: any) {
       setError(err.message || "Something went wrong. Please try again.");
     } finally {
@@ -60,19 +99,84 @@ export default function SignupSystem({
     }
   };
 
+  const handleCancelRegistration = async (signupId: any) => {
+    if (!confirm("Are you sure you want to cancel your registration for this event?")) {
+      return;
+    }
+    setCancellingId(signupId);
+    setError(null);
+    try {
+      await cancelMySignupMutation({ signupId });
+      setSuccess(false);
+    } catch (err: any) {
+      setError(err.message || "Failed to cancel registration.");
+    } finally {
+      setCancellingId(null);
+    }
+  };
+
   return (
     <div className="signup-system">
-      <h2>Sign Up</h2>
+      <div className="signup-header-row">
+        <h2>Sign Up for this Event</h2>
+        {isLoaded && !isSignedIn && (
+          <div className="clerk-hint-banner">
+            <span>Have an account?</span>
+            <SignInButton mode="modal">
+              <button type="button" className="clerk-sign-in-btn">
+                <LogIn size={15} /> Sign In
+              </button>
+            </SignInButton>
+          </div>
+        )}
+      </div>
+
+      {/* User's existing registration status banner */}
+      {mySignup && (
+        <div className="user-registered-banner">
+          <div className="registered-info">
+            <CheckCircle2 size={24} className="registered-check" />
+            <div>
+              <p className="registered-title">
+                You are registered for <strong>{mySignup.groupName}</strong> as &quot;{mySignup.name}&quot;.
+              </p>
+              <p className="registered-sub">
+                A confirmation with details was sent to {mySignup.email}.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            className="btn-cancel-my-signup"
+            disabled={cancellingId === mySignup._id}
+            onClick={() => handleCancelRegistration(mySignup._id)}
+          >
+            {cancellingId === mySignup._id ? (
+              <Loader2 className="animate-spin" size={15} />
+            ) : (
+              <Trash2 size={15} />
+            )}
+            <span>Cancel My Spot</span>
+          </button>
+        </div>
+      )}
+
       <div className="groups-grid">
         {groups.map((group) => {
           const groupSignups = signups?.filter((s) => s.groupName === group.name) || [];
           const isFull = groupSignups.length >= group.maxSlots;
+          const isUserInThisGroup = mySignup?.groupName === group.name;
 
           return (
             <div
               key={group.name}
-              className={`group-card ${selectedGroup === group.name ? "selected" : ""} ${isFull ? "full" : ""}`}
-              onClick={() => !isFull && setSelectedGroup(group.name)}
+              className={`group-card ${selectedGroup === group.name ? "selected" : ""} ${
+                isFull ? "full" : ""
+              } ${isUserInThisGroup ? "my-group" : ""}`}
+              onClick={() => {
+                if (mySignup) return;
+                if (!isFull) setSelectedGroup(group.name);
+              }}
             >
               <div className="group-header">
                 <h3>{group.name}</h3>
@@ -83,22 +187,39 @@ export default function SignupSystem({
               {group.description && <p className="group-description">{group.description}</p>}
               <div className="signup-names">
                 {groupSignups.map((s, i) => (
-                  <span key={i} className="signup-name">
+                  <span
+                    key={i}
+                    className={`signup-name ${
+                      currentUser?._id && s.userId === currentUser._id ? "is-current-user" : ""
+                    }`}
+                  >
                     {s.name}
+                    {currentUser?._id && s.userId === currentUser._id && " (You)"}
                   </span>
                 ))}
                 {groupSignups.length === 0 && <p className="no-signups">Be the first to join!</p>}
               </div>
-              {isFull && <div className="full-badge">FULL</div>}
+              {isUserInThisGroup && <div className="registered-badge">REGISTERED</div>}
+              {isFull && !isUserInThisGroup && <div className="full-badge">FULL</div>}
             </div>
           );
         })}
       </div>
 
-      {selectedGroup && !success && (
+      {/* Signup Form */}
+      {selectedGroup && !success && !mySignup && (
         <form className="signup-form" onSubmit={handleSubmit}>
-          <h3>Register for {selectedGroup}</h3>
+          <div className="form-header">
+            <h3>Register for {selectedGroup}</h3>
+            {isSignedIn && clerkUser && (
+              <div className="account-tag">
+                <Shield size={14} /> Signed in as <strong>{clerkUser.fullName || clerkUser.username || "Member"}</strong>
+              </div>
+            )}
+          </div>
+
           {error && <p className="error-message">{error}</p>}
+
           <div className="form-group">
             <label htmlFor="name">
               <User size={18} /> (Nick)Name
@@ -112,6 +233,7 @@ export default function SignupSystem({
               placeholder="Your name"
             />
           </div>
+
           <div className="form-group">
             <label htmlFor="email">
               <Mail size={18} /> E-mail
@@ -125,18 +247,20 @@ export default function SignupSystem({
               placeholder="Your email (for confirmation)"
             />
           </div>
+
           <button type="submit" disabled={submitting} className="submit-button">
             {submitting ? (
               <>
                 <Loader2 className="animate-spin" size={18} /> Registering...
               </>
             ) : (
-              "Confirm Registration"
+              `Confirm Registration for ${selectedGroup}`
             )}
           </button>
-          <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.75rem', textAlign: 'center', lineHeight: 1.4 }}>
+
+          <p className="privacy-notice">
             We only use your name and email to manage this registration and send your confirmation token.
-            See our <Link href="/nl/Privacy-Beleid" style={{ color: 'var(--secondary)', textDecoration: 'underline' }}>Privacy Policy</Link>.
+            See our <Link href="/nl/Privacy-Beleid">Privacy Policy</Link>.
           </p>
         </form>
       )}
@@ -144,13 +268,19 @@ export default function SignupSystem({
       {success && (
         <div className="success-message">
           <CheckCircle2 size={48} color="var(--secondary)" />
-          <h3>Registration Successful!</h3>
+          <h3>Registration Confirmed!</h3>
           <p>
-            You&apos;ve been signed up for <strong>{selectedGroup}</strong>. A confirmation email has
-            been sent to your inbox.
+            You have been successfully registered for this event. A confirmation email has been sent to your inbox.
           </p>
-          <button onClick={() => setSuccess(false)} className="submit-button">
-            Sign up someone else
+          <button
+            onClick={() => {
+              setSuccess(false);
+              setSelectedGroup(null);
+            }}
+            className="submit-button"
+            style={{ maxWidth: "250px", margin: "0 auto" }}
+          >
+            Done
           </button>
         </div>
       )}
@@ -164,9 +294,96 @@ export default function SignupSystem({
           box-shadow: var(--shadow-lg);
           border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .signup-system h2 {
+        .signup-header-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 1rem;
+          margin-bottom: 1.5rem;
+        }
+        .signup-header-row h2 {
           text-align: left;
-          margin-top: 0;
+          margin: 0;
+        }
+        .clerk-hint-banner {
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+          font-size: 0.85rem;
+          color: var(--secondary);
+          background: rgba(151, 183, 142, 0.08);
+          padding: 0.4rem 0.8rem;
+          border-radius: 2rem;
+          border: 1px solid rgba(151, 183, 142, 0.2);
+        }
+        .clerk-sign-in-btn {
+          background: var(--secondary);
+          color: #1a221d;
+          border: none;
+          border-radius: 1rem;
+          padding: 0.25rem 0.65rem;
+          font-weight: 700;
+          font-size: 0.8rem;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.3rem;
+          transition: all 0.2s;
+        }
+        .clerk-sign-in-btn:hover {
+          background: #add1a3;
+          transform: translateY(-1px);
+        }
+        .user-registered-banner {
+          background: rgba(151, 183, 142, 0.12);
+          border: 1px solid var(--secondary);
+          border-radius: 0.75rem;
+          padding: 1.25rem;
+          margin-bottom: 2rem;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 1rem;
+        }
+        .registered-info {
+          display: flex;
+          align-items: center;
+          gap: 0.85rem;
+        }
+        .registered-info :global(.registered-check) {
+          color: var(--secondary);
+          flex-shrink: 0;
+        }
+        .registered-title {
+          margin: 0;
+          font-size: 1rem;
+          color: var(--light);
+        }
+        .registered-sub {
+          margin: 0.2rem 0 0 0;
+          font-size: 0.82rem;
+          color: #94a3b8;
+        }
+        .btn-cancel-my-signup {
+          background: rgba(239, 68, 68, 0.15);
+          color: #fca5a5;
+          border: 1px solid rgba(239, 68, 68, 0.4);
+          padding: 0.5rem 1rem;
+          border-radius: 0.5rem;
+          font-weight: 600;
+          font-size: 0.85rem;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.4rem;
+          transition: all 0.2s;
+        }
+        .btn-cancel-my-signup:hover:not(:disabled) {
+          background: rgba(239, 68, 68, 0.3);
+          border-color: #ef4444;
+          color: #fff;
         }
         .groups-grid {
           display: grid;
@@ -193,6 +410,10 @@ export default function SignupSystem({
           background: rgba(151, 183, 142, 0.1);
           box-shadow: 0 0 15px rgba(151, 183, 142, 0.1);
         }
+        .group-card.my-group {
+          border-color: var(--secondary);
+          background: rgba(151, 183, 142, 0.07);
+        }
         .group-card.full {
           opacity: 0.5;
           cursor: not-allowed;
@@ -202,98 +423,130 @@ export default function SignupSystem({
         .group-header {
           display: flex;
           justify-content: space-between;
-          align-items: center;
+          align-items: baseline;
           margin-bottom: 0.75rem;
         }
         .group-header h3 {
           margin: 0;
-          font-size: 1.1rem;
+          font-size: 1.2rem;
           color: var(--light);
         }
         .slots {
           font-size: 0.85rem;
-          font-weight: bold;
           color: var(--secondary);
+          font-weight: bold;
         }
         .group-description {
           font-size: 0.85rem;
-          color: rgba(242, 211, 180, 0.7);
-          margin: 0 0 0.75rem 0;
-          line-height: 1.3;
+          color: #94a3b8;
+          margin-bottom: 1rem;
+          line-height: 1.4;
         }
         .signup-names {
           display: flex;
           flex-wrap: wrap;
-          gap: 0.5rem;
-          font-size: 0.85rem;
+          gap: 0.4rem;
         }
         .signup-name {
-          background: rgba(255, 255, 255, 0.1);
-          color: var(--light_light);
+          font-size: 0.8rem;
+          background: rgba(255, 255, 255, 0.08);
           padding: 0.2rem 0.6rem;
-          border-radius: 0.5rem;
-          border: 1px solid rgba(255, 255, 255, 0.05);
+          border-radius: 1rem;
+          color: var(--light);
+        }
+        .signup-name.is-current-user {
+          background: rgba(151, 183, 142, 0.25);
+          color: var(--secondary);
+          border: 1px solid var(--secondary);
+          font-weight: 600;
         }
         .no-signups {
+          font-size: 0.8rem;
+          color: rgba(255, 255, 255, 0.3);
           font-style: italic;
-          color: rgba(242, 211, 180, 0.4);
           margin: 0;
         }
         .full-badge {
           position: absolute;
-          top: -10px;
-          right: -10px;
+          top: 0.5rem;
+          right: 0.5rem;
           background: var(--primary);
           color: white;
-          padding: 0.2rem 0.6rem;
-          border-radius: 0.5rem;
-          font-size: 0.75rem;
+          font-size: 0.7rem;
           font-weight: bold;
-          box-shadow: var(--shadow-md);
+          padding: 0.2rem 0.5rem;
+          border-radius: 0.25rem;
+        }
+        .registered-badge {
+          position: absolute;
+          top: 0.5rem;
+          right: 0.5rem;
+          background: var(--secondary);
+          color: #1a221d;
+          font-size: 0.7rem;
+          font-weight: 800;
+          padding: 0.2rem 0.5rem;
+          border-radius: 0.25rem;
         }
         .signup-form {
-          background: rgba(0, 0, 0, 0.2);
+          background: rgba(0, 0, 0, 0.25);
           padding: 2rem;
-          border-radius: 1rem;
-          border: 1px solid rgba(255, 255, 255, 0.05);
+          border-radius: 0.75rem;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          max-width: 500px;
+          margin: 0 auto;
           animation: fadeIn 0.3s ease;
         }
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
+        .form-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+          margin-bottom: 1.5rem;
         }
-        .signup-form h3 {
-          margin-top: 0;
-          color: var(--primary_light);
+        .form-header h3 {
+          margin: 0;
+          color: var(--secondary);
+        }
+        .account-tag {
+          font-size: 0.75rem;
+          color: var(--secondary);
+          display: inline-flex;
+          align-items: center;
+          gap: 0.3rem;
+          background: rgba(151, 183, 142, 0.1);
+          padding: 0.25rem 0.5rem;
+          border-radius: 0.4rem;
         }
         .form-group {
-          margin-bottom: 1.5rem;
+          margin-bottom: 1.25rem;
         }
         .form-group label {
           display: flex;
           align-items: center;
           gap: 0.5rem;
-          margin-bottom: 0.6rem;
-          font-weight: bold;
+          margin-bottom: 0.5rem;
+          font-size: 0.9rem;
           color: var(--light);
         }
         .form-group input {
           width: 100%;
-          padding: 0.8rem 1rem;
-          background: var(--darker);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          padding: 0.75rem 1rem;
           border-radius: 0.5rem;
-          color: var(--light_light);
-          font-family: inherit;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: var(--light);
+          font-size: 1rem;
+          outline: none;
           transition: border-color 0.2s;
         }
         .form-group input:focus {
-          outline: none;
           border-color: var(--secondary);
         }
         .submit-button {
           width: 100%;
-          padding: 1rem;
+          padding: 0.85rem;
           background: var(--primary);
           color: var(--light_light);
           border: none;
@@ -317,6 +570,17 @@ export default function SignupSystem({
         .submit-button:disabled {
           opacity: 0.6;
           cursor: not-allowed;
+        }
+        .privacy-notice {
+          font-size: 0.75rem;
+          color: #94a3b8;
+          margin-top: 0.85rem;
+          text-align: center;
+          line-height: 1.4;
+        }
+        .privacy-notice :global(a) {
+          color: var(--secondary);
+          text-decoration: underline;
         }
         .error-message {
           color: #ff6b6b;
@@ -346,6 +610,10 @@ export default function SignupSystem({
         }
         .animate-spin {
           animation: spin 1s linear infinite;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(8px); }
+          to { opacity: 1; transform: translateY(0); }
         }
         @keyframes spin {
           from { transform: rotate(0deg); }
