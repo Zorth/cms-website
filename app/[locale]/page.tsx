@@ -2,16 +2,11 @@ import '../homepage.css';
 import Link from "next/link";
 import Image from 'next/image';
 import React from 'react';
-import { client } from "../../tina/__generated__/client";
 import EventList from "../event-list";
 import SponsorList from '../sponsor-list';
-
-import { TinaMarkdown } from "tinacms/dist/rich-text";
 import DragonList from '../dragon-list';
+import Featurettes from '../Featurettes';
 import DiscordIcon from '../../public/images/discord-icon.svg';
-
-import * as LucideIcons from 'lucide-react';
-import { LucideIcon } from 'lucide-react';
 
 import { Metadata } from 'next';
 
@@ -39,26 +34,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
     const { locale = 'nl' } = await params;
-    const sponsors = await client.queries.sponsorConnection();
-    const pagesResponse = await client.queries.pageConnection({ 
-        filter: { 
-            enabled: { eq: true }
-        }
-    });
-
-    // Filter by language and sort by weight in JS
-    const filteredPages = {
-        ...pagesResponse,
-        data: {
-            ...pagesResponse.data,
-            pageConnection: {
-                ...pagesResponse.data.pageConnection,
-                edges: pagesResponse.data.pageConnection.edges
-                    ?.filter((edge: any) => (edge?.node?.language === locale) || (!edge?.node?.language && locale === 'nl'))
-                    ?.sort((a: any, b: any) => (a.node.weight || 100) - (b.node.weight || 100))
-            }
-        }
-    };
 
     return (
         <div className="container">
@@ -82,7 +57,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 </Link>
             </div>
             <EventList locale={locale} />
-            <Featurettes data={filteredPages.data} locale={locale} />
+            <Featurettes locale={locale} />
             <div className="quick-links">
                 <Link href="https://discord.com/invite/TjDUu2Gkag" className="quick-link-item">
                     <span className="quick-link-icon" style={{ display: 'flex', alignItems: 'center' }}>
@@ -106,7 +81,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             </div>
             <div className="koboldbox">
                 <h1>Kobold Deals</h1>
-                <SponsorList {...sponsors} locale={locale} />
+                <SponsorList locale={locale} />
             </div>
             <div className="dragonbox">
                 <h1>Dragons</h1>
@@ -132,68 +107,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                     </Link>
                 </small>
             </div>
-        </div>
-    )
-}
-
-function hasSnippetContent(snippet: any): boolean {
-    if (!snippet) return false;
-    if (typeof snippet === 'string') return snippet.trim().length > 0;
-    if (snippet.children && Array.isArray(snippet.children)) {
-        const hasTextOrElement = (nodes: any[]): boolean => {
-            return nodes.some((n: any) => {
-                if (n.text !== undefined) return n.text.trim().length > 0;
-                if (n.children && Array.isArray(n.children)) return hasTextOrElement(n.children);
-                return Boolean(n.type && n.type !== 'p');
-            });
-        };
-        return hasTextOrElement(snippet.children);
-    }
-    return false;
-}
-
-function Featurettes({ data, locale }: { data: any, locale: string }) {
-    const featuretteEdges = data.pageConnection.edges?.filter((page: any) => hasSnippetContent(page.node?.snippet));
-    if (!featuretteEdges || featuretteEdges.length === 0) {
-        return <></>;
-    }
-    return (
-        <div className="featurettes-container">
-            {featuretteEdges
-                .map((page: any) => {
-                    const node = page.node;
-                    const IconComponent = node?.iconName ? (LucideIcons as any)[node.iconName] as LucideIcon : null;
-                    
-                    return (
-                        <Link href={`/${locale}/${node?._sys.filename}`} key={node?.id} className="page-snippet">
-                            {node?.icon ? (
-                                <div className="page-snippet-icon-wrapper">
-                                    <Image 
-                                        src={node.icon} 
-                                        alt={node?.title || ""} 
-                                        width={80} 
-                                        height={80} 
-                                        className="page-snippet-icon"
-                                    />
-                                </div>
-                            ) : IconComponent ? (
-                                <div className="page-snippet-icon-wrapper">
-                                    <IconComponent 
-                                        size={64} 
-                                        className="page-snippet-icon" 
-                                        color="var(--secondary)" 
-                                    />
-                                </div>
-                            ) : null}
-                            <div className="page-snippet-content">
-                                <TinaMarkdown content={node?.snippet} />
-                                <span className="page-snippet-more">
-                                    {locale === 'nl' ? 'Ontdek meer →' : 'Explore more →'}
-                                </span>
-                            </div>
-                        </Link>
-                    );
-                })}
         </div>
     );
 }

@@ -28,7 +28,7 @@ export default function DragonAdminPage() {
   const currentUser = useQuery(api.users.getCurrentUser);
   const updateUserRoleInConvex = useMutation(api.users.updateUserRoleByClerkId);
 
-  const [activeTab, setActiveTab] = useState<"users" | "events" | "dragons">("dragons");
+  const [activeTab, setActiveTab] = useState<"users" | "events" | "dragons" | "sponsors" | "pages">("events");
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -72,6 +72,49 @@ export default function DragonAdminPage() {
   const [savingDragon, setSavingDragon] = useState(false);
   const [deletingDragonId, setDeletingDragonId] = useState<string | null>(null);
   const [dragonModalError, setDragonModalError] = useState<string | null>(null);
+
+  // Sponsors state
+  const sponsors = useQuery(api.sponsors.listSponsors);
+  const saveSponsorMutation = useMutation(api.sponsors.saveSponsor);
+  const deleteSponsorMutation = useMutation(api.sponsors.deleteSponsor);
+
+  const [sponsorSearchQuery, setSponsorSearchQuery] = useState("");
+  const [editingSponsor, setEditingSponsor] = useState<{
+    _id?: any;
+    name: string;
+    link: string;
+    snippet: string;
+    body?: string;
+    image?: string;
+    order?: number;
+  } | null>(null);
+  const [savingSponsor, setSavingSponsor] = useState(false);
+  const [deletingSponsorId, setDeletingSponsorId] = useState<string | null>(null);
+  const [sponsorModalError, setSponsorModalError] = useState<string | null>(null);
+
+  // Pages state
+  const pages = useQuery(api.pages.listPages, {});
+  const savePageMutation = useMutation(api.pages.savePage);
+  const deletePageMutation = useMutation(api.pages.deletePage);
+
+  const [pageSearchQuery, setPageSearchQuery] = useState("");
+  const [editingPage, setEditingPage] = useState<{
+    _id?: any;
+    slug: string;
+    title: string;
+    body: string;
+    language: string;
+    enabled: boolean;
+    hideFromHeader?: boolean;
+    weight?: number;
+    snippet?: string;
+    icon?: string;
+    iconName?: string;
+    translationSlug?: string;
+  } | null>(null);
+  const [savingPage, setSavingPage] = useState(false);
+  const [deletingPageId, setDeletingPageId] = useState<string | null>(null);
+  const [pageModalError, setPageModalError] = useState<string | null>(null);
 
   const isDragon = currentUser?.role === "dragon";
 
@@ -306,6 +349,179 @@ export default function DragonAdminPage() {
     }
   };
 
+  // Sponsors handlers
+  const handleOpenNewSponsor = () => {
+    setEditingSponsor({
+      name: "",
+      link: "",
+      snippet: "",
+      body: "",
+      image: "",
+      order: (sponsors?.length ?? 0) + 1,
+    });
+    setSponsorModalError(null);
+  };
+
+  const handleOpenEditSponsor = (sp: any) => {
+    setEditingSponsor({
+      _id: sp._id,
+      name: sp.name,
+      link: sp.link,
+      snippet: sp.snippet,
+      body: sp.body || "",
+      image: sp.image || "",
+      order: sp.order ?? 0,
+    });
+    setSponsorModalError(null);
+  };
+
+  const handleSaveSponsor = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingSponsor) return;
+
+    if (!editingSponsor.name.trim()) {
+      setSponsorModalError("Sponsor name is required.");
+      return;
+    }
+    if (!editingSponsor.link.trim()) {
+      setSponsorModalError("Sponsor link is required.");
+      return;
+    }
+
+    setSavingSponsor(true);
+    setSponsorModalError(null);
+
+    try {
+      await saveSponsorMutation({
+        id: editingSponsor._id,
+        name: editingSponsor.name,
+        link: editingSponsor.link,
+        snippet: editingSponsor.snippet,
+        body: editingSponsor.body || undefined,
+        image: editingSponsor.image || undefined,
+        order: editingSponsor.order,
+      });
+      setEditingSponsor(null);
+    } catch (err: any) {
+      console.error("Error saving sponsor:", err);
+      setSponsorModalError(err.message || "Failed to save sponsor");
+    } finally {
+      setSavingSponsor(false);
+    }
+  };
+
+  const handleDeleteSponsor = async (id: any) => {
+    if (!confirm("Are you sure you want to delete this sponsor deal? This action cannot be undone.")) {
+      return;
+    }
+
+    setDeletingSponsorId(id);
+    try {
+      await deleteSponsorMutation({ id });
+      if (editingSponsor?._id === id) {
+        setEditingSponsor(null);
+      }
+    } catch (err: any) {
+      alert(err.message || "Failed to delete sponsor");
+    } finally {
+      setDeletingSponsorId(null);
+    }
+  };
+
+  // Pages handlers
+  const handleOpenNewPage = () => {
+    setEditingPage({
+      slug: "",
+      title: "",
+      body: "",
+      language: "nl",
+      enabled: true,
+      hideFromHeader: false,
+      weight: 100,
+      snippet: "",
+      icon: "",
+      iconName: "Sparkles",
+      translationSlug: "",
+    });
+    setPageModalError(null);
+  };
+
+  const handleOpenEditPage = (pg: any) => {
+    setEditingPage({
+      _id: pg._id,
+      slug: pg.slug,
+      title: pg.title,
+      body: pg.body || "",
+      language: pg.language || "nl",
+      enabled: pg.enabled !== false,
+      hideFromHeader: Boolean(pg.hideFromHeader),
+      weight: pg.weight ?? 100,
+      snippet: pg.snippet || "",
+      icon: pg.icon || "",
+      iconName: pg.iconName || "",
+      translationSlug: pg.translationSlug || "",
+    });
+    setPageModalError(null);
+  };
+
+  const handleSavePage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingPage) return;
+
+    if (!editingPage.slug.trim()) {
+      setPageModalError("Page slug (URL) is required.");
+      return;
+    }
+    if (!editingPage.title.trim()) {
+      setPageModalError("Page title is required.");
+      return;
+    }
+
+    setSavingPage(true);
+    setPageModalError(null);
+
+    try {
+      await savePageMutation({
+        id: editingPage._id,
+        slug: editingPage.slug,
+        title: editingPage.title,
+        body: editingPage.body,
+        language: editingPage.language,
+        enabled: editingPage.enabled,
+        hideFromHeader: editingPage.hideFromHeader,
+        weight: editingPage.weight,
+        snippet: editingPage.snippet || undefined,
+        icon: editingPage.icon || undefined,
+        iconName: editingPage.iconName || undefined,
+        translationSlug: editingPage.translationSlug || undefined,
+      });
+      setEditingPage(null);
+    } catch (err: any) {
+      console.error("Error saving page:", err);
+      setPageModalError(err.message || "Failed to save page");
+    } finally {
+      setSavingPage(false);
+    }
+  };
+
+  const handleDeletePage = async (id: any) => {
+    if (!confirm("Are you sure you want to delete this page? This action cannot be undone.")) {
+      return;
+    }
+
+    setDeletingPageId(id);
+    try {
+      await deletePageMutation({ id });
+      if (editingPage?._id === id) {
+        setEditingPage(null);
+      }
+    } catch (err: any) {
+      alert(err.message || "Failed to delete page");
+    } finally {
+      setDeletingPageId(null);
+    }
+  };
+
   // Auth gate checks
   if (!isLoaded || (isSignedIn && currentUser === undefined)) {
     return (
@@ -374,16 +590,36 @@ export default function DragonAdminPage() {
     );
   });
 
+  const filteredSponsors = (sponsors || []).filter((sp) => {
+    return (
+      sp.name.toLowerCase().includes(sponsorSearchQuery.toLowerCase()) ||
+      sp.snippet.toLowerCase().includes(sponsorSearchQuery.toLowerCase())
+    );
+  });
+
+  const filteredPages = (pages || []).filter((pg) => {
+    return (
+      pg.title.toLowerCase().includes(pageSearchQuery.toLowerCase()) ||
+      pg.slug.toLowerCase().includes(pageSearchQuery.toLowerCase())
+    );
+  });
+
   return (
     <div className="dragon-admin-container">
       <div className="dragon-admin-header">
         <h1>
           <span>🐉</span> Dragon Council
         </h1>
-        <p>Manage members, events, dragon cards, and guild permissions across Tarragon.</p>
+        <p>Manage events, dragon cards, sponsor deals, pages, and users across Tarragon.</p>
       </div>
 
       <div className="dragon-tabs">
+        <button
+          className={`dragon-tab ${activeTab === "events" ? "active" : ""}`}
+          onClick={() => setActiveTab("events")}
+        >
+          Events ({events ? events.length : "..."})
+        </button>
         <button
           className={`dragon-tab ${activeTab === "dragons" ? "active" : ""}`}
           onClick={() => setActiveTab("dragons")}
@@ -391,10 +627,16 @@ export default function DragonAdminPage() {
           Dragons ({dragons ? dragons.length : "..."})
         </button>
         <button
-          className={`dragon-tab ${activeTab === "events" ? "active" : ""}`}
-          onClick={() => setActiveTab("events")}
+          className={`dragon-tab ${activeTab === "sponsors" ? "active" : ""}`}
+          onClick={() => setActiveTab("sponsors")}
         >
-          Events ({events ? events.length : "..."})
+          Sponsors ({sponsors ? sponsors.length : "..."})
+        </button>
+        <button
+          className={`dragon-tab ${activeTab === "pages" ? "active" : ""}`}
+          onClick={() => setActiveTab("pages")}
+        >
+          Pages ({pages ? pages.length : "..."})
         </button>
         <button
           className={`dragon-tab ${activeTab === "users" ? "active" : ""}`}
@@ -968,6 +1210,571 @@ export default function DragonAdminPage() {
                     disabled={savingEvent}
                   >
                     {savingEvent ? "Saving..." : editingEvent._id ? "Save Changes" : "Create Event"}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* SPONSORS TAB */}
+      {activeTab === "sponsors" && (
+        <div className="dragon-panel">
+          <div className="dragon-controls">
+            <input
+              type="text"
+              className="dragon-search-input"
+              placeholder="Search sponsors by name or deal..."
+              value={sponsorSearchQuery}
+              onChange={(e) => setSponsorSearchQuery(e.target.value)}
+            />
+
+            <button
+              type="button"
+              className="dragon-btn-primary"
+              onClick={handleOpenNewSponsor}
+            >
+              + Add Sponsor Deal
+            </button>
+          </div>
+
+          {sponsors === undefined ? (
+            <div style={{ textAlign: "center", padding: "2.5rem", color: "var(--secondary)" }}>
+              Loading sponsors from Convex...
+            </div>
+          ) : filteredSponsors.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "2.5rem", color: "var(--secondary)" }}>
+              No sponsors found.
+            </div>
+          ) : (
+            <div className="dragon-table-wrapper">
+              <table className="dragon-users-table">
+                <thead>
+                  <tr>
+                    <th>Sponsor</th>
+                    <th>Link</th>
+                    <th>Deal / Snippet</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredSponsors.map((sp) => (
+                    <tr
+                      key={sp._id}
+                      className="dragon-table-row-clickable"
+                      onClick={() => handleOpenEditSponsor(sp)}
+                    >
+                      <td>
+                        <div className="dragon-user-info">
+                          {sp.image ? (
+                            <Image
+                              src={sp.image}
+                              alt={sp.name}
+                              width={40}
+                              height={40}
+                              className="dragon-avatar"
+                              style={{ objectFit: "contain", background: "white" }}
+                            />
+                          ) : (
+                            <div className="dragon-avatar" style={{ display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" }}>
+                              {sp.name.charAt(0).toUpperCase()}
+                            </div>
+                          )}
+                          <span className="dragon-fullname">{sp.name}</span>
+                        </div>
+                      </td>
+                      <td style={{ color: "var(--secondary)" }}>
+                        <a
+                          href={sp.link}
+                          target="_blank"
+                          rel="noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          style={{ color: "var(--secondary)", textDecoration: "underline" }}
+                        >
+                          {sp.link.replace(/^https?:\/\//, "").slice(0, 30)}...
+                        </a>
+                      </td>
+                      <td style={{ color: "rgba(242, 211, 180, 0.7)", fontSize: "0.85rem", maxWidth: "300px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        {sp.snippet.replace(/[\n#*]/g, " ").trim()}
+                      </td>
+                      <td onClick={(e) => e.stopPropagation()}>
+                        <div style={{ display: "flex", gap: "0.5rem" }}>
+                          <button
+                            type="button"
+                            className="dragon-btn-secondary"
+                            style={{ padding: "0.3rem 0.75rem", fontSize: "0.8rem" }}
+                            onClick={() => handleOpenEditSponsor(sp)}
+                          >
+                            Edit
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Edit / Create Sponsor Modal */}
+      {editingSponsor && (
+        <div className="dragon-modal-backdrop" onClick={() => !savingSponsor && setEditingSponsor(null)}>
+          <div className="dragon-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="dragon-modal-header">
+              <h2>{editingSponsor._id ? "Edit Sponsor" : "Add Sponsor Deal"}</h2>
+              <button
+                type="button"
+                className="dragon-modal-close"
+                onClick={() => setEditingSponsor(null)}
+                disabled={savingSponsor}
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveSponsor} style={{ display: "contents" }}>
+              <div className="dragon-modal-body">
+                {sponsorModalError && (
+                  <div
+                    style={{
+                      background: "rgba(220, 38, 38, 0.2)",
+                      color: "#f87171",
+                      padding: "0.75rem 1rem",
+                      borderRadius: "0.5rem",
+                    }}
+                  >
+                    {sponsorModalError}
+                  </div>
+                )}
+
+                <div className="dragon-form-group">
+                  <label htmlFor="sponsor-name">Partner Name *</label>
+                  <input
+                    id="sponsor-name"
+                    type="text"
+                    required
+                    className="dragon-form-input"
+                    value={editingSponsor.name}
+                    onChange={(e) =>
+                      setEditingSponsor({ ...editingSponsor, name: e.target.value })
+                    }
+                    placeholder="e.g. Paul's Fresh Food Boutique"
+                  />
+                </div>
+
+                <div className="dragon-form-group">
+                  <label htmlFor="sponsor-link">Website / Link *</label>
+                  <input
+                    id="sponsor-link"
+                    type="url"
+                    required
+                    className="dragon-form-input"
+                    value={editingSponsor.link}
+                    onChange={(e) =>
+                      setEditingSponsor({ ...editingSponsor, link: e.target.value })
+                    }
+                    placeholder="https://..."
+                  />
+                </div>
+
+                <div className="dragon-form-group">
+                  <label htmlFor="sponsor-image">Logo Image URL</label>
+                  <input
+                    id="sponsor-image"
+                    type="text"
+                    className="dragon-form-input"
+                    value={editingSponsor.image || ""}
+                    onChange={(e) =>
+                      setEditingSponsor({ ...editingSponsor, image: e.target.value })
+                    }
+                    placeholder="/uploads/logoPauls2015.png"
+                  />
+                </div>
+
+                <div className="dragon-form-group">
+                  <label htmlFor="sponsor-snippet">Deal Snippet (Markdown) *</label>
+                  <textarea
+                    id="sponsor-snippet"
+                    rows={4}
+                    required
+                    className="dragon-form-textarea"
+                    value={editingSponsor.snippet}
+                    onChange={(e) =>
+                      setEditingSponsor({ ...editingSponsor, snippet: e.target.value })
+                    }
+                    placeholder="## Paul's Boutique\n\n€ 2 discount when purchasing a burger."
+                  />
+                </div>
+              </div>
+
+              <div className="dragon-modal-footer">
+                <div>
+                  {editingSponsor._id && (
+                    <button
+                      type="button"
+                      className="dragon-btn-danger"
+                      disabled={savingSponsor || deletingSponsorId === editingSponsor._id}
+                      onClick={() => handleDeleteSponsor(editingSponsor._id)}
+                    >
+                      {deletingSponsorId === editingSponsor._id ? "Deleting..." : "Delete Deal"}
+                    </button>
+                  )}
+                </div>
+                <div style={{ display: "flex", gap: "0.75rem" }}>
+                  <button
+                    type="button"
+                    className="dragon-btn-secondary"
+                    disabled={savingSponsor}
+                    onClick={() => setEditingSponsor(null)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="dragon-btn-primary"
+                    disabled={savingSponsor}
+                  >
+                    {savingSponsor ? "Saving..." : editingSponsor._id ? "Save Changes" : "Create Deal"}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* PAGES TAB */}
+      {activeTab === "pages" && (
+        <div className="dragon-panel">
+          <div className="dragon-controls">
+            <input
+              type="text"
+              className="dragon-search-input"
+              placeholder="Search pages by title or slug..."
+              value={pageSearchQuery}
+              onChange={(e) => setPageSearchQuery(e.target.value)}
+            />
+
+            <button
+              type="button"
+              className="dragon-btn-primary"
+              onClick={handleOpenNewPage}
+            >
+              + Add Page
+            </button>
+          </div>
+
+          {pages === undefined ? (
+            <div style={{ textAlign: "center", padding: "2.5rem", color: "var(--secondary)" }}>
+              Loading pages from Convex...
+            </div>
+          ) : filteredPages.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "2.5rem", color: "var(--secondary)" }}>
+              No pages found.
+            </div>
+          ) : (
+            <div className="dragon-table-wrapper">
+              <table className="dragon-users-table">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Slug</th>
+                    <th>Language</th>
+                    <th>Status</th>
+                    <th>Header</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredPages.map((pg) => (
+                    <tr
+                      key={pg._id}
+                      className="dragon-table-row-clickable"
+                      onClick={() => handleOpenEditPage(pg)}
+                    >
+                      <td style={{ fontWeight: 600, color: "var(--light)" }}>
+                        {pg.title}
+                      </td>
+                      <td style={{ color: "rgba(242, 211, 180, 0.7)", fontFamily: "monospace", fontSize: "0.85rem" }}>
+                        /{pg.language}/{pg.slug}
+                      </td>
+                      <td>
+                        <span className="role-badge" style={{ background: "rgba(255,255,255,0.05)", textTransform: "uppercase" }}>
+                          {pg.language}
+                        </span>
+                      </td>
+                      <td>
+                        {pg.enabled ? (
+                          <span className="role-badge role-member">Active</span>
+                        ) : (
+                          <span className="role-badge" style={{ color: "var(--secondary)" }}>Draft</span>
+                        )}
+                      </td>
+                      <td>
+                        {pg.hideFromHeader ? (
+                          <span style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.85rem" }}>Hidden</span>
+                        ) : (
+                          <span style={{ color: "var(--secondary)", fontSize: "0.85rem" }}>Visible</span>
+                        )}
+                      </td>
+                      <td onClick={(e) => e.stopPropagation()}>
+                        <div style={{ display: "flex", gap: "0.5rem" }}>
+                          <button
+                            type="button"
+                            className="dragon-btn-secondary"
+                            style={{ padding: "0.3rem 0.75rem", fontSize: "0.8rem" }}
+                            onClick={() => handleOpenEditPage(pg)}
+                          >
+                            Edit
+                          </button>
+                          <Link
+                            href={`/${pg.language}/${pg.slug}`}
+                            target="_blank"
+                            className="dragon-btn-secondary"
+                            style={{ padding: "0.3rem 0.75rem", fontSize: "0.8rem", textDecoration: "none" }}
+                          >
+                            View ↗
+                          </Link>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Edit / Create Page Modal */}
+      {editingPage && (
+        <div className="dragon-modal-backdrop" onClick={() => !savingPage && setEditingPage(null)}>
+          <div className="dragon-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="dragon-modal-header">
+              <h2>{editingPage._id ? "Edit Page" : "Create New Page"}</h2>
+              <button
+                type="button"
+                className="dragon-modal-close"
+                onClick={() => setEditingPage(null)}
+                disabled={savingPage}
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleSavePage} style={{ display: "contents" }}>
+              <div className="dragon-modal-body">
+                {pageModalError && (
+                  <div
+                    style={{
+                      background: "rgba(220, 38, 38, 0.2)",
+                      color: "#f87171",
+                      padding: "0.75rem 1rem",
+                      borderRadius: "0.5rem",
+                    }}
+                  >
+                    {pageModalError}
+                  </div>
+                )}
+
+                <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "1rem" }}>
+                  <div className="dragon-form-group">
+                    <label htmlFor="page-title">Page Title *</label>
+                    <input
+                      id="page-title"
+                      type="text"
+                      required
+                      className="dragon-form-input"
+                      value={editingPage.title}
+                      onChange={(e) => {
+                        const title = e.target.value;
+                        if (!editingPage._id && !editingPage.slug) {
+                          setEditingPage({
+                            ...editingPage,
+                            title,
+                            slug: title.replace(/[^a-zA-Z0-9]/g, ""),
+                          });
+                        } else {
+                          setEditingPage({ ...editingPage, title });
+                        }
+                      }}
+                      placeholder="e.g. Donate"
+                    />
+                  </div>
+
+                  <div className="dragon-form-group">
+                    <label htmlFor="page-language">Language *</label>
+                    <select
+                      id="page-language"
+                      className="dragon-filter-select"
+                      value={editingPage.language}
+                      onChange={(e) =>
+                        setEditingPage({ ...editingPage, language: e.target.value })
+                      }
+                    >
+                      <option value="nl">Dutch (NL)</option>
+                      <option value="en">English (EN)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                  <div className="dragon-form-group">
+                    <label htmlFor="page-slug">Slug (URL filename) *</label>
+                    <input
+                      id="page-slug"
+                      type="text"
+                      required
+                      className="dragon-form-input"
+                      value={editingPage.slug}
+                      onChange={(e) =>
+                        setEditingPage({
+                          ...editingPage,
+                          slug: e.target.value.replace(/\.mdx$/, ""),
+                        })
+                      }
+                      placeholder="e.g. Donate"
+                    />
+                  </div>
+
+                  <div className="dragon-form-group">
+                    <label htmlFor="page-translationSlug">Translation Slug (Other Language)</label>
+                    <input
+                      id="page-translationSlug"
+                      type="text"
+                      className="dragon-form-input"
+                      value={editingPage.translationSlug || ""}
+                      onChange={(e) =>
+                        setEditingPage({
+                          ...editingPage,
+                          translationSlug: e.target.value,
+                        })
+                      }
+                      placeholder="e.g. Doneren"
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                  <div className="dragon-form-group">
+                    <label htmlFor="page-iconName">Lucide Icon (optional)</label>
+                    <input
+                      id="page-iconName"
+                      type="text"
+                      className="dragon-form-input"
+                      value={editingPage.iconName || ""}
+                      onChange={(e) =>
+                        setEditingPage({ ...editingPage, iconName: e.target.value })
+                      }
+                      placeholder="Sparkles, Dices, Calendar, Users, Map..."
+                    />
+                  </div>
+
+                  <div className="dragon-form-group">
+                    <label htmlFor="page-weight">Weight (Order in navigation)</label>
+                    <input
+                      id="page-weight"
+                      type="number"
+                      className="dragon-form-input"
+                      value={editingPage.weight ?? 100}
+                      onChange={(e) =>
+                        setEditingPage({
+                          ...editingPage,
+                          weight: parseInt(e.target.value, 10) || 100,
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", gap: "2rem", margin: "0.5rem 0" }}>
+                  <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", cursor: "pointer" }}>
+                    <input
+                      type="checkbox"
+                      checked={editingPage.enabled}
+                      onChange={(e) =>
+                        setEditingPage({ ...editingPage, enabled: e.target.checked })
+                      }
+                    />
+                    <span>Page Enabled</span>
+                  </label>
+
+                  <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", cursor: "pointer" }}>
+                    <input
+                      type="checkbox"
+                      checked={Boolean(editingPage.hideFromHeader)}
+                      onChange={(e) =>
+                        setEditingPage({
+                          ...editingPage,
+                          hideFromHeader: e.target.checked,
+                        })
+                      }
+                    />
+                    <span>Hide from Header Navigation</span>
+                  </label>
+                </div>
+
+                <div className="dragon-form-group">
+                  <label htmlFor="page-snippet">Card Snippet on Home Page (Markdown)</label>
+                  <textarea
+                    id="page-snippet"
+                    rows={3}
+                    className="dragon-form-textarea"
+                    value={editingPage.snippet || ""}
+                    onChange={(e) =>
+                      setEditingPage({ ...editingPage, snippet: e.target.value })
+                    }
+                    placeholder="Short description snippet for homepage featurette..."
+                  />
+                </div>
+
+                <div className="dragon-form-group">
+                  <label htmlFor="page-body">Page Body (Markdown / MDX)</label>
+                  <textarea
+                    id="page-body"
+                    rows={10}
+                    required
+                    className="dragon-form-textarea"
+                    value={editingPage.body}
+                    onChange={(e) =>
+                      setEditingPage({ ...editingPage, body: e.target.value })
+                    }
+                    placeholder="# Page Header&#10;&#10;Content goes here..."
+                  />
+                </div>
+              </div>
+
+              <div className="dragon-modal-footer">
+                <div>
+                  {editingPage._id && (
+                    <button
+                      type="button"
+                      className="dragon-btn-danger"
+                      disabled={savingPage || deletingPageId === editingPage._id}
+                      onClick={() => handleDeletePage(editingPage._id)}
+                    >
+                      {deletingPageId === editingPage._id ? "Deleting..." : "Delete Page"}
+                    </button>
+                  )}
+                </div>
+                <div style={{ display: "flex", gap: "0.75rem" }}>
+                  <button
+                    type="button"
+                    className="dragon-btn-secondary"
+                    disabled={savingPage}
+                    onClick={() => setEditingPage(null)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="dragon-btn-primary"
+                    disabled={savingPage}
+                  >
+                    {savingPage ? "Saving..." : editingPage._id ? "Save Changes" : "Create Page"}
                   </button>
                 </div>
               </div>

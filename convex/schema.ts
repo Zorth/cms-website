@@ -64,5 +64,34 @@ export default defineSchema({
   })
     .index("by_name", ["name"])
     .index("by_order", ["order"]),
+
+  sponsors: defineTable({
+    name: v.string(),
+    link: v.string(),
+    snippet: v.string(),
+    body: v.optional(v.string()),
+    image: v.optional(v.string()),
+    order: v.optional(v.number()),
+  })
+    .index("by_name", ["name"])
+    .index("by_order", ["order"]),
+
+  pages: defineTable({
+    slug: v.string(),
+    title: v.string(),
+    body: v.string(),
+    language: v.string(),
+    enabled: v.boolean(),
+    hideFromHeader: v.optional(v.boolean()),
+    weight: v.optional(v.number()),
+    snippet: v.optional(v.string()),
+    icon: v.optional(v.string()),
+    iconName: v.optional(v.string()),
+    translationSlug: v.optional(v.string()),
+  })
+    .index("by_slug", ["slug"])
+    .index("by_language_and_enabled", ["language", "enabled"])
+    .index("by_language_and_weight", ["language", "weight"])
+    .index("by_enabled", ["enabled"]),
 });
 

@@ -1,86 +1,93 @@
 import PagePage from "./client-page";
-import client from "../../../tina/__generated__/client";
-import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { ConvexHttpClient } from "convex/browser";
+import { api } from "../../../convex/_generated/api";
 
-export async function generateMetadata({ params }: { params: Promise<{ filename: string[], locale: string }> }): Promise<Metadata> {
-    try {
-        const resolvedParams = await params;
-        const path = resolvedParams.filename.join('/');
-        const data = await client.queries.page({
-            relativePath: `${path}.mdx`,
-        });
+export const revalidate = 0;
 
-        const title = data.data.page.title;
-        const translation = data.data.page.translation as any;
+function getConvexClient() {
+  const convexUrl =
+    process.env.NEXT_PUBLIC_CONVEX_URL ||
+    "https://frugal-shark-535.eu-west-1.convex.cloud";
+  return new ConvexHttpClient(convexUrl);
+}
 
-        const languages: Record<string, string> = {};
-        languages[resolvedParams.locale] = `/${resolvedParams.locale}/${path}`;
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ filename: string[]; locale: string }>;
+}): Promise<Metadata> {
+  try {
+    const resolvedParams = await params;
+    const slug = resolvedParams.filename.join("/");
+    const client = getConvexClient();
+    const page = await client.query(api.pages.getPageBySlug, { slug });
 
-        if (translation && translation._sys) {
-            const targetLocale = resolvedParams.locale === 'nl' ? 'en' : 'nl';
-            languages[targetLocale] = `/${targetLocale}/${translation._sys.filename}`;
-            languages['x-default'] = `/nl/${resolvedParams.locale === 'nl' ? path : translation._sys.filename}`;
-        } else {
-            languages['x-default'] = `/nl/${path}`;
-        }
-
-        return {
-            title: `${title} | D&D & Boardgames Kortrijk`,
-            alternates: {
-                canonical: `/${resolvedParams.locale}/${path}`,
-                languages: languages,
-            }
-        };
-    } catch (e) {
-        return { title: 'Tarragon | D&D Kortrijk' };
+    if (!page) {
+      return { title: "Tarragon | D&D Kortrijk" };
     }
+
+    const title = page.title;
+    const translationSlug = page.translationSlug;
+
+    const languages: Record<string, string> = {};
+    languages[resolvedParams.locale] = `/${resolvedParams.locale}/${slug}`;
+
+    if (translationSlug) {
+      const targetLocale = resolvedParams.locale === "nl" ? "en" : "nl";
+      languages[targetLocale] = `/${targetLocale}/${translationSlug}`;
+      languages["x-default"] = `/nl/${
+        resolvedParams.locale === "nl" ? slug : translationSlug
+      }`;
+    } else {
+      languages["x-default"] = `/nl/${slug}`;
+    }
+
+    return {
+      title: `${title} | D&D & Boardgames Kortrijk`,
+      alternates: {
+        canonical: `/${resolvedParams.locale}/${slug}`,
+        languages: languages,
+      },
+    };
+  } catch (e) {
+    return { title: "Tarragon | D&D Kortrijk" };
+  }
 }
 
 export async function generateStaticParams() {
-    const locales = ['nl', 'en'];
-    const pages = await client.queries.pageConnection({
-        filter: { enabled: { eq: true } }
-    });
-    
-    const paths: any[] = [];
-    locales.forEach(locale => {
-        pages.data?.pageConnection?.edges?.forEach((edge) => {
-            if (edge?.node?.language === locale) {
-                paths.push({
-                    locale: locale,
-                    filename: edge?.node?._sys.breadcrumbs,
-                });
-            }
-        });
-    });
+  try {
+    const client = getConvexClient();
+    const pages = await client.query(api.pages.listPages, { enabled: true });
 
-    return paths;
+    return (pages || []).map((page) => ({
+      locale: page.language || "nl",
+      filename: page.slug.split("/"),
+    }));
+  } catch (err) {
+    return [];
+  }
 }
 
-
 export default async function Page({
-    params,
+  params,
 }: {
-    params: Promise<{ filename: string[], locale: string }>;
+  params: Promise<{ filename: string[]; locale: string }>;
 }) {
-    const resolvedParams = await params;
-    const locale = resolvedParams.locale || 'nl';
-    const path = resolvedParams.filename.join('/');
+  const resolvedParams = await params;
+  const slug = resolvedParams.filename.join("/");
 
-    try {
-        const data = await client.queries.page({
-            relativePath: `${path}.mdx`,
-        });
+  try {
+    const client = getConvexClient();
+    const page = await client.query(api.pages.getPageBySlug, { slug });
 
-        if (!data.data.page) {
-            notFound();
-        }
-
-        return (
-            <PagePage {...data} locale={locale}></PagePage>
-        );
-    } catch (e) {
-        notFound();
+    if (!page || !page.enabled) {
+      notFound();
     }
+
+    return <PagePage page={page} />;
+  } catch (e) {
+    notFound();
+  }
 }

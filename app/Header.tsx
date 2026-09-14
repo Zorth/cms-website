@@ -18,7 +18,7 @@ import TarragonTiny from "../public/images/Tarragon_Tiny.svg";
 import TarragonTitle from "../public/images/Tarragon_Title.svg";
 import DiscordIcon from "../public/images/discord-icon.svg";
 
-export default function Header({ pagesData }: { pagesData: any }) {
+export default function Header() {
     const { openUserProfile } = useClerk();
     const currentUser = useQuery(api.users.getCurrentUser);
     const isDragon = currentUser?.role === 'dragon';
@@ -81,7 +81,7 @@ export default function Header({ pagesData }: { pagesData: any }) {
                     height={30}
                 />
             </Link>
-            <HeaderPages data={pagesData} locale={locale} />
+            <HeaderPages locale={locale} />
             <div className="header-right">
                 <Link href={toggleHref} className="lang-toggle">
                     <Globe size={20} />
