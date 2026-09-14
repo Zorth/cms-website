@@ -5,10 +5,69 @@ import { internal } from "./_generated/api";
 export const getEventSignups = query({
   args: { eventSlug: v.string() },
   handler: async (ctx, args) => {
-    return await ctx.db
+    const rawSignups = await ctx.db
       .query("signups")
       .withIndex("by_event", (q) => q.eq("eventSlug", args.eventSlug))
       .collect();
+
+    const identity = await ctx.auth.getUserIdentity();
+    let currentUser: any = null;
+    if (identity) {
+      currentUser = await ctx.db
+        .query("users")
+        .withIndex("by_tokenIdentifier", (q) =>
+          q.eq("tokenIdentifier", identity.tokenIdentifier)
+        )
+        .unique();
+    }
+
+    const isDragon = currentUser?.role === "dragon";
+
+    return rawSignups.map((s) => {
+      const isOwner =
+        (currentUser?._id && s.userId === currentUser._id) ||
+        (identity?.email && s.email.toLowerCase() === identity.email.toLowerCase());
+
+      if (isDragon) {
+        // Dragon account sees full info
+        return {
+          _id: s._id,
+          _creationTime: s._creationTime,
+          eventSlug: s.eventSlug,
+          groupName: s.groupName,
+          name: s.name,
+          email: s.email,
+          userId: s.userId,
+          cancelToken: isOwner ? s.cancelToken : undefined,
+          isDragonVisible: true,
+        };
+      }
+
+      if (isOwner) {
+        // Owner sees their own full details and cancel token
+        return {
+          _id: s._id,
+          _creationTime: s._creationTime,
+          eventSlug: s.eventSlug,
+          groupName: s.groupName,
+          name: s.name,
+          email: s.email,
+          userId: s.userId,
+          cancelToken: s.cancelToken,
+        };
+      }
+
+      // Other members / public see only first name, no email, no cancel token
+      const firstName = s.name.trim().split(/\s+/)[0] || s.name;
+      return {
+        _id: s._id,
+        _creationTime: s._creationTime,
+        eventSlug: s.eventSlug,
+        groupName: s.groupName,
+        name: firstName,
+        userId: s.userId,
+      };
+    });
   },
 });
 

@@ -62,7 +62,7 @@ export default function SignupSystem({
   // Check if current user is already registered for this event
   const mySignup = signups?.find((s) => {
     if (currentUser?._id && s.userId === currentUser._id) return true;
-    if (clerkUser?.primaryEmailAddress?.emailAddress) {
+    if (clerkUser?.primaryEmailAddress?.emailAddress && s.email) {
       return (
         s.email.toLowerCase() ===
         clerkUser.primaryEmailAddress.emailAddress.toLowerCase()
@@ -166,17 +166,14 @@ export default function SignupSystem({
           const groupSignups = signups?.filter((s) => s.groupName === group.name) || [];
           const isFull = groupSignups.length >= group.maxSlots;
           const isUserInThisGroup = mySignup?.groupName === group.name;
+          const isSelected = selectedGroup === group.name;
 
           return (
             <div
               key={group.name}
-              className={`group-card ${selectedGroup === group.name ? "selected" : ""} ${
+              className={`group-card ${isSelected ? "selected" : ""} ${
                 isFull ? "full" : ""
               } ${isUserInThisGroup ? "my-group" : ""}`}
-              onClick={() => {
-                if (mySignup) return;
-                if (!isFull) setSelectedGroup(group.name);
-              }}
             >
               <div className="group-header">
                 <h3>{group.name}</h3>
@@ -185,20 +182,70 @@ export default function SignupSystem({
                 </span>
               </div>
               {group.description && <p className="group-description">{group.description}</p>}
+              
               <div className="signup-names">
-                {groupSignups.map((s, i) => (
-                  <span
-                    key={i}
-                    className={`signup-name ${
-                      currentUser?._id && s.userId === currentUser._id ? "is-current-user" : ""
-                    }`}
-                  >
-                    {s.name}
-                    {currentUser?._id && s.userId === currentUser._id && " (You)"}
-                  </span>
-                ))}
+                {groupSignups.map((s, i) => {
+                  const isCurrent = currentUser?._id && s.userId === currentUser._id;
+                  return (
+                    <div
+                      key={i}
+                      className={`signup-name-item ${isCurrent ? "is-current-user" : ""}`}
+                    >
+                      <span className="signup-name-text">
+                        {s.name}
+                        {isCurrent && " (You)"}
+                      </span>
+                      {currentUser?.role === "dragon" && s.email && (
+                        <span className="signup-dragon-email" title={s.email}>
+                          {s.email}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
                 {groupSignups.length === 0 && <p className="no-signups">Be the first to join!</p>}
               </div>
+
+              {/* Action Button inside the card */}
+              <div className="card-action-area">
+                {isUserInThisGroup ? (
+                  <div className="registered-badge-btn">
+                    <CheckCircle2 size={16} /> You are registered
+                  </div>
+                ) : isFull ? (
+                  <button type="button" className="btn-table-action btn-table-full" disabled>
+                    Table Full
+                  </button>
+                ) : mySignup ? (
+                  <button type="button" className="btn-table-action btn-table-disabled" disabled>
+                    Already Registered
+                  </button>
+                ) : isSelected ? (
+                  <button
+                    type="button"
+                    className="btn-table-action btn-table-selected"
+                    onClick={() => setSelectedGroup(null)}
+                  >
+                    Selected (Click to Close)
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="btn-table-action btn-table-join"
+                    onClick={() => {
+                      setSelectedGroup(group.name);
+                      // Scroll to form smoothly
+                      setTimeout(() => {
+                        const form = document.getElementById("signup-form-anchor");
+                        if (form) form.scrollIntoView({ behavior: "smooth" });
+                      }, 50);
+                    }}
+                  >
+                    Sign Up for Table
+                  </button>
+                )}
+              </div>
+
               {isUserInThisGroup && <div className="registered-badge">REGISTERED</div>}
               {isFull && !isUserInThisGroup && <div className="full-badge">FULL</div>}
             </div>
@@ -206,15 +253,24 @@ export default function SignupSystem({
         })}
       </div>
 
+      {/* Anchor for auto-scroll */}
+      <div id="signup-form-anchor" />
+
       {/* Signup Form */}
       {selectedGroup && !success && !mySignup && (
         <form className="signup-form" onSubmit={handleSubmit}>
           <div className="form-header">
             <h3>Register for {selectedGroup}</h3>
-            {isSignedIn && clerkUser && (
+            {isSignedIn && clerkUser ? (
               <div className="account-tag">
-                <Shield size={14} /> Signed in as <strong>{clerkUser.fullName || clerkUser.username || "Member"}</strong>
+                <Shield size={14} /> Signed in as <strong>{clerkUser.fullName || clerkUser.username || "User"}</strong>
               </div>
+            ) : (
+              <SignInButton mode="modal">
+                <button type="button" className="form-login-hint-btn">
+                  <LogIn size={13} /> Log in to auto-fill
+                </button>
+              </SignInButton>
             )}
           </div>
 
@@ -444,21 +500,90 @@ export default function SignupSystem({
         }
         .signup-names {
           display: flex;
-          flex-wrap: wrap;
+          flex-direction: column;
           gap: 0.4rem;
+          margin-bottom: 1rem;
         }
-        .signup-name {
+        .signup-name-item {
+          display: flex;
+          flex-direction: column;
           font-size: 0.8rem;
           background: rgba(255, 255, 255, 0.08);
-          padding: 0.2rem 0.6rem;
-          border-radius: 1rem;
+          padding: 0.35rem 0.65rem;
+          border-radius: 0.5rem;
           color: var(--light);
         }
-        .signup-name.is-current-user {
+        .signup-name-item.is-current-user {
           background: rgba(151, 183, 142, 0.25);
+          border: 1px solid var(--secondary);
+        }
+        .signup-name-text {
+          font-weight: 600;
+        }
+        .signup-dragon-email {
+          font-size: 0.72rem;
+          color: #94a3b8;
+          word-break: break-all;
+          margin-top: 0.1rem;
+        }
+        .card-action-area {
+          margin-top: auto;
+          padding-top: 0.75rem;
+          border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .btn-table-action {
+          width: 100%;
+          padding: 0.55rem 0.75rem;
+          border-radius: 0.5rem;
+          font-size: 0.85rem;
+          font-weight: 700;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.4rem;
+          transition: all 0.2s ease;
+          border: none;
+        }
+        .btn-table-join {
+          background: var(--primary);
+          color: white;
+        }
+        .btn-table-join:hover {
+          background: var(--primary_light);
+          transform: translateY(-1px);
+        }
+        .btn-table-login {
+          background: var(--secondary);
+          color: #1a221d;
+        }
+        .btn-table-login:hover {
+          background: #add1a3;
+          transform: translateY(-1px);
+        }
+        .btn-table-selected {
+          background: rgba(151, 183, 142, 0.2);
           color: var(--secondary);
           border: 1px solid var(--secondary);
-          font-weight: 600;
+        }
+        .btn-table-full, .btn-table-disabled {
+          background: rgba(255, 255, 255, 0.05);
+          color: rgba(255, 255, 255, 0.4);
+          cursor: not-allowed;
+          border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .registered-badge-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.4rem;
+          font-size: 0.8rem;
+          font-weight: 700;
+          color: var(--secondary);
+          background: rgba(151, 183, 142, 0.15);
+          border: 1px solid var(--secondary);
+          padding: 0.45rem;
+          border-radius: 0.5rem;
         }
         .no-signups {
           font-size: 0.8rem;
@@ -508,6 +633,24 @@ export default function SignupSystem({
         .form-header h3 {
           margin: 0;
           color: var(--secondary);
+        }
+        .form-login-hint-btn {
+          background: rgba(151, 183, 142, 0.15);
+          color: var(--secondary);
+          border: 1px solid rgba(151, 183, 142, 0.3);
+          border-radius: 1rem;
+          padding: 0.25rem 0.65rem;
+          font-weight: 600;
+          font-size: 0.78rem;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.3rem;
+          transition: all 0.2s;
+        }
+        .form-login-hint-btn:hover {
+          background: rgba(151, 183, 142, 0.25);
+          border-color: var(--secondary);
         }
         .account-tag {
           font-size: 0.75rem;
