@@ -1,14 +1,11 @@
 import { MetadataRoute } from "next";
-import { ConvexHttpClient } from "convex/browser";
 import { api } from "../convex/_generated/api";
+import { getConvexClient } from "../lib/convex";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://tarragon.be";
   const locales = ["nl", "en"];
-  const convexUrl =
-    process.env.NEXT_PUBLIC_CONVEX_URL ||
-    "https://frugal-shark-535.eu-west-1.convex.cloud";
-  const client = new ConvexHttpClient(convexUrl);
+  const client = getConvexClient();
 
   const pages: any[] = [];
   const events: any[] = [];

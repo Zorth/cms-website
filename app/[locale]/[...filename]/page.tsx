@@ -1,17 +1,10 @@
 import PagePage from "./client-page";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../../convex/_generated/api";
+import { getConvexClient } from "../../../lib/convex";
 
 export const revalidate = 0;
-
-function getConvexClient() {
-  const convexUrl =
-    process.env.NEXT_PUBLIC_CONVEX_URL ||
-    "https://frugal-shark-535.eu-west-1.convex.cloud";
-  return new ConvexHttpClient(convexUrl);
-}
 
 export async function generateMetadata({
   params,

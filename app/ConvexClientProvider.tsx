@@ -6,8 +6,9 @@ import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { useAuth } from "@clerk/nextjs";
 import UserSync from "./UserSync";
 
-const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL || "https://placeholder.convex.cloud";
-const convex = new ConvexReactClient(convexUrl);
+import { getConvexUrl } from "../lib/convex";
+
+const convex = new ConvexReactClient(getConvexUrl());
 
 // Cast ConvexProviderWithClerk to allow React 18 children in Next.js JSX preserve mode
 const ConvexClerkProvider = ConvexProviderWithClerk as React.ComponentType<{
