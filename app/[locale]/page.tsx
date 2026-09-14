@@ -7,6 +7,7 @@ import SponsorList from '../sponsor-list';
 import DragonList from '../dragon-list';
 import Featurettes from '../Featurettes';
 import DiscordIcon from '../../public/images/discord-icon.svg';
+import VoidLogo from '../../public/images/Void_Logo_WhiteTransparent.png';
 
 import { Metadata } from 'next';
 
@@ -71,7 +72,15 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                     <span>Join our Discord</span>
                 </Link>
                 <Link href="https://guild.tarragon.be" className="quick-link-item">
-                    <span className="quick-link-icon">⚔️</span>
+                    <span className="quick-link-icon" style={{ display: 'flex', alignItems: 'center' }}>
+                        <Image 
+                            src={VoidLogo}
+                            alt="Void Guild"
+                            width={24}
+                            height={24}
+                            style={{ objectFit: 'contain' }}
+                        />
+                    </span>
                     <span>Guild Planning Tool</span>
                 </Link>
                 <Link href="https://void.tarragon.be" className="quick-link-item">
