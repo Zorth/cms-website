@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.39.6",
-    "better-sqlite3": "^11.8.1",
+    "better-sqlite3": "^13.0.3",
     "convex": "^1.45.0",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
