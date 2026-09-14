@@ -54,5 +54,15 @@ export default defineSchema({
   })
     .index("by_slug", ["slug"])
     .index("by_date", ["date"]),
+
+  dragons: defineTable({
+    name: v.string(),
+    title: v.optional(v.string()),
+    image: v.optional(v.string()),
+    body: v.optional(v.string()),
+    order: v.optional(v.number()),
+  })
+    .index("by_name", ["name"])
+    .index("by_order", ["order"]),
 });
 

@@ -28,7 +28,7 @@ export default function DragonAdminPage() {
   const currentUser = useQuery(api.users.getCurrentUser);
   const updateUserRoleInConvex = useMutation(api.users.updateUserRoleByClerkId);
 
-  const [activeTab, setActiveTab] = useState<"users" | "events">("events");
+  const [activeTab, setActiveTab] = useState<"users" | "events" | "dragons">("dragons");
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -54,6 +54,24 @@ export default function DragonAdminPage() {
   const [savingEvent, setSavingEvent] = useState(false);
   const [deletingEventId, setDeletingEventId] = useState<string | null>(null);
   const [eventModalError, setEventModalError] = useState<string | null>(null);
+
+  // Dragons state
+  const dragons = useQuery(api.dragons.listDragons);
+  const saveDragonMutation = useMutation(api.dragons.saveDragon);
+  const deleteDragonMutation = useMutation(api.dragons.deleteDragon);
+
+  const [dragonSearchQuery, setDragonSearchQuery] = useState("");
+  const [editingDragon, setEditingDragon] = useState<{
+    _id?: any;
+    name: string;
+    title?: string;
+    image?: string;
+    body?: string;
+    order?: number;
+  } | null>(null);
+  const [savingDragon, setSavingDragon] = useState(false);
+  const [deletingDragonId, setDeletingDragonId] = useState<string | null>(null);
+  const [dragonModalError, setDragonModalError] = useState<string | null>(null);
 
   const isDragon = currentUser?.role === "dragon";
 
@@ -217,6 +235,77 @@ export default function DragonAdminPage() {
     }
   };
 
+  const handleOpenNewDragon = () => {
+    setEditingDragon({
+      name: "",
+      title: "",
+      image: "",
+      body: "",
+      order: (dragons?.length ?? 0) + 1,
+    });
+    setDragonModalError(null);
+  };
+
+  const handleOpenEditDragon = (drg: any) => {
+    setEditingDragon({
+      _id: drg._id,
+      name: drg.name,
+      title: drg.title || "",
+      image: drg.image || "",
+      body: drg.body || "",
+      order: drg.order ?? 0,
+    });
+    setDragonModalError(null);
+  };
+
+  const handleSaveDragon = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingDragon) return;
+
+    if (!editingDragon.name.trim()) {
+      setDragonModalError("Dragon name is required.");
+      return;
+    }
+
+    setSavingDragon(true);
+    setDragonModalError(null);
+
+    try {
+      await saveDragonMutation({
+        id: editingDragon._id,
+        name: editingDragon.name,
+        title: editingDragon.title || undefined,
+        image: editingDragon.image || undefined,
+        body: editingDragon.body || undefined,
+        order: editingDragon.order,
+      });
+      setEditingDragon(null);
+    } catch (err: any) {
+      console.error("Error saving dragon:", err);
+      setDragonModalError(err.message || "Failed to save dragon");
+    } finally {
+      setSavingDragon(false);
+    }
+  };
+
+  const handleDeleteDragon = async (id: any) => {
+    if (!confirm("Are you sure you want to delete this dragon? This action cannot be undone.")) {
+      return;
+    }
+
+    setDeletingDragonId(id);
+    try {
+      await deleteDragonMutation({ id });
+      if (editingDragon?._id === id) {
+        setEditingDragon(null);
+      }
+    } catch (err: any) {
+      alert(err.message || "Failed to delete dragon");
+    } finally {
+      setDeletingDragonId(null);
+    }
+  };
+
   // Auth gate checks
   if (!isLoaded || (isSignedIn && currentUser === undefined)) {
     return (
@@ -278,16 +367,29 @@ export default function DragonAdminPage() {
     );
   });
 
+  const filteredDragons = (dragons || []).filter((d) => {
+    return (
+      d.name.toLowerCase().includes(dragonSearchQuery.toLowerCase()) ||
+      (d.title && d.title.toLowerCase().includes(dragonSearchQuery.toLowerCase()))
+    );
+  });
+
   return (
     <div className="dragon-admin-container">
       <div className="dragon-admin-header">
         <h1>
           <span>🐉</span> Dragon Council
         </h1>
-        <p>Manage members, events, roles, and guild permissions across Tarragon.</p>
+        <p>Manage members, events, dragon cards, and guild permissions across Tarragon.</p>
       </div>
 
       <div className="dragon-tabs">
+        <button
+          className={`dragon-tab ${activeTab === "dragons" ? "active" : ""}`}
+          onClick={() => setActiveTab("dragons")}
+        >
+          Dragons ({dragons ? dragons.length : "..."})
+        </button>
         <button
           className={`dragon-tab ${activeTab === "events" ? "active" : ""}`}
           onClick={() => setActiveTab("events")}
@@ -301,6 +403,222 @@ export default function DragonAdminPage() {
           Users ({users.length})
         </button>
       </div>
+
+      {activeTab === "dragons" && (
+        <div className="dragon-panel">
+          <div className="dragon-controls">
+            <input
+              type="text"
+              className="dragon-search-input"
+              placeholder="Search dragons by name or title..."
+              value={dragonSearchQuery}
+              onChange={(e) => setDragonSearchQuery(e.target.value)}
+            />
+
+            <button
+              type="button"
+              className="dragon-btn-primary"
+              onClick={handleOpenNewDragon}
+            >
+              + Add Dragon
+            </button>
+          </div>
+
+          {dragons === undefined ? (
+            <div style={{ textAlign: "center", padding: "2.5rem", color: "var(--secondary)" }}>
+              Loading dragons from Convex...
+            </div>
+          ) : filteredDragons.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "2.5rem", color: "var(--secondary)" }}>
+              No dragons found.
+            </div>
+          ) : (
+            <div className="dragon-table-wrapper">
+              <table className="dragon-users-table">
+                <thead>
+                  <tr>
+                    <th>Dragon</th>
+                    <th>Title</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredDragons.map((drg) => (
+                    <tr
+                      key={drg._id}
+                      className="dragon-table-row-clickable"
+                      onClick={() => handleOpenEditDragon(drg)}
+                    >
+                      <td>
+                        <div className="dragon-user-info">
+                          {drg.image ? (
+                            <Image
+                              src={drg.image}
+                              alt={drg.name}
+                              width={40}
+                              height={40}
+                              className="dragon-avatar"
+                            />
+                          ) : (
+                            <div className="dragon-avatar" style={{ display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" }}>
+                              {drg.name.charAt(0).toUpperCase()}
+                            </div>
+                          )}
+                          <span className="dragon-fullname">{drg.name}</span>
+                        </div>
+                      </td>
+                      <td style={{ color: "var(--secondary)" }}>
+                        {drg.title || "—"}
+                      </td>
+                      <td style={{ color: "rgba(242, 211, 180, 0.7)", fontFamily: "monospace", fontSize: "0.85rem" }}>
+                        {drg.image || "Default logo"}
+                      </td>
+                      <td onClick={(e) => e.stopPropagation()}>
+                        <div style={{ display: "flex", gap: "0.5rem" }}>
+                          <button
+                            type="button"
+                            className="dragon-btn-secondary"
+                            style={{ padding: "0.3rem 0.75rem", fontSize: "0.8rem" }}
+                            onClick={() => handleOpenEditDragon(drg)}
+                          >
+                            Edit
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Edit / Create Dragon Modal */}
+      {editingDragon && (
+        <div className="dragon-modal-backdrop" onClick={() => !savingDragon && setEditingDragon(null)}>
+          <div className="dragon-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="dragon-modal-header">
+              <h2>{editingDragon._id ? "Edit Dragon" : "Add Dragon Card"}</h2>
+              <button
+                type="button"
+                className="dragon-modal-close"
+                onClick={() => setEditingDragon(null)}
+                disabled={savingDragon}
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveDragon} style={{ display: "contents" }}>
+              <div className="dragon-modal-body">
+                {dragonModalError && (
+                  <div
+                    style={{
+                      background: "rgba(220, 38, 38, 0.2)",
+                      color: "#f87171",
+                      padding: "0.75rem 1rem",
+                      borderRadius: "0.5rem",
+                    }}
+                  >
+                    {dragonModalError}
+                  </div>
+                )}
+
+                <div className="dragon-form-group">
+                  <label htmlFor="dragon-name">Name *</label>
+                  <input
+                    id="dragon-name"
+                    type="text"
+                    required
+                    className="dragon-form-input"
+                    value={editingDragon.name}
+                    onChange={(e) =>
+                      setEditingDragon({ ...editingDragon, name: e.target.value })
+                    }
+                    placeholder="e.g. Jasper"
+                  />
+                </div>
+
+                <div className="dragon-form-group">
+                  <label htmlFor="dragon-title">Title / Role</label>
+                  <input
+                    id="dragon-title"
+                    type="text"
+                    className="dragon-form-input"
+                    value={editingDragon.title || ""}
+                    onChange={(e) =>
+                      setEditingDragon({ ...editingDragon, title: e.target.value })
+                    }
+                    placeholder="e.g. Thane, HR, Secretary"
+                  />
+                </div>
+
+                <div className="dragon-form-group">
+                  <label htmlFor="dragon-image">Image URL / Path</label>
+                  <input
+                    id="dragon-image"
+                    type="text"
+                    className="dragon-form-input"
+                    value={editingDragon.image || ""}
+                    onChange={(e) =>
+                      setEditingDragon({ ...editingDragon, image: e.target.value })
+                    }
+                    placeholder="/uploads/Jasper.jpg"
+                  />
+                </div>
+
+                <div className="dragon-form-group">
+                  <label htmlFor="dragon-body">Bio / Description (optional)</label>
+                  <textarea
+                    id="dragon-body"
+                    rows={4}
+                    className="dragon-form-textarea"
+                    value={editingDragon.body || ""}
+                    onChange={(e) =>
+                      setEditingDragon({ ...editingDragon, body: e.target.value })
+                    }
+                    placeholder="Short description..."
+                  />
+                </div>
+              </div>
+
+              <div className="dragon-modal-footer">
+                <div>
+                  {editingDragon._id && (
+                    <button
+                      type="button"
+                      className="dragon-btn-danger"
+                      disabled={savingDragon || deletingDragonId === editingDragon._id}
+                      onClick={() => handleDeleteDragon(editingDragon._id)}
+                    >
+                      {deletingDragonId === editingDragon._id ? "Deleting..." : "Delete Dragon"}
+                    </button>
+                  )}
+                </div>
+                <div style={{ display: "flex", gap: "0.75rem" }}>
+                  <button
+                    type="button"
+                    className="dragon-btn-secondary"
+                    disabled={savingDragon}
+                    onClick={() => setEditingDragon(null)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="dragon-btn-primary"
+                    disabled={savingDragon}
+                  >
+                    {savingDragon ? "Saving..." : editingDragon._id ? "Save Changes" : "Create Dragon"}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {activeTab === "events" && (
         <div className="dragon-panel">

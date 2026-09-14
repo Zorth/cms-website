@@ -60,8 +60,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         }
     };
 
-    const dragons = await client.queries.dragonConnection();
-
     return (
         <div className="container">
             <div className="infobox">
@@ -112,7 +110,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             </div>
             <div className="dragonbox">
                 <h1>Dragons</h1>
-                <DragonList {...dragons} locale={locale} />
+                <DragonList locale={locale} />
             </div>
             <div className="contactbox">
                 <h1>Contact</h1>
