@@ -29,17 +29,26 @@ export default function EventClientPage({ event: initialEvent }: EventPageProps)
   const formattedDate = isNaN(eventDate.getTime())
     ? event.date
     : eventDate.toLocaleDateString("nl-BE", {
+        timeZone: "Europe/Brussels",
         weekday: "long",
         day: "numeric",
         month: "long",
         year: "numeric",
+      });
+  const formattedTime = isNaN(eventDate.getTime())
+    ? ""
+    : eventDate.toLocaleTimeString("en-GB", {
+        timeZone: "Europe/Brussels",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
       });
 
   return (
     <div className="content">
       <h1>{event.title}</h1>
       <h3 style={{ color: "var(--secondary)", textTransform: "capitalize" }}>
-        {formattedDate}
+        {formattedDate} {formattedTime ? `om ${formattedTime}` : ""}
       </h3>
 
       <div className="event-body-markdown">

@@ -2,22 +2,69 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useQuery } from 'convex/react';
 import { api } from '../convex/_generated/api';
-import { Calendar as CalendarIcon, Clock, ChevronRight, Users, Sparkles } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, ChevronRight, Users, Sparkles, ExternalLink } from 'lucide-react';
+import VoidLogo from '../public/images/Void_Logo_WhiteTransparent.png';
 
 interface EventListProps {
   locale?: string;
 }
 
+interface GuildSession {
+  _id: string;
+  date?: number;
+  system?: 'PF' | 'DnD' | string;
+  level?: number;
+  questId?: string;
+  questName?: string | null;
+  maxPlayers?: number;
+  characters?: string[];
+  location?: string;
+  locked?: boolean;
+  planning?: boolean;
+}
+
+type UnifiedItem = 
+  | { kind: 'convex'; data: any; sortDate: Date }
+  | { kind: 'guild'; data: GuildSession; sortDate: Date };
+
 export default function EventList({ locale = 'nl' }: EventListProps) {
   // Brussels time calculations
   const [nowDate, setNowDate] = useState<Date>(() => new Date());
+  const [guildSessions, setGuildSessions] = useState<GuildSession[]>([]);
 
   useEffect(() => {
     const updateNow = () => setNowDate(new Date());
     const interval = setInterval(updateNow, 60000);
     return () => clearInterval(interval);
+  }, []);
+
+  // Fetch upcoming sessions from Guild API
+  useEffect(() => {
+    let isCancelled = false;
+    async function fetchGuildSessions() {
+      try {
+        const res = await fetch('https://guild.tarragon.be/api/external/v1/sessions?past=false');
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!isCancelled && Array.isArray(data)) {
+          // Filter only sessions that have an explicit scheduled date
+          const scheduled = data.filter((s: GuildSession) => typeof s.date === 'number' && !s.planning);
+          setGuildSessions(scheduled);
+        }
+      } catch (err) {
+        // Silently fail if external API is unreachable
+        console.error('Failed to load Guild sessions:', err);
+      }
+    }
+    fetchGuildSessions();
+    const interval = setInterval(fetchGuildSessions, 120000); // refresh every 2 mins
+    return () => {
+      isCancelled = true;
+      clearInterval(interval);
+    };
   }, []);
 
   // Compute fromDate (start of today) and sixMonthsLater ISO strings
@@ -77,20 +124,19 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
     limit: 100,
   });
 
-  // Map events to date keys (YYYY-MM-DD in Europe/Brussels)
+  // Map Convex events to date keys (YYYY-MM-DD in Europe/Brussels)
   const eventsByDate = useMemo(() => {
     const map = new Map<string, any[]>();
     if (!futureEvents) return map;
 
     for (const ev of futureEvents) {
       const d = new Date(ev.date);
-      // Format as YYYY-MM-DD in Brussels timezone
       const parts = new Intl.DateTimeFormat('en-CA', {
         timeZone: 'Europe/Brussels',
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',
-      }).format(d); // produces "YYYY-MM-DD"
+      }).format(d);
       
       const list = map.get(parts) || [];
       list.push(ev);
@@ -99,7 +145,54 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
     return map;
   }, [futureEvents]);
 
-  // If loading or no events in 6 months
+  // Map Guild sessions to date keys (YYYY-MM-DD in Europe/Brussels)
+  const guildSessionsByDate = useMemo(() => {
+    const map = new Map<string, GuildSession[]>();
+    for (const session of guildSessions) {
+      if (!session.date) continue;
+      const d = new Date(session.date);
+      const parts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Europe/Brussels',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      }).format(d);
+      
+      const list = map.get(parts) || [];
+      list.push(session);
+      map.set(parts, list);
+    }
+    return map;
+  }, [guildSessions]);
+
+  // Combined list sorted chronologically
+  const unifiedEventsList = useMemo(() => {
+    const items: UnifiedItem[] = [];
+
+    if (futureEvents) {
+      for (const ev of futureEvents) {
+        items.push({ kind: 'convex', data: ev, sortDate: new Date(ev.date) });
+      }
+    }
+
+    const startOfToday = new Date(nowDate);
+    startOfToday.setHours(0, 0, 0, 0);
+    const sixMonthsLater = new Date(startOfToday);
+    sixMonthsLater.setMonth(sixMonthsLater.getMonth() + 6);
+
+    for (const s of guildSessions) {
+      if (!s.date) continue;
+      const sDate = new Date(s.date);
+      if (sDate >= startOfToday && sDate <= sixMonthsLater) {
+        items.push({ kind: 'guild', data: s, sortDate: sDate });
+      }
+    }
+
+    items.sort((a, b) => a.sortDate.getTime() - b.sortDate.getTime());
+    return items;
+  }, [futureEvents, guildSessions, nowDate]);
+
+  // If loading
   if (futureEvents === undefined) {
     return (
       <div className="eventbox">
@@ -114,7 +207,7 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
     );
   }
 
-  if (futureEvents.length === 0) {
+  if (futureEvents.length === 0 && guildSessions.length === 0) {
     return null;
   }
 
@@ -139,14 +232,21 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
         <div className="dayboxes-grid">
           {daysList.map((day) => {
             const dayEvents = eventsByDate.get(day.dateKey) || [];
-            const hasEvent = dayEvents.length > 0;
+            const daySessions = guildSessionsByDate.get(day.dateKey) || [];
+            const hasConvexEvent = dayEvents.length > 0;
+            const hasGuildSession = daySessions.length > 0;
+            const hasAnyActivity = hasConvexEvent || hasGuildSession;
             const firstEvent = dayEvents[0];
 
             return (
               <div
                 key={day.dateKey}
                 className={`daybox-card ${day.isToday ? 'is-today' : ''} ${
-                  hasEvent ? 'daybox-highlighted' : 'daybox-default'
+                  hasConvexEvent
+                    ? 'daybox-highlighted'
+                    : hasGuildSession
+                    ? 'daybox-guild-highlighted'
+                    : 'daybox-default'
                 }`}
               >
                 {/* Header with day name and date */}
@@ -160,7 +260,7 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
 
                 {/* Content */}
                 <div className="daybox-content">
-                  {hasEvent ? (
+                  {hasConvexEvent && (
                     <Link
                       href={`/event/${firstEvent.slug}`}
                       className="daybox-event-link"
@@ -176,7 +276,36 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
                         </span>
                       )}
                     </Link>
-                  ) : (
+                  )}
+
+                  {/* Guild Sessions Badges */}
+                  {daySessions.map((session) => {
+                    const sessionTitle = session.system 
+                      ? `${session.system} ${session.level ? `(Lvl ${session.level})` : 'Session'}`
+                      : 'Void Session';
+
+                    return (
+                      <a
+                        key={session._id}
+                        href={`https://guild.tarragon.be/sessions/${session._id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="daybox-guild-badge"
+                        title={`Guild Session: ${sessionTitle} - Click to open on Guild of The Void`}
+                      >
+                        <Image
+                          src={VoidLogo}
+                          alt="Void Guild"
+                          width={14}
+                          height={14}
+                          className="daybox-void-logo"
+                        />
+                        <span className="daybox-guild-name">{sessionTitle}</span>
+                      </a>
+                    );
+                  })}
+
+                  {!hasAnyActivity && (
                     <div className="daybox-empty">
                       <span>—</span>
                     </div>
@@ -188,16 +317,16 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
         </div>
       </div>
 
-      {/* Compact List of All Upcoming Events in Next 6 Months */}
+      {/* Compact List of All Upcoming Events & Guild Sessions in Next 6 Months */}
       <div className="compact-events-section">
         <div className="compact-events-header">
           <span>{locale === 'nl' ? 'Evenementenkalender' : 'Schedule'}</span>
-          <span className="count-badge">{futureEvents.length}</span>
+          <span className="count-badge">{unifiedEventsList.length}</span>
         </div>
 
         <div className="compact-events-list">
-          {futureEvents.map((event) => {
-            const evDate = new Date(event.date);
+          {unifiedEventsList.map((item) => {
+            const evDate = item.sortDate;
             const weekday = evDate.toLocaleDateString(locale === 'nl' ? 'nl-BE' : 'en-US', {
               timeZone: 'Europe/Brussels',
               weekday: 'short',
@@ -208,26 +337,83 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
               month: 'short',
             });
             const year = evDate.getFullYear();
-            const timeStr = evDate.toLocaleTimeString(locale === 'nl' ? 'nl-BE' : 'en-US', {
+            const timeStr = evDate.toLocaleTimeString('en-GB', {
               timeZone: 'Europe/Brussels',
               hour: '2-digit',
               minute: '2-digit',
+              hour12: false,
             });
 
-            const groups = event.groups || [];
-            const hasGroups = groups.length > 0;
-            const totalSlots = hasGroups
-              ? groups.reduce((acc: number, g: any) => acc + (g.maxSlots || 0), 0)
-              : 0;
+            if (item.kind === 'convex') {
+              const event = item.data;
+              const groups = event.groups || [];
+              const hasGroups = groups.length > 0;
+              const totalSlots = hasGroups
+                ? groups.reduce((acc: number, g: any) => acc + (g.maxSlots || 0), 0)
+                : 0;
+
+              return (
+                <Link
+                  key={`convex-${event._id}`}
+                  href={`/event/${event.slug}`}
+                  className="compact-event-row"
+                >
+                  {/* Date Capsule */}
+                  <div className="compact-date-capsule">
+                    <span className="compact-date-weekday">{weekday}</span>
+                    <span className="compact-date-day">{dayMonth}</span>
+                    <span className="compact-date-year">{year}</span>
+                  </div>
+
+                  {/* Event Details */}
+                  <div className="compact-event-info">
+                    <div className="compact-title-row">
+                      <h2 className="compact-event-title">{event.title}</h2>
+                      {hasGroups && (
+                        <span className="compact-slots-badge">
+                          <Users size={12} />
+                          <span>
+                            {groups.length} {locale === 'nl' ? 'tafels' : 'tables'} ({totalSlots} {locale === 'nl' ? 'plekken' : 'slots'})
+                          </span>
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="compact-event-meta">
+                      <span className="compact-meta-time">
+                        <Clock size={13} />
+                        <span>{timeStr}</span>
+                      </span>
+                      <span className="compact-meta-location">
+                        Het Textielhuis, Kortrijk
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Arrow Icon */}
+                  <div className="compact-event-arrow">
+                    <ChevronRight size={18} />
+                  </div>
+                </Link>
+              );
+            }
+
+            // Guild of The Void session row
+            const session = item.data;
+            const systemLabel = session.system === 'PF' ? 'Pathfinder 2e' : session.system === 'DnD' ? 'D&D 5e' : (session.system || 'TTRPG');
+            const playersCount = session.characters ? session.characters.length : 0;
+            const maxPlayers = session.maxPlayers || 6;
 
             return (
-              <Link
-                key={event._id}
-                href={`/event/${event.slug}`}
-                className="compact-event-row"
+              <a
+                key={`guild-${session._id}`}
+                href={`https://guild.tarragon.be/sessions/${session._id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="compact-event-row compact-guild-row"
               >
                 {/* Date Capsule */}
-                <div className="compact-date-capsule">
+                <div className="compact-date-capsule guild-date-capsule">
                   <span className="compact-date-weekday">{weekday}</span>
                   <span className="compact-date-day">{dayMonth}</span>
                   <span className="compact-date-year">{year}</span>
@@ -236,33 +422,47 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
                 {/* Event Details */}
                 <div className="compact-event-info">
                   <div className="compact-title-row">
-                    <h2 className="compact-event-title">{event.title}</h2>
-                    {hasGroups && (
-                      <span className="compact-slots-badge">
-                        <Users size={12} />
-                        <span>
-                          {groups.length} {locale === 'nl' ? 'tafels' : 'tables'} ({totalSlots} {locale === 'nl' ? 'plekken' : 'slots'})
-                        </span>
+                    <div className="guild-title-container">
+                      <div className="guild-inline-logo">
+                        <Image
+                          src={VoidLogo}
+                          alt="Void Guild"
+                          width={18}
+                          height={18}
+                          style={{ objectFit: 'contain' }}
+                        />
+                      </div>
+                      <h2 className="compact-event-title">
+                        {systemLabel} Session {session.level ? `(Level ${session.level})` : ''}
+                      </h2>
+                    </div>
+                    <span className="compact-guild-tag">
+                      Guild of The Void
+                    </span>
+                    <span className="compact-slots-badge guild-slots-badge">
+                      <Users size={12} />
+                      <span>
+                        {playersCount} / {maxPlayers} {locale === 'nl' ? 'spelers' : 'players'}
                       </span>
-                    )}
+                    </span>
                   </div>
 
                   <div className="compact-event-meta">
                     <span className="compact-meta-time">
                       <Clock size={13} />
-                      <span>{timeStr !== '00:00' && timeStr !== '01:00' ? timeStr : '19:00'}</span>
+                      <span>{timeStr}</span>
                     </span>
                     <span className="compact-meta-location">
-                      Het Textielhuis, Kortrijk
+                      {session.location?.startsWith('http') ? 'Het Textielhuis, Kortrijk' : (session.location || 'Het Textielhuis, Kortrijk')}
                     </span>
                   </div>
                 </div>
 
-                {/* Arrow Icon */}
-                <div className="compact-event-arrow">
-                  <ChevronRight size={18} />
+                {/* External Link Icon */}
+                <div className="compact-event-arrow guild-arrow">
+                  <ExternalLink size={16} />
                 </div>
-              </Link>
+              </a>
             );
           })}
         </div>
@@ -395,6 +595,19 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
           box-shadow: 0 4px 18px rgba(151, 183, 142, 0.28);
         }
 
+        /* Highlighted Daybox when there is a Guild session */
+        .daybox-guild-highlighted {
+          border: 1.5px solid #a855f7 !important;
+          background: rgba(168, 85, 247, 0.12) !important;
+          box-shadow: 0 0 14px rgba(168, 85, 247, 0.18);
+          opacity: 1;
+        }
+
+        .daybox-guild-highlighted:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 18px rgba(168, 85, 247, 0.28);
+        }
+
         .daybox-header {
           display: flex;
           flex-direction: column;
@@ -432,6 +645,9 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
 
         .daybox-content {
           margin-top: auto;
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
         }
 
         .daybox-empty {
@@ -478,11 +694,48 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
           text-align: right;
         }
 
+        /* Guild badge inside Daybox */
+        .daybox-guild-badge {
+          display: flex;
+          align-items: center;
+          gap: 0.35rem;
+          background: rgba(168, 85, 247, 0.2);
+          border: 1px solid rgba(168, 85, 247, 0.45);
+          color: #f3e8ff;
+          border-radius: 0.4rem;
+          padding: 0.2rem 0.4rem;
+          font-weight: 700;
+          font-size: 0.68rem;
+          line-height: 1.2;
+          text-decoration: none !important;
+          transition: all 0.15s ease;
+          overflow: hidden;
+        }
+
+        .daybox-guild-badge:hover {
+          background: rgba(168, 85, 247, 0.35);
+          border-color: #c084fc;
+          transform: scale(1.02);
+        }
+
+        .daybox-void-logo {
+          flex-shrink: 0;
+          object-fit: contain;
+          filter: drop-shadow(0 0 4px rgba(168, 85, 247, 0.6));
+        }
+
+        .daybox-guild-name {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
         /* Compact Events Section */
         .compact-events-section {
           display: flex;
           flex-direction: column;
           gap: 0.75rem;
+          width: 100%;
         }
 
         .compact-events-header {
@@ -507,59 +760,71 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
         .compact-events-list {
           display: flex;
           flex-direction: column;
-          gap: 0.65rem;
+          gap: 0.6rem;
+          width: 100%;
         }
 
         .compact-event-row {
-          display: flex;
-          align-items: center;
-          gap: 1.25rem;
-          background: rgba(0, 0, 0, 0.22);
-          border: 1px solid rgba(255, 255, 255, 0.06);
-          border-radius: 0.85rem;
-          padding: 0.85rem 1.15rem;
+          display: flex !important;
+          flex-direction: row !important;
+          align-items: center !important;
+          gap: 1.15rem;
+          background: rgba(0, 0, 0, 0.25);
+          border: 1px solid rgba(255, 255, 255, 0.07);
+          border-radius: 0.75rem;
+          padding: 0.65rem 1rem;
           text-decoration: none !important;
           transition: all 0.2s ease;
+          width: 100%;
+          box-sizing: border-box;
         }
 
         .compact-event-row:hover {
-          background: rgba(151, 183, 142, 0.08);
+          background: rgba(151, 183, 142, 0.09);
           border-color: rgba(151, 183, 142, 0.35);
-          transform: translateX(4px);
+          transform: translateX(3px);
         }
 
-        /* Date Capsule */
+        /* Clean Date Capsule (Left of Title) */
         .compact-date-capsule {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          min-width: 65px;
-          padding: 0.4rem 0.6rem;
-          background: rgba(0, 0, 0, 0.35);
-          border: 1px solid rgba(151, 183, 142, 0.2);
-          border-radius: 0.6rem;
-          line-height: 1.1;
+          display: flex !important;
+          flex-direction: column !important;
+          align-items: center !important;
+          justify-content: center !important;
+          width: 54px;
+          min-width: 54px;
+          max-width: 54px;
+          height: 54px;
+          padding: 0.25rem;
+          background: rgba(0, 0, 0, 0.45);
+          border: 1.5px solid rgba(151, 183, 142, 0.3);
+          border-radius: 0.55rem;
+          line-height: 1;
+          flex-shrink: 0;
+          box-sizing: border-box;
         }
 
         .compact-date-weekday {
-          font-size: 0.65rem;
+          font-size: 0.62rem;
           font-weight: 700;
           text-transform: uppercase;
           color: var(--secondary);
           letter-spacing: 0.05em;
+          margin-bottom: 0.15rem;
         }
 
         .compact-date-day {
-          font-size: 1.05rem;
+          font-size: 1.1rem;
           font-weight: 800;
           color: var(--light);
-          margin: 0.15rem 0;
+          line-height: 1;
+          margin: 0;
         }
 
         .compact-date-year {
-          font-size: 0.65rem;
-          color: rgba(255, 255, 255, 0.4);
+          font-size: 0.6rem;
+          color: rgba(255, 255, 255, 0.45);
+          margin-top: 0.15rem;
         }
 
         /* Info */
@@ -567,7 +832,7 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
           flex: 1;
           display: flex;
           flex-direction: column;
-          gap: 0.35rem;
+          gap: 0.3rem;
           min-width: 0;
         }
 
@@ -575,11 +840,11 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
           display: flex;
           align-items: center;
           flex-wrap: wrap;
-          gap: 0.6rem;
+          gap: 0.5rem;
         }
 
         .compact-event-title {
-          font-size: 1.1rem;
+          font-size: 1.05rem;
           margin: 0;
           color: var(--light);
           font-weight: 700;
@@ -592,12 +857,12 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
         .compact-slots-badge {
           display: inline-flex;
           align-items: center;
-          gap: 0.3rem;
-          font-size: 0.72rem;
+          gap: 0.25rem;
+          font-size: 0.7rem;
           color: var(--secondary);
           background: rgba(151, 183, 142, 0.1);
           border: 1px solid rgba(151, 183, 142, 0.25);
-          padding: 0.15rem 0.5rem;
+          padding: 0.1rem 0.45rem;
           border-radius: 1rem;
           font-weight: 600;
         }
@@ -605,7 +870,7 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
         .compact-event-meta {
           display: flex;
           align-items: center;
-          gap: 0.85rem;
+          gap: 0.75rem;
           font-size: 0.8rem;
           color: #94a3b8;
         }
@@ -613,19 +878,25 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
         .compact-meta-time {
           display: inline-flex;
           align-items: center;
-          gap: 0.3rem;
+          gap: 0.25rem;
           color: var(--secondary);
           font-weight: 600;
+          font-feature-settings: "tnum";
         }
 
         .compact-meta-location {
           color: rgba(255, 255, 255, 0.5);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
 
         .compact-event-arrow {
           color: rgba(255, 255, 255, 0.3);
           transition: transform 0.2s ease, color 0.2s ease;
           flex-shrink: 0;
+          display: flex;
+          align-items: center;
         }
 
         .compact-event-row:hover .compact-event-arrow {
@@ -633,15 +904,90 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
           transform: translateX(3px);
         }
 
+        /* Guild Row Styles */
+        .compact-guild-row {
+          border-color: rgba(168, 85, 247, 0.2);
+          background: rgba(168, 85, 247, 0.05);
+        }
+
+        .compact-guild-row:hover {
+          background: rgba(168, 85, 247, 0.12);
+          border-color: rgba(168, 85, 247, 0.45);
+        }
+
+        .guild-date-capsule {
+          border-color: rgba(168, 85, 247, 0.4);
+        }
+
+        .guild-date-capsule .compact-date-weekday {
+          color: #c084fc;
+        }
+
+        .guild-title-container {
+          display: flex;
+          align-items: center;
+          gap: 0.45rem;
+          min-width: 0;
+        }
+
+        .guild-inline-logo {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          background: rgba(168, 85, 247, 0.2);
+          border: 1px solid rgba(168, 85, 247, 0.4);
+          border-radius: 0.35rem;
+          padding: 0.12rem;
+        }
+
+        .compact-guild-tag {
+          font-size: 0.65rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          color: #c084fc;
+          background: rgba(168, 85, 247, 0.12);
+          border: 1px solid rgba(168, 85, 247, 0.3);
+          padding: 0.1rem 0.45rem;
+          border-radius: 1rem;
+        }
+
+        .guild-slots-badge {
+          color: #e9d5ff;
+          background: rgba(168, 85, 247, 0.1);
+          border-color: rgba(168, 85, 247, 0.25);
+        }
+
+        .compact-guild-row:hover .guild-arrow {
+          color: #c084fc;
+          transform: translate(2px, -2px);
+        }
+
         @media (max-width: 600px) {
           .compact-event-row {
-            gap: 0.85rem;
-            padding: 0.75rem 0.85rem;
+            gap: 0.75rem;
+            padding: 0.6rem 0.75rem;
           }
 
           .compact-date-capsule {
-            min-width: 54px;
-            padding: 0.35rem 0.45rem;
+            width: 48px;
+            min-width: 48px;
+            max-width: 48px;
+            height: 48px;
+            padding: 0.2rem;
+          }
+
+          .compact-date-day {
+            font-size: 0.95rem;
+          }
+
+          .compact-date-weekday {
+            font-size: 0.58rem;
+          }
+
+          .compact-date-year {
+            font-size: 0.55rem;
           }
 
           .compact-event-title {
@@ -650,6 +996,7 @@ export default function EventList({ locale = 'nl' }: EventListProps) {
 
           .compact-event-meta {
             font-size: 0.75rem;
+            gap: 0.5rem;
           }
         }
       `}</style>

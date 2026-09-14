@@ -25,6 +25,63 @@ interface AdminUser {
   createdAt?: number;
 }
 
+/**
+ * Converts a UTC ISO string to "YYYY-MM-DDTHH:MM" in Europe/Brussels (24-hour time).
+ */
+function utcIsoToBrusselsLocal(isoStr: string): string {
+  if (!isoStr) return "";
+  const d = new Date(isoStr);
+  if (isNaN(d.getTime())) return "";
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Brussels",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).formatToParts(d);
+  const m: Record<string, string> = {};
+  parts.forEach((p) => (m[p.type] = p.value));
+  return `${m.year}-${m.month}-${m.day}T${m.hour}:${m.minute}`;
+}
+
+/**
+ * Converts a local "YYYY-MM-DDTHH:MM" input string representing Europe/Brussels
+ * time into a precise UTC ISO string.
+ */
+function brusselsLocalToUtcIso(localDatetimeStr: string): string {
+  if (!localDatetimeStr) return "";
+  const [datePart, timePart] = localDatetimeStr.split("T");
+  if (!datePart || !timePart) return "";
+  const [year, month, day] = datePart.split("-").map(Number);
+  const [hour, minute] = timePart.split(":").map(Number);
+  const guessUtc = Date.UTC(year, month - 1, day, hour, minute);
+
+  const getOffset = (utcMs: number) => {
+    const d = new Date(utcMs);
+    const str = d.toLocaleString("en-US", {
+      timeZone: "Europe/Brussels",
+      hour12: false,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+    const [dPart, tPart] = str.split(", ");
+    const [m, dy, y] = dPart.split("/");
+    const [h, mi, s] = tPart.split(":");
+    const asUtc = Date.UTC(Number(y), Number(m) - 1, Number(dy), h === "24" ? 0 : Number(h), Number(mi), Number(s));
+    return asUtc - utcMs;
+  };
+
+  const offset = getOffset(guessUtc);
+  const actualUtc = guessUtc - offset;
+  return new Date(actualUtc).toISOString();
+}
+
 export default function DragonAdminPage() {
   const { isLoaded, isSignedIn } = useUser();
   const currentUser = useQuery(api.users.getCurrentUser);
@@ -259,10 +316,12 @@ export default function DragonAdminPage() {
   };
 
   const handleOpenNewEvent = () => {
-    const today = new Date();
-    today.setHours(19, 0, 0, 0);
-    const dateStr = today.toISOString();
-    const slugDate = dateStr.slice(0, 10).replace(/-/g, "");
+    // Current date in Brussels timezone, defaulting to 19:00 Brussels local time
+    const nowBrussels = utcIsoToBrusselsLocal(new Date().toISOString());
+    const [todayDate] = nowBrussels.split("T");
+    const defaultLocal = `${todayDate}T19:00`;
+    const dateStr = brusselsLocalToUtcIso(defaultLocal);
+    const slugDate = todayDate.replace(/-/g, "");
 
     setEditingEvent({
       slug: `${slugDate}_Event`,
@@ -968,9 +1027,18 @@ export default function DragonAdminPage() {
                     const formattedDate = isNaN(evDate.getTime())
                       ? ev.date
                       : evDate.toLocaleDateString("nl-BE", {
+                          timeZone: "Europe/Brussels",
                           day: "numeric",
                           month: "short",
                           year: "numeric",
+                        });
+                    const formattedTime = isNaN(evDate.getTime())
+                      ? ""
+                      : evDate.toLocaleTimeString("en-GB", {
+                          timeZone: "Europe/Brussels",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: false,
                         });
 
                     const totalSlots = ev.groups?.reduce((acc, g) => acc + g.maxSlots, 0) || 0;
@@ -982,7 +1050,7 @@ export default function DragonAdminPage() {
                         onClick={() => handleOpenEditEvent(ev)}
                       >
                         <td style={{ color: "var(--secondary)", whiteSpace: "nowrap" }}>
-                          {formattedDate}
+                          {formattedDate} {formattedTime && <span style={{ opacity: 0.75, fontSize: "0.85em" }}>({formattedTime})</span>}
                         </td>
                         <td style={{ fontWeight: 600, color: "var(--light)" }}>
                           {ev.title}
@@ -1109,27 +1177,18 @@ export default function DragonAdminPage() {
                   </div>
 
                   <div className="dragon-form-group">
-                    <label htmlFor="event-date">Date & Time *</label>
+                    <label htmlFor="event-date">Date & Time (Brussels / CEST 24h) *</label>
                     <input
                       id="event-date"
                       type="datetime-local"
                       required
                       className="dragon-form-input"
-                      value={
-                        editingEvent.date
-                          ? new Date(
-                              new Date(editingEvent.date).getTime() -
-                                new Date().getTimezoneOffset() * 60000
-                            )
-                              .toISOString()
-                              .slice(0, 16)
-                          : ""
-                      }
+                      value={utcIsoToBrusselsLocal(editingEvent.date)}
                       onChange={(e) => {
-                        const d = new Date(e.target.value);
+                        const utcIso = brusselsLocalToUtcIso(e.target.value);
                         setEditingEvent({
                           ...editingEvent,
-                          date: isNaN(d.getTime()) ? e.target.value : d.toISOString(),
+                          date: utcIso || e.target.value,
                         });
                       }}
                     />
