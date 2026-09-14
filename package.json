@@ -3,9 +3,9 @@
   "version": "0.5.3",
   "private": true,
   "scripts": {
-    "dev": "tinacms dev -c \"next dev\"",
-    "build": "tinacms build && next build",
-    "start": "tinacms build && next start",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "lint": "next lint"
   },
   "engines": {
@@ -25,11 +25,9 @@
     "react-markdown": "^10.1.0",
     "remark-gfm": "^4.0.1",
     "resend": "^6.28.0",
-    "stripe": "^22.6.2",
-    "tinacms": "3.13.0"
+    "stripe": "^22.6.2"
   },
   "devDependencies": {
-    "@tinacms/cli": "2.7.0",
     "@types/node": "^22.19.15",
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",

@@ -34,7 +34,7 @@ Ensure all required environment variables are added to the Vercel Project Settin
 
 In Vercel Project Settings:
 - **Framework Preset**: `Next.js`
-- **Build Command**: `pnpm build` (executes `tinacms build && next build`)
+- **Build Command**: `pnpm build` (executes `next build`)
 - **Output Directory**: `.next`
 - **Install Command**: `pnpm install`
 
