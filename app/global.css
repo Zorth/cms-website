@@ -487,6 +487,184 @@ header {
     color: #34d399;
 }
 
+/* Dragon Admin Action Buttons & Modal */
+.dragon-btn-primary {
+    background: var(--primary);
+    color: var(--light_light);
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dragon-btn-primary:hover {
+    background: var(--primary_light);
+    transform: translateY(-1px);
+}
+
+.dragon-btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--light);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dragon-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.dragon-btn-danger {
+    background: rgba(220, 38, 38, 0.2);
+    color: #f87171;
+    border: 1px solid rgba(220, 38, 38, 0.4);
+    border-radius: 0.4rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dragon-btn-danger:hover {
+    background: rgba(220, 38, 38, 0.4);
+    color: #fca5a5;
+}
+
+.dragon-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+}
+
+.dragon-modal {
+    background: #1e2124;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0.75rem;
+    width: 100%;
+    max-width: 750px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+    animation: modalFadeIn 0.2s ease;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.dragon-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dragon-modal-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--light);
+}
+
+.dragon-modal-close {
+    background: transparent;
+    border: none;
+    color: var(--secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+}
+
+.dragon-modal-close:hover {
+    color: var(--light);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.dragon-modal-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.dragon-modal-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.dragon-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.dragon-form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--light);
+}
+
+.dragon-form-input, .dragon-form-textarea {
+    background: rgba(20, 22, 25, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0.4rem;
+    padding: 0.6rem 0.8rem;
+    color: var(--light);
+    font-size: 0.9rem;
+    font-family: inherit;
+    width: 100%;
+}
+
+.dragon-form-input:focus, .dragon-form-textarea:focus {
+    outline: none;
+    border-color: #ef4444;
+}
+
+.dragon-group-row {
+    display: grid;
+    grid-template-columns: 2fr 3fr 1fr auto;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.dragon-table-row-clickable {
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.dragon-table-row-clickable:hover td {
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+
 .padder {
     height: 3.5rem;
 }

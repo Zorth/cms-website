@@ -39,17 +39,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
     const { locale = 'nl' } = await params;
-
-    const yest = new Date();
-    yest.setDate(yest.getDate() - 1);
-
-    const event_fetch = await client.queries.eventConnection({ 
-        sort: "date", 
-        filter: { 
-            date: { after: yest.toISOString() },
-        },
-        first: 100 
-    });
     const sponsors = await client.queries.sponsorConnection();
     const pagesResponse = await client.queries.pageConnection({ 
         filter: { 
@@ -94,7 +83,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                     {locale === 'nl' ? 'Steun Tarragon VZW' : 'Support Tarragon VZW'}
                 </Link>
             </div>
-            <EventList {...event_fetch} locale={locale} />
+            <EventList locale={locale} />
             <Featurettes data={filteredPages.data} locale={locale} />
             <div className="quick-links">
                 <Link href="https://discord.com/invite/TjDUu2Gkag" className="quick-link-item">

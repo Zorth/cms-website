@@ -36,4 +36,23 @@ export default defineSchema({
     .index("by_event_group", ["eventSlug", "groupName"])
     .index("by_token", ["cancelToken"])
     .index("by_user", ["userId"]),
+
+  events: defineTable({
+    slug: v.string(),
+    title: v.string(),
+    date: v.string(),
+    body: v.string(),
+    groups: v.optional(
+      v.array(
+        v.object({
+          name: v.string(),
+          description: v.optional(v.string()),
+          maxSlots: v.number(),
+        })
+      )
+    ),
+  })
+    .index("by_slug", ["slug"])
+    .index("by_date", ["date"]),
 });
+
