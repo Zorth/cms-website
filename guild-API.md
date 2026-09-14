@@ -1,0 +1,173 @@
+# Guild of The Void - External API Documentation (v1.1)
+
+This API allows external tools to interact with your "Guild of The Void" data using an API key generated on your account.
+
+## Authentication & Permissions
+
+* **GET Requests (Public)**: All `GET` endpoints are public and **do not require an API key or token**.
+* **POST / PATCH Requests (Authenticated)**: All mutation operations strictly require an API key, either via the `Authorization` header (`Bearer vg_your_api_key_here`) or `apiKey` parameter.
+* **Ownership & Access Control**:
+  * API keys can **only modify characters, worlds, and sessions that the authenticated user owns**.
+  * **Admin Exception**: If the user is an administrator (`isAdmin: true`), their API key has global authority to modify any character, session, or world.
+* **Security Guarantees**:
+  * Character **XP** (`xp`) and **Level** (`lvl`) values **CANNOT** be modified via the API by anyone.
+  * Character **deletion** is completely disabled over the API.
+
+```http
+Authorization: Bearer vg_your_api_key_here
+```
+
+To generate an API key, click on your **User Profile** avatar in the top right menu and select **API Access**.
+
+## Base URL
+
+```
+https://guild.tarragon.be/api/external/v1
+```
+
+---
+
+## Endpoints
+
+### Sessions
+*   **GET** `/sessions?past=true|false&worldId=...&system=PF|DnD` - List all sessions with filters.
+*   **GET** `/session/:sessionId` - Get detailed session info including attending characters, GM character, and quest.
+*   **GET** `/session/:sessionId/characters` - List attending characters in a session.
+*   **GET** `/session/:sessionId/state` - Get live initiative and clock state.
+*   **POST** `/session` - Create a new session (GM/Admin). Body: `{ date?, level?, maxPlayers, system, location?, planning?, worldId? }`.
+*   **POST** `/session/:sessionId/loot` - Add loot item to a session (Owner/Admin). Body: `{ name, valueGP, isGood, isPerCharacter?, link?, quantity? }`.
+*   **POST** `/session/:sessionId/commendation` - Submit a character commendation. Body: `{ toCharacterId, category }`.
+*   **PATCH** `/session/:sessionId` - Update session parameters (Owner/Admin). Body: `{ date?, level?, maxPlayers?, location?, locked?, planning? }`.
+*   **PATCH** `/session/:sessionId/state` - Update initiative/clock (Owner/Admin). Body: `{ initiative?, currentIndex?, round?, timeSeconds?, isClockRunning?, multiplier? }`.
+
+### Characters
+*   **GET** `/characters?userId=...` - List all characters (public, no auth required; optionally filter by `userId`).
+*   **GET** `/character/:characterId` - Get full character details (includes synced `details` character sheet if present).
+*   **GET** `/character/:characterId/sheet` - Get detailed Pathbuilder 2e character sheet data (defenses, HP, saves, skills, money, gear, build feats, conditions).
+*   **POST** `/character` - Create a new character for your account (starts at level 1, 0 XP). Body: `{ name, ancestry?, class?, system?, websiteLink? }`.
+*   **POST** `/character/:characterId/sheet` - Push/sync Pathbuilder character sheet data (Owner/Admin). Body supports full `CharacterSheetDetails` or lightweight `{ ac, hp, money, conditions, gear, buildSummary }`.
+*   **PATCH** `/character/:characterId` - Update character details (Owner/Admin only; XP and Level cannot be modified via API). Body: `{ name?, ancestry?, class?, websiteLink? }`.
+*   **PATCH** `/character/:characterId/sheet` - Update/sync Pathbuilder character sheet data (Owner/Admin). Body: `{ ac?, hp?, money?, conditions?, gear?, buildSummary?, ... }`.
+
+### Worlds & Quests
+*   **GET** `/worlds` - List all campaign worlds.
+*   **GET** `/world/:worldId` - Get details for a specific world.
+*   **GET** `/world/:worldId/calendar` - Get world calendar config and current date.
+*   **GET** `/world/:worldId/quests` - List all quests associated with a specific world.
+*   **GET** `/quests` - List all quests (global "The Void" quests + world quests).
+*   **GET** `/character-quests?characterId=...` - List character-issued quests (filter by `characterId` or list all).
+*   **POST** `/quest` - Create a new quest. Body: `{ name, levelPF?, levelDnD?, worldId?, description?, questgiver?, reward?, rewardType?: "party" | "per_person", rewardMoneyGP?: number, rewardOther?: string, tags?, characterId? }`.
+*   **PATCH** `/world/:worldId/calendar` - Update world date. Body: `{ year, month, day }`.
+*   **PATCH** `/quest/:questId` - Update quest status or details. Body: `{ isCompleted?, name?, description?, reward?, rewardType?, rewardMoneyGP?, rewardOther? }`.
+
+### The Black Void (Auction House & Market)
+*   **GET** `/black-void/listings?type=item|service&status=active|completed` - List items and crafting services on The Black Void market.
+*   **GET** `/black-void/character/:characterId/transactions` - Get sold items and won auctions for a specific character.
+*   **GET** `/black-void/character/:characterId/log` - Get full character sheet transaction log (created items, won items, services, sponsored quest reimbursements, completed quests to pay, Guildmaster cuts, won/lost bets, current money, and unclaimed count).
+*   **POST** `/black-void/item` - Post an item listing (Owner of character). Body: `{ characterId, name, startingBid?, buyoutPrice?, durationDays, description?, nethysUrl? }`.
+*   **POST** `/black-void/service` - Post a crafting/service listing (Owner of character). Body: `{ characterId, name, priceType, percentage?, markupGp?, priceDetails?, minLevel?, maxLevel?, description?, nethysUrl? }`.
+*   **POST** `/black-void/bid` - Place a bid or buyout on an item listing (Owner of character). Body: `{ listingId, characterId, amount, isBuyout }`.
+*   **PATCH** `/black-void/claim/seller` - Toggle claim state for a sold listing (Owner/Admin). Body: `{ listingId }`.
+*   **PATCH** `/black-void/claim/buyer` - Toggle claim state for a won auction listing (Owner/Admin). Body: `{ listingId }`.
+*   **PATCH** `/black-void/claim/quest` - Toggle claim state for quest reimbursement or payment (Owner/Admin). Body: `{ questId, type: "reimbursement" | "payment" }`.
+*   **PATCH** `/black-void/claim/guildmaster` - Toggle claim state for Guildmaster regional loot compensation (Owner/Admin). Body: `{ sessionId }`.
+*   **PATCH** `/black-void/claim/bet/winner` - Toggle claim state for a won bet (Owner/Admin). Body: `{ betId }`.
+*   **PATCH** `/black-void/claim/bet/loser` - Toggle claim state for a lost bet (Owner/Admin). Body: `{ betId }`.
+*   **PATCH** `/black-void/claim/all` - Mark all log entries for a character as claimed in one transaction (Owner/Admin). Body: `{ characterId }`.
+
+### Reputation
+*   **GET** `/world/:worldId/reputation` - Get all reputation scores for characters in a world.
+*   **PATCH** `/reputation` - Update character reputation (World Owner/Admin). Body: `{ worldId, characterId, factionName, delta }`.
+
+### Availability & Player Schedule
+*   **GET** `/availability?startDate=...&endDate=...` - Get player availability calendar entries.
+*   **POST** `/availability` - Toggle user availability for a given timestamp. Body: `{ date, isGM }`.
+
+### Commendations & Achievements
+*   **GET** `/commendations?sessionId=...&characterId=...` - List player commendations.
+*   **GET** `/achievements` - List unlocked achievements for the authenticated user.
+
+### Discovery & Search
+*   **GET** `/search?q=...` - Search worlds and characters by name.
+*   **GET** `/activity?limit=...` - Get recent activity feed entries.
+
+---
+
+## Data Models
+
+### Character
+```json
+{
+  "_id": "jh7...",
+  "name": "Kaelen",
+  "title": "Defender of the Void",
+  "player": "John D.",
+  "lvl": 5,
+  "xp": 450,
+  "ancestry": "Human",
+  "class": "Fighter",
+  "system": "PF",
+  "userId": "user_...",
+  "rank": "journeyman",
+  "websiteLink": "https://..."
+}
+```
+
+### Black Void Item Listing
+```json
+{
+  "_id": "bv7...",
+  "characterId": "c7...",
+  "type": "item",
+  "name": "+1 Striking Shortsword",
+  "startingBid": 20,
+  "buyoutPrice": 50,
+  "durationDays": 7,
+  "expiresAt": 1757721600000,
+  "status": "active",
+  "sellerName": "Kaelen",
+  "sellerLevel": 5
+}
+```
+
+### Quest
+```json
+{
+  "_id": "kq7...",
+  "name": "The Great Escape",
+  "levelPF": 3,
+  "levelDnD": 5,
+  "worldId": "wd7...",
+  "description": "Help the prisoners escape.",
+  "questgiver": "Guard Captain",
+  "reward": "50 GP / person + Scroll of Invisibility",
+  "rewardType": "per_person",
+  "rewardMoneyGP": 50,
+  "rewardOther": "Scroll of Invisibility",
+  "tags": ["stealth", "urban"],
+  "owner": "user_...",
+  "isCompleted": false
+}
+```
+
+---
+
+## Usage Examples (cURL)
+
+### Create an Item Listing on The Black Void
+```bash
+curl -X POST \
+     -H "Authorization: Bearer vg_your_key" \
+     -H "Content-Type: application/json" \
+     -d '{"characterId": "c1", "name": "Wand of Healing", "startingBid": 10, "buyoutPrice": 35, "durationDays": 7}' \
+     "https://guild.tarragon.be/api/external/v1/black-void/item"
+```
+
+### Update Session Initiative
+```bash
+curl -X PATCH \
+     -H "Authorization: Bearer vg_your_key" \
+     -H "Content-Type: application/json" \
+     -d '{"initiative": [{"id": "c1", "name": "Hero", "counter": 5}], "currentIndex": 0}' \
+     "https://guild.tarragon.be/api/external/v1/session/[ID]/state"
+```

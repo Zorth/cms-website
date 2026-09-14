@@ -30,11 +30,23 @@ export const listEvents = query({
 export const getUpcomingEvents = query({
   args: {
     fromDate: v.optional(v.string()),
+    toDate: v.optional(v.string()),
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const fromDate = args.fromDate ?? new Date().toISOString();
     const limit = args.limit ?? 50;
+
+    if (args.toDate) {
+      const toDate = args.toDate;
+      return await ctx.db
+        .query("events")
+        .withIndex("by_date", (q) =>
+          q.gte("date", fromDate).lte("date", toDate)
+        )
+        .order("asc")
+        .take(limit);
+    }
 
     return await ctx.db
       .query("events")
