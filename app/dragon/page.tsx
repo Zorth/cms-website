@@ -58,7 +58,7 @@ export default function DragonAdminPage() {
   const [eventModalError, setEventModalError] = useState<string | null>(null);
 
   // Dragons state
-  const dragons = useQuery(api.dragons.listDragons);
+  const dragons = useQuery(api.dragons.listDragons, {});
   const saveDragonMutation = useMutation(api.dragons.saveDragon);
   const deleteDragonMutation = useMutation(api.dragons.deleteDragon);
 
@@ -76,7 +76,7 @@ export default function DragonAdminPage() {
   const [dragonModalError, setDragonModalError] = useState<string | null>(null);
 
   // Sponsors state
-  const sponsors = useQuery(api.sponsors.listSponsors);
+  const sponsors = useQuery(api.sponsors.listSponsors, {});
   const saveSponsorMutation = useMutation(api.sponsors.saveSponsor);
   const deleteSponsorMutation = useMutation(api.sponsors.deleteSponsor);
 

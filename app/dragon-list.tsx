@@ -12,7 +12,7 @@ import { api } from "../convex/_generated/api";
 export default function DragonList(props: { locale?: string }) {
   const locale = props.locale || "nl";
   const [emblaRef] = useEmblaCarousel({ loop: true }, [Autoplay()]);
-  const dragons = useQuery(api.dragons.listDragons);
+  const dragons = useQuery(api.dragons.listDragons, {});
 
   const dragonList = (dragons || []).slice().sort((a, b) => (a.order ?? 100) - (b.order ?? 100));
 

@@ -5,9 +5,12 @@ import { v } from "convex/values";
  * List all dragons.
  */
 export const listDragons = query({
-  args: {},
-  handler: async (ctx) => {
-    return await ctx.db.query("dragons").collect();
+  args: {
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const limit = args.limit ?? 100;
+    return await ctx.db.query("dragons").withIndex("by_order").take(limit);
   },
 });
 

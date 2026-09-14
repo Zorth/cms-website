@@ -11,7 +11,7 @@ import { api } from "../convex/_generated/api";
 
 export default function SponsorList(props: { locale?: string }) {
   const locale = props.locale || "nl";
-  const sponsors = useQuery(api.sponsors.listSponsors);
+  const sponsors = useQuery(api.sponsors.listSponsors, {});
 
   const sponsorList = (sponsors || [])
     .slice()

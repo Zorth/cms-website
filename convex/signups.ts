@@ -8,7 +8,7 @@ export const getEventSignups = query({
     const rawSignups = await ctx.db
       .query("signups")
       .withIndex("by_event", (q) => q.eq("eventSlug", args.eventSlug))
-      .collect();
+      .take(200);
 
     const identity = await ctx.auth.getUserIdentity();
     let currentUser: any = null;

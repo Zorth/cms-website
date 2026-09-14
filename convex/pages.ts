@@ -8,23 +8,25 @@ export const listPages = query({
   args: {
     language: v.optional(v.string()),
     enabled: v.optional(v.boolean()),
+    limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    const limit = args.limit ?? 100;
     if (args.language !== undefined && args.enabled !== undefined) {
       return await ctx.db
         .query("pages")
         .withIndex("by_language_and_enabled", (q) =>
           q.eq("language", args.language!).eq("enabled", args.enabled!)
         )
-        .collect();
+        .take(limit);
     }
     if (args.enabled !== undefined) {
       return await ctx.db
         .query("pages")
         .withIndex("by_enabled", (q) => q.eq("enabled", args.enabled!))
-        .collect();
+        .take(limit);
     }
-    return await ctx.db.query("pages").collect();
+    return await ctx.db.query("pages").take(limit);
   },
 });
 

@@ -5,9 +5,12 @@ import { v } from "convex/values";
  * List all sponsors/deals.
  */
 export const listSponsors = query({
-  args: {},
-  handler: async (ctx) => {
-    return await ctx.db.query("sponsors").collect();
+  args: {
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const limit = args.limit ?? 100;
+    return await ctx.db.query("sponsors").withIndex("by_order").take(limit);
   },
 });
 
