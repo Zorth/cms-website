@@ -111,7 +111,7 @@ export default function Header() {
                                     Admin
                                 </Link>
                             )}
-                            <UserButton afterSignOutUrl="/">
+                            <UserButton>
                                 <UserButton.MenuItems>
                                     <UserButton.Action
                                         label={isMember ? "Manage Membership & VAT" : "Join Kobold (10€/yr)"}

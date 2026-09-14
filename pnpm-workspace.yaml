@@ -2,13 +2,11 @@ packages:
   - "."
 
 allowBuilds:
-  better-sqlite3: true
   core-js: true
   esbuild: true
   unrs-resolver: true
 
 onlyBuiltDependencies:
-  - better-sqlite3
   - core-js
   - esbuild
   - unrs-resolver
