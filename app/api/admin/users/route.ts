@@ -46,7 +46,12 @@ export async function GET() {
     const convexRoleMap = new Map(
       convexUsers.map((u) => [
         u.clerkId,
-        { role: u.role, isMember: u.isMember },
+        {
+          role: u.role,
+          isMember: u.isMember,
+          membershipExpiresAt: u.membershipExpiresAt,
+          stripeSubscriptionId: u.stripeSubscriptionId,
+        },
       ])
     );
 
@@ -75,6 +80,10 @@ export async function GET() {
         u.publicMetadata?.admin === "true"
       );
 
+      const membershipExpiresAt =
+        convexRecord?.membershipExpiresAt ??
+        (u.publicMetadata?.membershipExpiresAt as number | undefined);
+
       return {
         id: u.id,
         firstName: u.firstName,
@@ -89,6 +98,8 @@ export async function GET() {
         username: u.username,
         role: role as "user" | "member" | "dragon",
         isMember,
+        membershipExpiresAt,
+        hasStripeSubscription: Boolean(convexRecord?.stripeSubscriptionId),
         voidmaster: isVoidmaster,
         voidManager: isVoidManager,
         createdAt: u.createdAt,

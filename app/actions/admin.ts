@@ -10,7 +10,8 @@ import { api } from "../../convex/_generated/api";
  */
 export async function updateUserRoleAction(
   targetClerkId: string,
-  newRole: "user" | "member" | "dragon"
+  newRole: "user" | "member" | "dragon",
+  membershipExpiresAt?: number
 ) {
   const { userId } = await auth();
   if (!userId) {
@@ -35,16 +36,22 @@ export async function updateUserRoleAction(
   }
 
   const isMember = newRole === "member" || newRole === "dragon";
+  const oneYearMs = 365 * 24 * 60 * 60 * 1000;
+  const expiresAt =
+    newRole === "member"
+      ? (membershipExpiresAt !== undefined ? membershipExpiresAt : Date.now() + oneYearMs)
+      : null;
 
   const client = await clerkClient();
   await client.users.updateUserMetadata(targetClerkId, {
     publicMetadata: {
       role: newRole,
       isMember,
+      membershipExpiresAt: expiresAt,
     },
   });
 
-  return { success: true, role: newRole, isMember };
+  return { success: true, role: newRole, isMember, membershipExpiresAt: expiresAt };
 }
 
 /**

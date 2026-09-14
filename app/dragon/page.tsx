@@ -20,6 +20,8 @@ interface AdminUser {
   username?: string | null;
   role: Role;
   isMember: boolean;
+  membershipExpiresAt?: number;
+  hasStripeSubscription?: boolean;
   voidmaster?: boolean;
   voidManager?: boolean;
   createdAt?: number;
@@ -218,6 +220,14 @@ export default function DragonAdminPage() {
     setUpdatingUserId(targetUser.id);
     setSavedUserId(null);
 
+    const oneYearMs = 365 * 24 * 60 * 60 * 1000;
+    const expiresAt =
+      newRole === "member"
+        ? targetUser.membershipExpiresAt && targetUser.membershipExpiresAt > Date.now()
+          ? targetUser.membershipExpiresAt
+          : Date.now() + oneYearMs
+        : undefined;
+
     // Optimistically update local state
     const previousUsers = [...users];
     setUsers((prev) =>
@@ -227,6 +237,7 @@ export default function DragonAdminPage() {
               ...u,
               role: newRole,
               isMember: newRole === "member" || newRole === "dragon",
+              membershipExpiresAt: expiresAt,
             }
           : u
       )
@@ -234,7 +245,7 @@ export default function DragonAdminPage() {
 
     try {
       // 1. Update Clerk publicMetadata via server action
-      await updateUserRoleAction(targetUser.id, newRole);
+      await updateUserRoleAction(targetUser.id, newRole, expiresAt);
 
       // 2. Update Convex users table
       await updateUserRoleInConvex({
@@ -243,6 +254,7 @@ export default function DragonAdminPage() {
         name: targetUser.fullName,
         email: targetUser.email,
         imageUrl: targetUser.imageUrl,
+        membershipExpiresAt: expiresAt,
       });
 
       setSavedUserId(targetUser.id);
@@ -2013,8 +2025,23 @@ export default function DragonAdminPage() {
                       </td>
                       <td style={{ color: "var(--secondary)" }}>{u.email}</td>
                       <td>
-                        {u.isMember ? (
-                          <span className="role-badge role-member">Active</span>
+                        {u.role === "dragon" ? (
+                          <span className="role-badge" style={{ background: "rgba(239, 68, 68, 0.15)", color: "#ef4444", border: "1px solid rgba(239, 68, 68, 0.3)" }}>
+                            Dragon
+                          </span>
+                        ) : u.isMember ? (
+                          <div style={{ display: "flex", flexDirection: "column", gap: "0.2rem" }}>
+                            <span className="role-badge role-member">Active</span>
+                            {u.hasStripeSubscription ? (
+                              <span style={{ fontSize: "0.75rem", color: "var(--secondary)", opacity: 0.8 }}>
+                                Stripe Subscription
+                              </span>
+                            ) : u.membershipExpiresAt ? (
+                              <span style={{ fontSize: "0.75rem", color: "var(--secondary)", opacity: 0.8 }}>
+                                Exp: {new Date(u.membershipExpiresAt).toLocaleDateString()}
+                              </span>
+                            ) : null}
+                          </div>
                         ) : (
                           <span
                             className="role-badge"

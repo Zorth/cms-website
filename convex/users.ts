@@ -1,4 +1,4 @@
-import { mutation, query, internalAction } from "./_generated/server";
+import { mutation, query, internalAction, internalMutation } from "./_generated/server";
 import { v } from "convex/values";
 import { internal } from "./_generated/api";
 
@@ -126,6 +126,7 @@ export const updateUserRole = mutation({
       v.literal("member"),
       v.literal("dragon")
     ),
+    membershipExpiresAt: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const user = await ctx.db.get(args.userId);
@@ -134,10 +135,18 @@ export const updateUserRole = mutation({
     }
 
     const isMember = args.role === "member" || args.role === "dragon";
+    const oneYearMs = 365 * 24 * 60 * 60 * 1000;
+    const expiresAt =
+      args.role === "member"
+        ? (args.membershipExpiresAt !== undefined
+            ? args.membershipExpiresAt
+            : user.membershipExpiresAt ?? Date.now() + oneYearMs)
+        : undefined;
 
     await ctx.db.patch(args.userId, {
       role: args.role,
       isMember,
+      membershipExpiresAt: expiresAt,
     });
 
     // Schedule background task to sync isMember and role into Clerk's publicMetadata
@@ -145,9 +154,10 @@ export const updateUserRole = mutation({
       clerkId: user.clerkId,
       isMember,
       role: args.role,
+      membershipExpiresAt: expiresAt,
     });
 
-    return { success: true, role: args.role, isMember };
+    return { success: true, role: args.role, isMember, membershipExpiresAt: expiresAt };
   },
 });
 
@@ -163,6 +173,7 @@ export const updateUserRoleByClerkId = mutation({
       v.literal("member"),
       v.literal("dragon")
     ),
+    membershipExpiresAt: v.optional(v.number()),
     name: v.optional(v.string()),
     email: v.optional(v.string()),
     imageUrl: v.optional(v.string()),
@@ -175,10 +186,19 @@ export const updateUserRoleByClerkId = mutation({
       .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
       .unique();
 
+    const oneYearMs = 365 * 24 * 60 * 60 * 1000;
+    const expiresAt =
+      args.role === "member"
+        ? (args.membershipExpiresAt !== undefined
+            ? args.membershipExpiresAt
+            : user?.membershipExpiresAt ?? Date.now() + oneYearMs)
+        : undefined;
+
     if (user) {
       await ctx.db.patch(user._id, {
         role: args.role,
         isMember,
+        membershipExpiresAt: expiresAt,
       });
     } else {
       const issuer =
@@ -192,6 +212,7 @@ export const updateUserRoleByClerkId = mutation({
         imageUrl: args.imageUrl,
         role: args.role,
         isMember,
+        membershipExpiresAt: expiresAt,
       });
     }
 
@@ -200,9 +221,10 @@ export const updateUserRoleByClerkId = mutation({
       clerkId: args.clerkId,
       isMember,
       role: args.role,
+      membershipExpiresAt: expiresAt,
     });
 
-    return { success: true, role: args.role, isMember };
+    return { success: true, role: args.role, isMember, membershipExpiresAt: expiresAt };
   },
 });
 
@@ -217,6 +239,7 @@ export const syncClerkMembership = internalAction({
     role: v.optional(
       v.union(v.literal("user"), v.literal("member"), v.literal("dragon"))
     ),
+    membershipExpiresAt: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const secretKey = process.env.CLERK_SECRET_KEY;
@@ -233,6 +256,11 @@ export const syncClerkMembership = internalAction({
       };
       if (args.role) {
         public_metadata.role = args.role;
+      }
+      if (args.membershipExpiresAt !== undefined) {
+        public_metadata.membershipExpiresAt = args.membershipExpiresAt;
+      } else if (!args.isMember) {
+        public_metadata.membershipExpiresAt = null;
       }
 
       const res = await fetch(
@@ -262,6 +290,46 @@ export const syncClerkMembership = internalAction({
         err
       );
     }
+  },
+});
+
+/**
+ * Checks for expired manual memberships and automatically downgrades them to standard "user".
+ * Triggered daily via Convex cron.
+ */
+export const checkExpiredMemberships = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    const now = Date.now();
+    const members = await ctx.db
+      .query("users")
+      .withIndex("by_role", (q) => q.eq("role", "member"))
+      .collect();
+
+    let expiredCount = 0;
+    for (const user of members) {
+      // If user has an active Stripe subscription, skip
+      if (user.stripeSubscriptionId && user.subscriptionStatus === "active") {
+        continue;
+      }
+
+      // If user has an expiration timestamp and it has passed
+      if (user.membershipExpiresAt !== undefined && user.membershipExpiresAt < now) {
+        await ctx.db.patch(user._id, {
+          role: "user",
+          isMember: false,
+          membershipExpiresAt: undefined,
+        });
+
+        await ctx.scheduler.runAfter(0, internal.users.syncClerkMembership, {
+          clerkId: user.clerkId,
+          isMember: false,
+          role: "user",
+        });
+        expiredCount++;
+      }
+    }
+    return { expiredCount };
   },
 });
 

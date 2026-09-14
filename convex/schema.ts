@@ -17,12 +17,14 @@ export default defineSchema({
     stripeCustomerId: v.optional(v.string()),
     stripeSubscriptionId: v.optional(v.string()),
     subscriptionStatus: v.optional(v.string()),
+    membershipExpiresAt: v.optional(v.number()),
   })
     .index("by_tokenIdentifier", ["tokenIdentifier"])
     .index("by_clerkId", ["clerkId"])
     .index("by_role", ["role"])
     .index("by_isMember", ["isMember"])
-    .index("by_stripeCustomerId", ["stripeCustomerId"]),
+    .index("by_stripeCustomerId", ["stripeCustomerId"])
+    .index("by_membershipExpiresAt", ["membershipExpiresAt"]),
 
   signups: defineTable({
     eventSlug: v.string(),
