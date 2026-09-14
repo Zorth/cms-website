@@ -65,6 +65,16 @@ export async function GET() {
             role === "dragon" ||
             Boolean(u.publicMetadata?.isMember);
 
+      const isVoidmaster = Boolean(
+        u.publicMetadata?.gamemaster === true ||
+        u.publicMetadata?.gamemaster === "true"
+      );
+
+      const isVoidManager = Boolean(
+        u.publicMetadata?.admin === true ||
+        u.publicMetadata?.admin === "true"
+      );
+
       return {
         id: u.id,
         firstName: u.firstName,
@@ -79,6 +89,8 @@ export async function GET() {
         username: u.username,
         role: role as "user" | "member" | "dragon",
         isMember,
+        voidmaster: isVoidmaster,
+        voidManager: isVoidManager,
         createdAt: u.createdAt,
       };
     });

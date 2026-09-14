@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useUser } from "@clerk/nextjs";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { updateUserRoleAction } from "../actions/admin";
+import { updateUserRoleAction, updateUserMetadataAction } from "../actions/admin";
 
 type Role = "user" | "member" | "dragon";
 
@@ -20,6 +20,8 @@ interface AdminUser {
   username?: string | null;
   role: Role;
   isMember: boolean;
+  voidmaster?: boolean;
+  voidManager?: boolean;
   createdAt?: number;
 }
 
@@ -192,6 +194,64 @@ export default function DragonAdminPage() {
     } catch (err: any) {
       console.error("Failed to update user role:", err);
       alert(err.message || "Failed to update role. Reverting change.");
+      setUsers(previousUsers);
+    } finally {
+      setUpdatingUserId(null);
+    }
+  };
+
+  const handleToggleVoidmaster = async (targetUser: AdminUser, checked: boolean) => {
+    setUpdatingUserId(targetUser.id);
+    setSavedUserId(null);
+
+    const previousUsers = [...users];
+    setUsers((prev) =>
+      prev.map((u) =>
+        u.id === targetUser.id ? { ...u, voidmaster: checked } : u
+      )
+    );
+
+    try {
+      await updateUserMetadataAction(targetUser.id, {
+        gamemaster: checked,
+      });
+
+      setSavedUserId(targetUser.id);
+      setTimeout(() => {
+        setSavedUserId((current) => (current === targetUser.id ? null : current));
+      }, 2500);
+    } catch (err: any) {
+      console.error("Failed to update voidmaster metadata:", err);
+      alert(err.message || "Failed to update Voidmaster status. Reverting change.");
+      setUsers(previousUsers);
+    } finally {
+      setUpdatingUserId(null);
+    }
+  };
+
+  const handleToggleVoidManager = async (targetUser: AdminUser, checked: boolean) => {
+    setUpdatingUserId(targetUser.id);
+    setSavedUserId(null);
+
+    const previousUsers = [...users];
+    setUsers((prev) =>
+      prev.map((u) =>
+        u.id === targetUser.id ? { ...u, voidManager: checked } : u
+      )
+    );
+
+    try {
+      await updateUserMetadataAction(targetUser.id, {
+        admin: checked,
+      });
+
+      setSavedUserId(targetUser.id);
+      setTimeout(() => {
+        setSavedUserId((current) => (current === targetUser.id ? null : current));
+      }, 2500);
+    } catch (err: any) {
+      console.error("Failed to update void manager metadata:", err);
+      alert(err.message || "Failed to update Void Manager status. Reverting change.");
       setUsers(previousUsers);
     } finally {
       setUpdatingUserId(null);
@@ -1843,6 +1903,8 @@ export default function DragonAdminPage() {
                     <th>Email</th>
                     <th>Membership</th>
                     <th>Role</th>
+                    <th style={{ textAlign: "center" }}>Voidmaster</th>
+                    <th style={{ textAlign: "center" }}>Void Manager</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1913,6 +1975,60 @@ export default function DragonAdminPage() {
                             </span>
                           )}
                         </div>
+                      </td>
+                      <td style={{ textAlign: "center" }}>
+                        <label
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            cursor: updatingUserId === u.id ? "not-allowed" : "pointer",
+                            padding: "0.25rem",
+                          }}
+                          title="Sets Clerk publicMetadata.gamemaster"
+                        >
+                          <input
+                            type="checkbox"
+                            style={{
+                              width: "1.1rem",
+                              height: "1.1rem",
+                              cursor: "pointer",
+                              accentColor: "var(--secondary)",
+                            }}
+                            checked={Boolean(u.voidmaster)}
+                            disabled={updatingUserId === u.id}
+                            onChange={(e) =>
+                              handleToggleVoidmaster(u, e.target.checked)
+                            }
+                          />
+                        </label>
+                      </td>
+                      <td style={{ textAlign: "center" }}>
+                        <label
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            cursor: updatingUserId === u.id ? "not-allowed" : "pointer",
+                            padding: "0.25rem",
+                          }}
+                          title="Sets Clerk publicMetadata.admin"
+                        >
+                          <input
+                            type="checkbox"
+                            style={{
+                              width: "1.1rem",
+                              height: "1.1rem",
+                              cursor: "pointer",
+                              accentColor: "#ef4444",
+                            }}
+                            checked={Boolean(u.voidManager)}
+                            disabled={updatingUserId === u.id}
+                            onChange={(e) =>
+                              handleToggleVoidManager(u, e.target.checked)
+                            }
+                          />
+                        </label>
                       </td>
                     </tr>
                   ))}
