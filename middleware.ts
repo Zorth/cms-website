@@ -1,9 +1,9 @@
+import { clerkMiddleware } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
 
 const locales = ['nl', 'en'];
 
-export function middleware(request: NextRequest) {
+export default clerkMiddleware((auth, request) => {
   const { pathname } = request.nextUrl;
 
   // Check if the pathname is missing a locale
@@ -21,6 +21,7 @@ export function middleware(request: NextRequest) {
     !pathname.startsWith('/uploads') &&
     !pathname.startsWith('/admin') &&
     !pathname.startsWith('/event') &&
+    !pathname.startsWith('/dragon') &&
     !pathname.startsWith('/sitemap.xml') &&
     !pathname.startsWith('/robots.txt') &&
     !pathname.includes('.')
@@ -29,11 +30,13 @@ export function middleware(request: NextRequest) {
     const url = new URL(targetPath, request.url);
     return NextResponse.redirect(url, 301);
   }
-}
+});
 
 export const config = {
   matcher: [
-    // Skip all internal paths (_next)
-    '/((?!_next|api|images|uploads|admin|event|sitemap.xml|robots.txt|.*\\..*).*)',
+    // Skip Next.js internals and all static files, unless found in search params
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Always run for API routes
+    '/(api|trpc)(.*)',
   ],
 };

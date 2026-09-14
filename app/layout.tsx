@@ -3,9 +3,9 @@ import React from "react";
 import localFont from 'next/font/local';
 import { Metadata } from 'next';
 
-import client from '../tina/__generated__/client';
 import Header from './Header';
 import ConvexClientProvider from './ConvexClientProvider';
+import { ClerkProvider } from '@clerk/nextjs';
 
 // Import local Fonts
 const Rockwell = localFont({
@@ -71,18 +71,11 @@ export const metadata: Metadata = {
     }
 };
 
-export default async function RootLayout({
+export default function RootLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    // Fetch ALL enabled pages so the client-side Header can filter them by locale
-    const pages = await client.queries.pageConnection({ 
-        filter: { 
-            enabled: { eq: true }
-        } 
-    });
-
     return (
         <html className={`${Rockwell.variable} ${ORunde.variable}`}>
             <head>
@@ -129,13 +122,15 @@ export default async function RootLayout({
                 />
             </head>
             <body>
-                <Header pagesData={pages.data} />
-                <div className="padder"></div>
-                <main className="main-wrapper">
+                <ClerkProvider>
                     <ConvexClientProvider>
-                        {children}
+                        <Header />
+                        <div className="padder"></div>
+                        <main className="main-wrapper">
+                            {children}
+                        </main>
                     </ConvexClientProvider>
-                </main>
+                </ClerkProvider>
             </body>
         </html>
     );

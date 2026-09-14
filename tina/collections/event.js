@@ -25,11 +25,6 @@
                 isBody: true,
             },
             {
-                type: "string",
-                label: "Sign-up URL",
-                name: "signupUrl",
-            },
-            {
                 type: "object",
                 label: "Groups",
                 name: "groups",

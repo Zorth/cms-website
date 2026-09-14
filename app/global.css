@@ -200,6 +200,471 @@ header {
     transform: scale(1.1);
 }
 
+.auth-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.auth-btn {
+    background: var(--primary);
+    color: var(--light);
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.35rem 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.auth-btn:hover {
+    background: var(--primary_light);
+    transform: translateY(-1px);
+}
+
+.user-profile-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.role-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: 9999px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.role-badge.role-dragon {
+    background: rgba(220, 38, 38, 0.2);
+    color: #f87171;
+    border: 1px solid rgba(220, 38, 38, 0.4);
+}
+
+.role-badge.role-member {
+    background: rgba(16, 185, 129, 0.2);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.admin-header-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.65rem;
+    background: rgba(220, 38, 38, 0.15);
+    color: #f87171 !important;
+    border: 1px solid rgba(220, 38, 38, 0.35);
+    border-radius: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.2s ease;
+}
+
+.admin-header-btn:hover {
+    background: rgba(220, 38, 38, 0.3);
+    color: #fca5a5 !important;
+    transform: translateY(-1px);
+    border-color: rgba(220, 38, 38, 0.6);
+}
+
+/* Dragon Admin Page Styles */
+.dragon-admin-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 1.5rem 0;
+}
+
+.dragon-admin-header {
+    margin-bottom: 2rem;
+}
+
+.dragon-admin-header h1 {
+    font-size: 2rem;
+    font-family: var(--font-rockwell), serif;
+    color: var(--light);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.5rem;
+}
+
+.dragon-admin-header p {
+    color: var(--secondary);
+    font-size: 0.95rem;
+}
+
+.dragon-tabs {
+    display: flex;
+    gap: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 1.5rem;
+}
+
+.dragon-tab {
+    padding: 0.6rem 1.2rem;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--secondary);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.dragon-tab:hover {
+    color: var(--light);
+}
+
+.dragon-tab.active {
+    color: #f87171;
+    border-bottom: 2px solid #ef4444;
+}
+
+.dragon-panel {
+    background: rgba(30, 33, 36, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    backdrop-filter: blur(8px);
+}
+
+.dragon-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.dragon-search-input {
+    flex: 1;
+    min-width: 250px;
+    background: rgba(20, 22, 25, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0.5rem;
+    padding: 0.6rem 1rem;
+    color: var(--light);
+    font-size: 0.9rem;
+    font-family: inherit;
+}
+
+.dragon-search-input:focus {
+    outline: none;
+    border-color: #ef4444;
+}
+
+.dragon-filter-select {
+    background: rgba(20, 22, 25, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0.5rem;
+    padding: 0.6rem 1rem;
+    color: var(--light);
+    font-size: 0.9rem;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.dragon-table-wrapper {
+    overflow-x: auto;
+}
+
+.dragon-users-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.dragon-users-table th {
+    padding: 0.75rem 1rem;
+    color: var(--secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dragon-users-table td {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    vertical-align: middle;
+}
+
+.dragon-users-table tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.dragon-user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.dragon-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    object-fit: cover;
+    background: rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+}
+
+.dragon-user-names {
+    display: flex;
+    flex-direction: column;
+}
+
+.dragon-fullname {
+    font-weight: 600;
+    color: var(--light);
+}
+
+.dragon-username {
+    font-size: 0.8rem;
+    color: var(--secondary);
+}
+
+.role-select {
+    background: rgba(20, 22, 25, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.4rem;
+    padding: 0.4rem 0.75rem;
+    color: var(--light);
+    font-size: 0.85rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.role-select:focus {
+    outline: none;
+    border-color: #ef4444;
+}
+
+.role-select.role-dragon {
+    color: #f87171;
+    border-color: rgba(220, 38, 38, 0.5);
+}
+
+.role-select.role-member {
+    color: #34d399;
+    border-color: rgba(16, 185, 129, 0.5);
+}
+
+.role-select.role-user {
+    color: var(--secondary);
+}
+
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    margin-left: 0.5rem;
+}
+
+.status-indicator.saving {
+    color: #fbbf24;
+}
+
+.status-indicator.saved {
+    color: #34d399;
+}
+
+/* Dragon Admin Action Buttons & Modal */
+.dragon-btn-primary {
+    background: var(--primary);
+    color: var(--light_light);
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dragon-btn-primary:hover {
+    background: var(--primary_light);
+    transform: translateY(-1px);
+}
+
+.dragon-btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--light);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dragon-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.dragon-btn-danger {
+    background: rgba(220, 38, 38, 0.2);
+    color: #f87171;
+    border: 1px solid rgba(220, 38, 38, 0.4);
+    border-radius: 0.4rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dragon-btn-danger:hover {
+    background: rgba(220, 38, 38, 0.4);
+    color: #fca5a5;
+}
+
+.dragon-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+}
+
+.dragon-modal {
+    background: #1e2124;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0.75rem;
+    width: 100%;
+    max-width: 750px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+    animation: modalFadeIn 0.2s ease;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.dragon-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dragon-modal-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--light);
+}
+
+.dragon-modal-close {
+    background: transparent;
+    border: none;
+    color: var(--secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+}
+
+.dragon-modal-close:hover {
+    color: var(--light);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.dragon-modal-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.dragon-modal-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.dragon-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.dragon-form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--light);
+}
+
+.dragon-form-input, .dragon-form-textarea {
+    background: rgba(20, 22, 25, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0.4rem;
+    padding: 0.6rem 0.8rem;
+    color: var(--light);
+    font-size: 0.9rem;
+    font-family: inherit;
+    width: 100%;
+}
+
+.dragon-form-input:focus, .dragon-form-textarea:focus {
+    outline: none;
+    border-color: #ef4444;
+}
+
+.dragon-group-row {
+    display: grid;
+    grid-template-columns: 2fr 3fr 1fr auto;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.dragon-table-row-clickable {
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.dragon-table-row-clickable:hover td {
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+
 .padder {
     height: 3.5rem;
 }
@@ -321,3 +786,214 @@ blockquote p {
 blockquote strong {
     color: var(--primary_light);
 }
+
+/* Membership Profile & Stripe Subscription Section */
+.membership-profile-page {
+    padding: 1rem 0;
+    font-family: inherit;
+}
+
+.membership-card {
+    background: #1e2421;
+    border: 1px solid rgba(151, 183, 142, 0.2);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    color: #e5ede3;
+}
+
+.membership-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(151, 183, 142, 0.15);
+    padding-bottom: 1rem;
+}
+
+.membership-icon {
+    font-size: 2rem;
+    background: rgba(151, 183, 142, 0.15);
+    width: 3.25rem;
+    height: 3.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid rgba(151, 183, 142, 0.3);
+}
+
+.membership-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+}
+
+.membership-subtitle {
+    font-size: 0.85rem;
+    color: #97b78e;
+    margin: 0.2rem 0 0 0;
+}
+
+.membership-status-box {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.status-badge-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.badge-pill {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.badge-pill.badge-dragon {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.badge-pill.badge-member {
+    background: rgba(16, 185, 129, 0.2);
+    color: #6ee7b7;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.badge-pill.badge-active {
+    background: rgba(59, 130, 246, 0.2);
+    color: #93c5fd;
+    border: 1px solid rgba(59, 130, 246, 0.4);
+}
+
+.status-desc {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #cbd5e1;
+    margin-bottom: 1.25rem;
+}
+
+.price-tag {
+    display: flex;
+    align-items: baseline;
+    gap: 0.2rem;
+    margin-bottom: 1.25rem;
+}
+
+.price-currency {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #97b78e;
+}
+
+.price-amount {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1;
+}
+
+.price-interval {
+    font-size: 0.95rem;
+    color: #94a3b8;
+    margin-left: 0.3rem;
+}
+
+.membership-benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.25rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.membership-benefits-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.9rem;
+    color: #e2e8f0;
+}
+
+.check-icon {
+    color: #10b981;
+    font-weight: bold;
+}
+
+.vat-notice {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.8rem;
+    color: #fde68a;
+    line-height: 1.4;
+}
+
+.vat-notice p {
+    margin: 0;
+}
+
+.btn-subscribe-kobold {
+    width: 100%;
+    background: #97b78e;
+    color: #1a221d;
+    border: none;
+    padding: 0.85rem 1.5rem;
+    border-radius: 0.6rem;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-subscribe-kobold:hover:not(:disabled) {
+    background: #add1a3;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(151, 183, 142, 0.35);
+}
+
+.btn-subscribe-kobold:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-manage-billing {
+    display: inline-block;
+    background: #334155;
+    color: #f1f5f9;
+    border: 1px solid #475569;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-manage-billing:hover:not(:disabled) {
+    background: #475569;
+    border-color: #64748b;
+}
+
+.membership-error-box {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+}
+

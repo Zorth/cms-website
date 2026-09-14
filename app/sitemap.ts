@@ -1,59 +1,59 @@
-import { MetadataRoute } from 'next';
-import client from '../tina/__generated__/client';
+import { MetadataRoute } from "next";
+import { ConvexHttpClient } from "convex/browser";
+import { api } from "../convex/_generated/api";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tarragon.be';
-  const locales = ['nl', 'en'];
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://tarragon.be";
+  const locales = ["nl", "en"];
+  const convexUrl =
+    process.env.NEXT_PUBLIC_CONVEX_URL ||
+    "https://frugal-shark-535.eu-west-1.convex.cloud";
+  const client = new ConvexHttpClient(convexUrl);
 
-  // Fetch all pages
-  const pagesResponse = await client.queries.pageConnection({
-    filter: { enabled: { eq: true } }
-  });
   const pages: any[] = [];
-  pagesResponse.data.pageConnection.edges?.forEach((edge) => {
-    const node = edge?.node as any;
-    const lang = node?.language || 'nl';
-    const filename = node?._sys.filename;
-    const url = filename === 'home' 
-      ? `${baseUrl}/${lang}` 
-      : `${baseUrl}/${lang}/${filename}`;
-      
-    pages.push({
-      url: url,
-      lastModified: new Date(),
-      changeFrequency: 'weekly' as const,
-      priority: filename === 'home' ? 1.0 : 0.8,
-    });
-  });
-
-  // Fetch all events
-  const eventsResponse = await client.queries.eventConnection();
   const events: any[] = [];
-  const now = new Date();
 
-  eventsResponse.data.eventConnection.edges?.forEach((edge) => {
-    const node = edge?.node as any;
-    const eventDate = new Date(node?.date || 0);
-    const isPast = eventDate < now;
+  try {
+    // 1. Fetch enabled pages from Convex
+    const convexPages = await client.query(api.pages.listPages, { enabled: true });
+    convexPages?.forEach((page) => {
+      const lang = page.language || "nl";
+      const slug = page.slug;
+      const url = slug === "home" ? `${baseUrl}/${lang}` : `${baseUrl}/${lang}/${slug}`;
 
-    events.push({
-      url: `${baseUrl}/event/${node?._sys.filename}`,
-      lastModified: new Date(),
-      changeFrequency: isPast ? 'monthly' : 'daily',
-      priority: isPast ? 0.3 : 0.7,
+      pages.push({
+        url: url,
+        lastModified: new Date(),
+        changeFrequency: "weekly" as const,
+        priority: slug === "home" ? 1.0 : 0.8,
+      });
     });
-  });
 
-  const rootPaths = locales.map(locale => ({
+    // 2. Fetch events from Convex
+    const convexEvents = await client.query(api.events.listEvents, { limit: 500 });
+    const now = new Date();
+
+    convexEvents?.forEach((ev) => {
+      const eventDate = new Date(ev.date || 0);
+      const isPast = eventDate < now;
+
+      events.push({
+        url: `${baseUrl}/event/${ev.slug}`,
+        lastModified: new Date(),
+        changeFrequency: isPast ? "monthly" : "daily",
+        priority: isPast ? 0.3 : 0.7,
+      });
+    });
+  } catch (err) {
+    console.error("Error generating sitemap from Convex:", err);
+  }
+
+  const rootPaths = locales.map((locale) => ({
     url: `${baseUrl}/${locale}`,
     lastModified: new Date(),
-    changeFrequency: 'daily' as const,
+    changeFrequency: "daily" as const,
     priority: 1,
   }));
 
-  return [
-    ...rootPaths,
-    ...pages,
-    ...events,
-  ];
+  return [...rootPaths, ...pages, ...events];
 }
