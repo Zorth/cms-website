@@ -23,6 +23,7 @@ export default function Header() {
     const currentUser = useQuery(api.users.getCurrentUser);
     const isDragon = currentUser?.role === 'dragon';
     const isMember = currentUser?.role === 'member' || isDragon;
+    const hasStripeBilling = Boolean(currentUser?.stripeCustomerId);
     const pathname = usePathname();
 
     const handleJoinKobold = async () => {
@@ -30,9 +31,11 @@ export default function Header() {
             const res = await createKoboldCheckoutSessionAction(pathname);
             if (res?.url) {
                 window.location.href = res.url;
+            } else if (res?.error) {
+                alert(res.error);
             }
         } catch (err: any) {
-            alert(err.message || "Failed to start checkout");
+            alert(err?.message || "Failed to start checkout");
         }
     };
 
@@ -41,9 +44,29 @@ export default function Header() {
             const res = await createCustomerPortalSessionAction(pathname);
             if (res?.url) {
                 window.location.href = res.url;
+            } else {
+                openUserProfile();
             }
-        } catch (err: any) {
+        } catch {
             openUserProfile();
+        }
+    };
+
+    const membershipActionLabel = hasStripeBilling
+        ? "Manage Membership"
+        : isDragon
+        ? "Membership Status"
+        : isMember
+        ? "Manage Membership"
+        : "Join Kobold (10€/yr)";
+
+    const handleMembershipClick = () => {
+        if (hasStripeBilling || (!isDragon && isMember)) {
+            handleManageBilling();
+        } else if (isDragon) {
+            openUserProfile();
+        } else {
+            handleJoinKobold();
         }
     };
     
@@ -114,9 +137,9 @@ export default function Header() {
                             <UserButton>
                                 <UserButton.MenuItems>
                                     <UserButton.Action
-                                        label={isMember ? "Manage Membership & VAT" : "Join Kobold (10€/yr)"}
+                                        label={membershipActionLabel}
                                         labelIcon={<span>🦎</span>}
-                                        onClick={isMember ? handleManageBilling : handleJoinKobold}
+                                        onClick={handleMembershipClick}
                                     />
                                 </UserButton.MenuItems>
                                 <UserButton.UserProfilePage

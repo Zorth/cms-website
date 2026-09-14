@@ -25,10 +25,10 @@ export default function MembershipSection() {
       if (res?.url) {
         window.location.href = res.url;
       } else {
-        throw new Error("Could not start checkout session.");
+        throw new Error(res?.error || "Could not start checkout session.");
       }
     } catch (err: any) {
-      setError(err.message || "Failed to start checkout. Please try again.");
+      setError(err?.message || "Failed to start checkout. Please try again.");
       setLoading(false);
     }
   };
@@ -41,10 +41,10 @@ export default function MembershipSection() {
       if (res?.url) {
         window.location.href = res.url;
       } else {
-        throw new Error("Could not open billing portal.");
+        throw new Error(res?.error || "Could not open billing portal.");
       }
     } catch (err: any) {
-      setError(err.message || "Failed to open billing portal.");
+      setError(err?.message || "Failed to open billing portal.");
       setLoading(false);
     }
   };
@@ -79,7 +79,7 @@ export default function MembershipSection() {
                 disabled={loading}
                 className="btn-manage-billing"
               >
-                {loading ? "Opening Portal..." : "Manage Billing & VAT Invoices"}
+                {loading ? "Opening Portal..." : "Manage Membership"}
               </button>
             )}
           </div>
@@ -98,7 +98,7 @@ export default function MembershipSection() {
               disabled={loading}
               className="btn-manage-billing"
             >
-              {loading ? "Opening Portal..." : "Manage Subscription & VAT Invoices"}
+              {loading ? "Opening Portal..." : "Manage Membership"}
             </button>
           </div>
         ) : (
